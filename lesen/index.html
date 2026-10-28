@@ -1228,6 +1228,7 @@ function render() {
   const root = document.getElementById("app");
   root.innerHTML = confetti() + bar() + inner + celebrate();
   root.dataset.screen = screen;
+  if (session && (session.phase === "feedback" || session.phase === "reward") || ui.name === "chest") window.scrollTo(0, 0);
   root.dataset.hat = save.equip.hat || "";
   root.dataset.pet = save.equip.pet || "";
   root.dataset.ready = "1";
