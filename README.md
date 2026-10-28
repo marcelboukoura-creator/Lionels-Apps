@@ -2,6 +2,7 @@
 
 Startseite für Lionels Web-Apps. Für GitHub Pages aus dem Branch `main`, Dateien im Hauptordner.
 
+- [Lese-Abenteuer](lesen/) — Lesen lernen mit Münzen und Shop
 - [Mathe-Abenteuer](mathe/)
 - [Lese-Test / Mikrofon](lesetest/)
 
