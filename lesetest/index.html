@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Lionels Lese-Test – Mikrofon</title>
+<style>
+  :root { --bg:#fff8ee; --card:#ffffff; --text:#2b2b2b; --muted:#777; --ok:#1a9e4b; --almost:#d98a00; --bad:#d6363f; --accent:#ff7a1a; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; font-family:-apple-system, "SF Pro Rounded", system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  main { max-width:900px; margin:0 auto; padding:24px; }
+  h1 { font-size:32px; margin:8px 0 4px; } h2 { font-size:22px; margin:0 0 12px; }
+  p.sub { color:var(--muted); margin:0 0 20px; font-size:17px; }
+  .card { background:var(--card); border-radius:20px; padding:24px; margin-bottom:20px; box-shadow:0 2px 10px rgba(0,0,0,.06); }
+  .sentence { display:flex; flex-wrap:wrap; gap:12px 18px; justify-content:center; padding:20px 4px 28px; }
+  .w { font-size:44px; line-height:56px; font-weight:700; border-bottom:5px solid #e5e0d8; transition:color .3s, border-color .3s, transform .3s; }
+  .w.richtig { color:var(--ok); border-color:var(--ok); transform:scale(1.06); }
+  .w.fast { color:var(--almost); border-color:var(--almost); }
+  .w.fehlt { color:var(--bad); border-color:var(--bad); }
+  .row { display:flex; flex-wrap:wrap; gap:14px; align-items:center; }
+  button { font-size:22px; font-weight:700; border:0; border-radius:16px; padding:18px 28px; min-height:64px; cursor:pointer; touch-action:manipulation; }
+  #go { background:var(--accent); color:#fff; } #go:disabled { opacity:.6; }
+  #stop { background:#eee; color:#333; }
+  label.tg { font-size:18px; display:flex; gap:10px; align-items:center; }
+  label.tg input { width:26px; height:26px; }
+  .meter { height:12px; border-radius:6px; background:#eee; margin-top:20px; overflow:hidden; }
+  .meter div { height:12px; width:0; background:var(--accent); transition:width .08s; }
+  table { width:100%; border-collapse:collapse; font-size:16px; }
+  td { padding:8px 6px; border-bottom:1px solid #eee; vertical-align:top; } td:first-child { color:var(--muted); width:42%; }
+  .pill { display:inline-block; padding:2px 10px; border-radius:99px; color:#fff; font-size:14px; margin-right:6px; }
+  #log { font-family:ui-monospace, Menlo, monospace; font-size:14px; white-space:pre-wrap; color:#444; }
+  .note { background:#eef5ff; border-radius:12px; padding:12px 14px; font-size:16px; margin-top:14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🦖 Lionels Lese-Test</h1>
+  <p class="sub">Technik-Test: Hört diese Seite auf dem iPad zu und erkennt, welche Wörter richtig vorgelesen wurden?</p>
+
+  <div class="card">
+    <h2>Lies diesen Satz laut vor</h2>
+    <div class="sentence" id="sentence"></div>
+    <div class="row">
+      <button id="go">🎤 Mikrofon an &amp; vorlesen</button>
+      <button id="stop" disabled>Stopp</button>
+      <label class="tg"><input type="checkbox" id="meterToggle"> Gleichzeitig Betonung messen</label>
+    </div>
+    <div class="meter"><div id="lvl"></div></div>
+  </div>
+
+  <div class="card">
+    <h2>Ergebnis</h2>
+    <table>
+      <tr><td>Gehört</td><td id="heard">–</td></tr>
+      <tr><td>Auswertung</td><td id="stats">–</td></tr>
+      <tr><td>Legende</td><td><span class="pill" style="background:var(--ok)">richtig</span><span class="pill" style="background:var(--almost)">fast</span><span class="pill" style="background:var(--bad)">nochmal üben</span></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Technik-Check dieses Geräts</h2>
+    <table id="diag"></table>
+    <div class="note">Auf dem iPad muss unter Einstellungen → Allgemein → Tastatur die Diktierfunktion (oder Siri) eingeschaltet sein, sonst meldet Safari „service-not-allowed“. Bitte in einem normalen Safari-Tab öffnen, nicht als Home-Bildschirm-App.</div>
+  </div>
+
+  <div class="card">
+    <h2>Protokoll</h2>
+    <div id="log">Noch kein Versuch gestartet.</div>
+  </div>
+</main>
+<script>
+const TARGET = "Der Roboter und der Dino fahren ein rotes Rennauto.";
+const words = TARGET.split(" ");
+const $ = (id) => document.getElementById(id);
+const sentence = $("sentence");
+words.forEach((w) => { const s = document.createElement("span"); s.className = "w"; s.textContent = w; sentence.appendChild(s); });
+
+function norm(w){return w.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]/g,"");}
+function lev(a,b){const m=a.length,n=b.length,d=[];for(let i=0;i<=m;i++)d.push([i]);for(let j=1;j<=n;j++)d[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n];}
+function sim(a,b){if(!a.length&&!b.length)return 1;return 1-lev(a,b)/Math.max(a.length,b.length);}
+function grade(s){return s>=0.99?"richtig":s>=0.6?"fast":"fehlt";}
+function matchWords(target, heard){
+  const t=target.map(norm), h=heard.map(norm).filter(x=>x.length>0), m=t.length, n=h.length, c=[];
+  for(let i=0;i<=m;i++)c.push(new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++)c[i][0]=i; for(let j=1;j<=n;j++)c[0][j]=j*0.5;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++){const s=sim(t[i-1],h[j-1]);const s2=j>=2?sim(t[i-1],h[j-2]+h[j-1]):0;
+    c[i][j]=Math.min(c[i-1][j-1]+(1-s),c[i-1][j]+1,c[i][j-1]+0.5,j>=2?c[i-1][j-2]+(1-s2):1e9);}
+  const res=new Array(m).fill("fehlt"); let i=m,j=n;
+  while(i>0&&j>0){const s=sim(t[i-1],h[j-1]);const s2=j>=2?sim(t[i-1],h[j-2]+h[j-1]):0;
+    if(j>=2&&s2>s&&Math.abs(c[i][j]-(c[i-1][j-2]+(1-s2)))<1e-9){res[i-1]=grade(s2);i--;j-=2;}
+    else if(Math.abs(c[i][j]-(c[i-1][j-1]+(1-s)))<1e-9){res[i-1]=grade(s);i--;j--;}
+    else if(Math.abs(c[i][j]-(c[i-1][j]+1))<1e-9){i--;} else {j--;}}
+  return res;
+}
+function pitchHz(buf,rate){let r=0;for(let k=0;k<buf.length;k++)r+=buf[k]*buf[k];r=Math.sqrt(r/buf.length);if(r<0.01)return 0;
+  const lo=Math.floor(rate/500),hi=Math.floor(rate/80);let best=0,bl=0;
+  for(let lag=lo;lag<=hi;lag++){let s=0;for(let k=0;k<buf.length-lag;k++)s+=buf[k]*buf[k+lag];if(s>best){best=s;bl=lag;}}return bl?rate/bl:0;}
+function stdev(xs){if(xs.length<2)return 0;const mu=xs.reduce((a,b)=>a+b,0)/xs.length;return Math.sqrt(xs.reduce((a,b)=>a+(b-mu)*(b-mu),0)/xs.length);}
+
+const logLines=[];
+function log(s){logLines.unshift(new Date().toLocaleTimeString("de-DE")+"  "+s);$("log").textContent=logLines.slice(0,15).join("\n");}
+function setStates(st){[...sentence.children].forEach((el,k)=>{el.className="w"+(st[k]&&st[k]!=="offen"?" "+st[k]:"");});}
+
+// Diagnostics
+(function(){
+  let inFrame="nein"; try{ if(window.self!==window.top) inFrame="ja (iframe)"; }catch(e){ inFrame="ja (fremder Ursprung)"; }
+  let policy="nicht abfragbar"; try{const pp=document.permissionsPolicy||document.featurePolicy; if(pp&&pp.allowsFeature) policy=pp.allowsFeature("microphone")?"erlaubt":"BLOCKIERT";}catch(e){policy="Fehler";}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const rows=[["Spracherkennung (SpeechRecognition)",SR?"vorhanden":"fehlt"],
+    ["Mikrofon-Zugriff (getUserMedia)",(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)?"vorhanden":"fehlt"],
+    ["Mikrofon laut Permissions-Policy",policy],["Sicherer Kontext (HTTPS)",window.isSecureContext?"ja":"nein"],
+    ["In eingebettetem Rahmen",inFrame],["Browser",navigator.userAgent]];
+  $("diag").innerHTML=rows.map(r=>"<tr><td>"+r[0]+"</td><td>"+r[1].replace(/</g,"&lt;")+"</td></tr>").join("");
+})();
+
+let meter=null, rec=null, t0=0, meterEpoch=0, pendingStream=null;
+function releaseStream(stream){
+  if(!stream)return;
+  stream.getTracks().forEach(t=>t.stop());
+  if(pendingStream===stream) pendingStream=null;
+}
+function startMeter(){
+  const epoch=++meterEpoch;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!AC){log("Mikrofon-Fehler: getUserMedia fehlt");return;}
+  let ctx;
+  try{ctx=new AC();}catch(e){log("Mikrofon-Fehler: "+(e.name||"")+" "+(e.message||e));return;}
+  // iPad-Safari: AudioContext und getUserMedia in der Tippgeste anstoßen, nicht darauf warten.
+  ctx.resume().catch(()=>{});
+  let streamPromise;
+  try{streamPromise=navigator.mediaDevices.getUserMedia({audio:true});}
+  catch(e){log("Mikrofon-Fehler: "+e.name+" "+e.message);ctx.close();return;}
+  streamPromise.then((stream)=>{
+    if(epoch!==meterEpoch){releaseStream(stream);ctx.close();return;}
+    pendingStream=stream;
+    try{
+      const an=ctx.createAnalyser(); an.fftSize=2048;
+      const src=ctx.createMediaStreamSource(stream); src.connect(an);
+      if(epoch!==meterEpoch){releaseStream(stream);try{src.disconnect();}catch(err){}ctx.close();return;}
+      const buf=new Float32Array(an.fftSize), loud=[], pitch=[]; let raf=0;
+      const tick=()=>{an.getFloatTimeDomainData(buf);let r=0;for(let k=0;k<buf.length;k++)r+=buf[k]*buf[k];r=Math.sqrt(r/buf.length);
+        $("lvl").style.width=Math.min(100,r*800)+"%"; if(r>0.01){loud.push(20*Math.log10(r));const p=pitchHz(buf,ctx.sampleRate);if(p>0)pitch.push(p);} raf=requestAnimationFrame(tick);};
+      tick();
+      meter={loud,pitch,stop:()=>{cancelAnimationFrame(raf);releaseStream(stream);try{src.disconnect();}catch(e){}ctx.close();$("lvl").style.width="0";}};
+      log("Mikrofon offen (Betonungs-Messung läuft).");
+    }catch(e){
+      log("Mikrofon-Fehler: "+(e.name||"")+" "+(e.message||e));
+      releaseStream(stream); try{ctx.close();}catch(err){}
+    }
+  }).catch((e)=>{log("Mikrofon-Fehler: "+(e.name||"")+" "+(e.message||e));try{ctx.close();}catch(err){}});
+}
+function stopMeter(){
+  meterEpoch++;
+  if(pendingStream&&!meter) releaseStream(pendingStream);
+  if(!meter)return;
+  const m=meter; meter=null; m.stop();
+  const pv=stdev(m.pitch.map(p=>12*Math.log2(p/100))), lv=stdev(m.loud);
+  $("stats").textContent+=" · Lautstärke-Schwankung "+lv.toFixed(1)+" dB · Tonhöhen-Schwankung "+pv.toFixed(1)+" Halbtöne"+(pv>2.5?" (lebendig betont)":" (eher gleichförmig)");
+}
+
+$("go").onclick=()=>{
+  if($("go").disabled)return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){log("Spracherkennung gibt es in diesem Browser nicht.");return;}
+  $("go").disabled=true;
+  setStates([]); $("heard").textContent="–"; $("stats").textContent="–";
+  // Nicht auf getUserMedia warten: sonst liegt rec.start() auf dem iPad außerhalb der Tippgeste.
+  if($("meterToggle").checked) startMeter();
+  rec=new SR(); rec.lang="de-DE"; rec.interimResults=true; rec.continuous=false; rec.maxAlternatives=3;
+  rec.onstart=()=>{t0=Date.now();$("go").disabled=true;$("go").textContent="👂 Ich höre zu …";$("stop").disabled=false;log("Ich höre zu …");};
+  rec.onresult=(ev)=>{let txt="",fin=false;for(let k=0;k<ev.results.length;k++){txt+=ev.results[k][0].transcript+" ";if(ev.results[k].isFinal)fin=true;}
+    txt=txt.trim(); $("heard").textContent=txt; const st=matchWords(words,txt.split(/\s+/)); setStates(st);
+    if(fin){const secs=Math.max(0.5,(Date.now()-t0)/1000),ok=st.filter(x=>x==="richtig").length;
+      $("stats").textContent=ok+" von "+words.length+" Wörtern richtig · ca. "+Math.round(words.length/secs*60)+" Wörter pro Minute (inkl. Startpause)";
+      log("Ergebnis: "+txt);}};
+  rec.onerror=(ev)=>log("Erkennungs-Fehler: "+ev.error+(ev.message?" – "+ev.message:""));
+  rec.onend=()=>{$("go").disabled=false;$("go").textContent="🎤 Mikrofon an & vorlesen";$("stop").disabled=true;stopMeter();log("Zuhören beendet.");};
+  try{rec.start();}catch(e){
+    log("Start fehlgeschlagen: "+e.message);
+    $("go").disabled=false; $("go").textContent="🎤 Mikrofon an & vorlesen"; $("stop").disabled=true;
+    stopMeter();
+  }
+};
+$("stop").onclick=()=>{ if(rec) rec.stop(); };
+</script>
+</body>
+</html>
