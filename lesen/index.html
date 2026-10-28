@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFDF7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lese-Abenteuer">
+<title>Lionels Lese-Abenteuer</title>
+<style>
+  :root {
+    --bg:#FFFDF7; --card:#FFFFFF; --ink:#3A2418; --muted:#7A6558;
+    --accent:#F07F2A; --accent-2:#1F8A4C; --soft:#FFE8D2; --line:#E7D7C6;
+    --good:#146B38; --goodbg:#D9F5E5; --warm:#9A4E12; --warmbg:#FFE0C2; --gold:#E2B203;
+  }
+  body[data-theme="sun"] { --bg:#FFF1E2; --soft:#FFD8BF; --accent:#E25B2A; --line:#F0C8AE; }
+  body[data-theme="wiese"] { --bg:#F3FBEE; --soft:#E4F6D4; --accent:#2E9B4F; --line:#C9E4B4; }
+  body[data-theme="night"] {
+    --bg:#1B2433; --card:#273246; --ink:#F6F1E8; --muted:#D5CBBE;
+    --accent:#F0B429; --soft:#3A3120; --line:#3C4C66; --good:#B7E4C7; --goodbg:#1E3A2C;
+    --warm:#F6D3A0; --warmbg:#4A3424;
+  }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; background:var(--bg); color:var(--ink); }
+  body { font-family:-apple-system, "SF Pro Rounded", system-ui, sans-serif; min-height:100vh; min-height:100svh; touch-action:manipulation; }
+  button { font:inherit; color:inherit; touch-action:manipulation; border:0; background:var(--card); cursor:pointer; border-radius:18px; min-height:64px; padding:12px 16px; font-weight:800; font-size:22px; line-height:1.2; }
+  button:active { filter:brightness(.94); }
+  button:disabled { opacity:.45; }
+  button:focus-visible { outline:4px solid var(--ink); outline-offset:3px; }
+  .wrap { max-width:980px; margin:0 auto; padding:calc(12px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left)); }
+  body.show-banner .wrap { padding-bottom:calc(150px + env(safe-area-inset-bottom)); }
+  header.bar { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  header.bar h1 { font-size:clamp(26px, 4vw, 40px); margin:0; flex:1; min-width:0; line-height:1.05; letter-spacing:.01em; }
+  .pill { display:inline-flex; align-items:center; gap:6px; background:var(--card); border-radius:999px; padding:8px 12px; font-weight:800; box-shadow:0 3px 0 var(--line); min-height:52px; }
+  .goal { width:46px; height:46px; display:block; background:var(--card); border-radius:50%; box-shadow:0 3px 0 var(--line); }
+  .goal .track { stroke:#E7D7C6; fill:none; }
+  .goal .prog { stroke:#1F8A4C; fill:none; }
+  .foxbox { position:relative; width:84px; height:84px; flex:0 0 auto; }
+  .foxbox svg { width:100%; height:100%; display:block; }
+  .foxbox.sm { width:64px; height:64px; }
+  .foxbox.lg { width:108px; height:108px; }
+  .hat { position:absolute; left:16%; top:-8px; font-size:32px; line-height:1; pointer-events:none; }
+  .pet { position:absolute; right:-12px; bottom:-6px; font-size:30px; line-height:1; pointer-events:none; }
+  .marker { position:absolute; z-index:4; width:96px; margin-left:-48px; text-align:center; pointer-events:none; }
+  .here { display:inline-block; background:var(--card); border-radius:999px; padding:2px 8px; font-size:13px; font-weight:900; box-shadow:0 2px 0 var(--line); }
+  .hello { display:flex; gap:12px; align-items:center; }
+  .hello p { margin:4px 0 0; color:var(--muted); font-weight:800; font-size:18px; }
+  .card { background:var(--card); border-radius:24px; padding:16px; box-shadow:0 4px 0 var(--line); margin:0 0 14px; }
+  .world { position:relative; padding:8px 0 12px; }
+  .world-dino { background:linear-gradient(180deg,#d7f0bf 0%, var(--bg) 240px); }
+  .world-rennen { background:linear-gradient(180deg,#d9dde3 0%, var(--bg) 240px); }
+  .world-robo { background:linear-gradient(180deg,#d5e4f5 0%, var(--bg) 240px); }
+  .world-tiere { background:linear-gradient(180deg,#d9f3d0 0%, var(--bg) 220px); }
+  .world-bonus { background:linear-gradient(180deg,#ffe7a8 0%, var(--bg) 220px); }
+  body[data-theme="night"] .world-dino { background:linear-gradient(180deg,#243328, var(--bg) 240px); }
+  body[data-theme="night"] .world-rennen { background:linear-gradient(180deg,#2c3138, var(--bg) 240px); }
+  body[data-theme="night"] .world-robo { background:linear-gradient(180deg,#243246, var(--bg) 240px); }
+  body[data-theme="night"] .world-tiere { background:linear-gradient(180deg,#243328, var(--bg) 220px); }
+  body[data-theme="night"] .world-bonus { background:linear-gradient(180deg,#3a3420, var(--bg) 220px); }
+  .ribbon { position:relative; z-index:2; width:min(440px, calc(100% - 24px)); margin:8px auto 0; background:var(--card); border-radius:20px; padding:12px 14px; box-shadow:0 4px 0 var(--line); }
+  .ribbon b { font-size:26px; }
+  .ribbon small { display:block; color:var(--muted); font-weight:800; font-size:16px; }
+  .pathcol { position:relative; margin:0 auto; }
+  .pathcol svg.trail { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+  .deco { position:absolute; font-size:40px; line-height:1; pointer-events:none; z-index:1; }
+  button.nodewrap { position:absolute; z-index:2; width:148px; margin-left:-74px; background:transparent; box-shadow:none; padding:0 0 4px; min-height:0; border-radius:28px; text-align:center; }
+  .bubble { width:96px; height:96px; margin:0 auto; border-radius:50%; background:var(--card); display:grid; place-items:center; position:relative; box-shadow:0 5px 0 var(--line); }
+  .bubble .em { font-size:40px; line-height:1; }
+  .ring { position:absolute; inset:-6px; width:calc(100% + 12px); height:calc(100% + 12px); pointer-events:none; }
+  .caption { display:inline-block; margin-top:6px; font-size:15px; font-weight:900; text-align:center; line-height:1.15; letter-spacing:.01em; background:var(--card); border-radius:10px; padding:3px 7px; }
+  .starsmini { display:block; text-align:center; color:var(--gold); font-size:14px; letter-spacing:1px; }
+  .nodewrap.lock .bubble { opacity:.72; }
+  .nodewrap.now .bubble { box-shadow:0 0 0 4px var(--accent), 0 5px 0 var(--line); }
+  .nodewrap.glow .bubble { box-shadow:0 0 0 4px var(--gold), 0 5px 0 var(--line); }
+  .qcard { display:flex; gap:12px; align-items:flex-start; }
+  .kicker { color:var(--muted); font-weight:800; font-size:16px; letter-spacing:.04em; text-transform:uppercase; }
+  .prompt { font-size:clamp(30px, 4.6vw, 44px); font-weight:900; letter-spacing:.03em; line-height:1.25; margin:4px 0 8px; }
+  .read { font-size:clamp(32px, 5vw, 48px); font-weight:900; letter-spacing:.04em; line-height:1.45; }
+  .bigem { font-size:64px; line-height:1; }
+  .choices { display:grid; grid-template-columns:1fr; gap:12px; }
+  .choice { min-height:92px; font-size:clamp(26px, 3.4vw, 34px); letter-spacing:.02em; text-align:left; display:flex; align-items:center; gap:14px; padding:14px 16px; }
+  .choice:nth-child(3n+1) { background:#FFE7C2; }
+  .choice:nth-child(3n+2) { background:#D9F5E5; }
+  .choice:nth-child(3n) { background:#D9E6FF; }
+  body[data-theme="night"] .choice:nth-child(3n+1) { background:#4A3B28; }
+  body[data-theme="night"] .choice:nth-child(3n+2) { background:#1E3A2C; }
+  body[data-theme="night"] .choice:nth-child(3n) { background:#24344A; }
+  .hot { color:var(--accent); }
+  .syl { position:relative; display:inline-block; margin:0 .12em .2em; }
+  .bogen { position:absolute; left:8%; right:8%; bottom:-5px; height:7px; border:3px solid currentColor; border-top:0; border-radius:0 0 12px 12px; pointer-events:none; }
+  .s0 { color:#F07F2A; } .s1 { color:#1F8A4C; } .s2 { color:#2F6FED; } .s3 { color:#C43B7A; }
+  button.word { display:inline-flex; min-height:48px; background:transparent; box-shadow:none; padding:0 2px; border-radius:10px; font-size:inherit; font-weight:900; letter-spacing:inherit; }
+  .slots, .tray { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; min-height:74px; margin-top:8px; }
+  .slot { min-width:92px; min-height:76px; border-bottom:6px solid var(--accent); font-size:40px; font-weight:900; display:inline-flex; align-items:flex-end; justify-content:center; letter-spacing:.04em; padding-bottom:4px; }
+  .blank { display:inline-block; min-width:88px; border-bottom:5px solid var(--accent); transform:translateY(-4px); }
+  .w.richtig { color:var(--good); } .w.fast { color:#B26A00; } .w.fehlt { color:#9C3B32; }
+  .primary { background:var(--accent); color:#3A2418; }
+  .green { background:var(--accent-2); color:#fff; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; }
+  .banner-pop { position:fixed; left:0; right:0; bottom:0; z-index:8; display:flex; gap:12px; align-items:center; padding:14px 14px calc(14px + env(safe-area-inset-bottom)); box-shadow:0 -6px 0 rgba(0,0,0,.04); }
+  .banner-pop.good { background:var(--goodbg); color:var(--good); }
+  .banner-pop.warm { background:var(--warmbg); color:var(--warm); }
+  .banner-pop strong { display:block; font-size:clamp(28px, 4vw, 40px); letter-spacing:.02em; }
+  .banner-pop p { margin:2px 0 0; font-size:20px; font-weight:800; }
+  .banner-pop .grow { flex:1; min-width:0; }
+  .fly { position:fixed; z-index:9; left:18%; bottom:90px; font-size:28px; pointer-events:none; animation:coinfly .9s ease-in forwards; }
+  @keyframes coinfly { to { transform:translate(55vw, -62vh) scale(.45); opacity:.15; } }
+  .confetti { position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden; }
+  .confetti i { position:absolute; top:-12px; font-style:normal; font-size:26px; animation:fall 1.15s ease-in forwards; }
+  @keyframes fall { to { transform:translateY(88vh) rotate(140deg); opacity:.15; } }
+  .shopgrid, .achgrid { display:grid; grid-template-columns:1fr; gap:12px; }
+  .item { text-align:left; width:100%; }
+  .preview { height:120px; display:flex; align-items:center; justify-content:center; border-radius:18px; margin-bottom:8px; }
+  .cat { font-size:22px; margin:16px 0 8px; }
+  .cele { position:fixed; inset:0; z-index:12; background:rgba(43,32,24,.35); display:flex; align-items:center; justify-content:center; padding:18px; }
+  .cele .card { max-width:420px; text-align:center; }
+  .pad { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; max-width:420px; margin:12px auto; }
+  .ach { text-align:center; opacity:.45; }
+  .ach.on { opacity:1; background:var(--soft); }
+  .hintline { color:var(--muted); font-weight:800; font-size:18px; }
+  @media (min-width:740px) {
+    .choices { grid-template-columns:1fr 1fr; }
+    .shopgrid, .achgrid { grid-template-columns:1fr 1fr; }
+  }
+  @media (orientation:landscape) and (min-width:900px) {
+    .lesson-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:16px; align-items:start; }
+    .choices { grid-template-columns:1fr; }
+    .qcard { min-height:280px; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .fly, .confetti i, .pet { animation:none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+<noscript>Bitte JavaScript aktivieren, um Lionels Lese-Abenteuer zu spielen.</noscript>
+<script>
+"use strict";
+const KEY = "lionel.lesen.v1";
+const CHILD = "Lionel";
+const PRAISE = ["Super!", "Genau!", "Toll gemacht!", "Weiter so!"];
+const NICE = ["Das sitzt.", "Schön gelesen.", "Weiter so, Lionel.", "Fuchsischlau."];
+
+function W(w, syl, em, sound) { return { w:w, syl:syl.split("|"), em:em, sound:sound || "" }; }
+const BANK = {
+  dino: [
+    W("Dino","Di|no","🦕"), W("Blume","Blu|me","🌸"), W("Sonne","Son|ne","☀️"), W("Vulkan","Vul|kan","🌋"),
+    W("Dschungel","Dschun|gel","🌴"), W("Blätter","Blät|ter","🍃"), W("Roboter","Ro|bo|ter","🤖"), W("Rennauto","Renn|au|to","🏎️"),
+    W("Fußspur","Fuß|spur","🐾"), W("Eier","Ei|er","🥚"), W("Mama","Ma|ma","💛"), W("Papa","Pa|pa","🧡"),
+    W("Höhle","Höh|le","🪨"), W("Palme","Pal|me","🌴"), W("Beere","Bee|re","🫐"), W("Wasser","Was|ser","💧"),
+    W("Freunde","Freun|de","🤝"), W("Karte","Kar|te","🗺️")
+  ],
+  rennen: [
+    W("Auto","Au|to","🚗"), W("Kurve","Kur|ve","↪️"), W("Ampel","Am|pel","🚦"), W("Strecke","Stre|cke","🛣️"),
+    W("Fahrer","Fah|rer","🧢"), W("Reifen","Rei|fen","⚫"), W("Flagge","Flag|ge","🏁"), W("Motor","Mo|tor","⚙️"),
+    W("Pokal","Po|kal","🏆"), W("Bremse","Brem|se","🛑"), W("Tempo","Tem|po","💨"), W("Runde","Run|de","🔁"),
+    W("Medaille","Me|da|lie","🏅"), W("Startlinie","Start|li|nie","🚦"), W("Boxengasse","Bo|xen|gas|se","🔧"), W("Rennauto","Renn|au|to","🏎️")
+  ],
+  robo: [
+    W("Schule","Schu|le","🏫","sch"), W("Schraube","Schrau|be","🔩","sch"), W("Schere","Sche|re","✂️","sch"), W("Schatten","Schat|ten","🌑","sch"),
+    W("Schaukel","Schau|kel","🛝","sch"), W("Schlange","Schlan|ge","🐍","sch"), W("Schnecke","Schne|cke","🐌","sch"), W("schreiben","schrei|ben","✏️","sch"),
+    W("Schaf","Schaf","🐑","sch"), W("lachen","la|chen","😄","ch"), W("Kuchen","Ku|chen","🍰","ch"), W("Drachen","Dra|chen","🐉","ch"),
+    W("rechnen","rech|nen","🔢","ch"), W("Bücher","Bü|cher","📚","ch"), W("Dach","Dach","🏠","ch"), W("Bach","Bach","💧","ch"),
+    W("Strecke","Stre|cke","🛣️","st"), W("Sterne","Ster|ne","⭐","st"), W("Stiefel","Stie|fel","🥾","st"), W("Stunde","Stun|de","⏰","st"),
+    W("Stern","Stern","⭐","st"), W("Stein","Stein","🪨","st"), W("Spiegel","Spie|gel","🪞","sp"), W("spielen","spie|len","🎮","sp"),
+    W("Spinne","Spin|ne","🕷️","sp"), W("Sportler","Sport|ler","🏃","sp"), W("Spiel","Spiel","🎮","sp"), W("Sport","Sport","⚽","sp")
+  ],
+  tiere: [
+    W("Seife","Sei|fe","🧼","ei"), W("Leiter","Lei|ter","🪜","ei"), W("Kreide","Krei|de","🖍️","ei"), W("Eier","Ei|er","🥚","ei"),
+    W("weinen","wei|nen","😢","ei"), W("Reise","Rei|se","🧳","ei"), W("Ei","Ei","🥚","ei"), W("Eis","Eis","🍦","ei"),
+    W("klein","klein","🤏","ei"), W("Wiese","Wie|se","🌿","ie"), W("Biene","Bie|ne","🐝","ie"), W("Liebe","Lie|be","💛","ie"),
+    W("sieben","sie|ben","7️⃣","ie"), W("liegen","lie|gen","🛏️","ie"), W("Ziege","Zie|ge","🐐","ie"), W("Fliege","Flie|ge","🪰","ie"),
+    W("Auto","Au|to","🚗","au"), W("Auge","Au|ge","👁️","au"), W("laufen","lau|fen","🏃","au"), W("Pauke","Pau|ke","🥁","au"),
+    W("Taube","Tau|be","🕊️","au"), W("Maus","Maus","🐭","au"), W("Baum","Baum","🌳","au"), W("Eule","Eu|le","🦉","eu"),
+    W("Freunde","Freun|de","🤝","eu"), W("heute","heu|te","📅","eu"), W("Leute","Leu|te","👨‍👩‍👧","eu"), W("Feuer","Feu|er","🔥","eu"),
+    W("neun","neun","9️⃣","eu"), W("Bäume","Bäu|me","🌳","äu"), W("Mäuse","Mäu|se","🐭","äu"), W("Häuser","Häu|ser","🏘️","äu"),
+    W("Träume","Träu|me","💭","äu")
+  ]
+};
+function G(before, after, ok, bad, say, em) { return { before:before, after:after, ok:ok, bad:bad.split("|"), say:say, em:em }; }
+const GAPS = {
+  dino: [
+    G("Der","ist freundlich.","Dino","Auto|Helm","Der Dino ist freundlich.","🦕"),
+    G("Die","scheint warm.","Sonne","Schule|Eule","Die Sonne scheint warm.","☀️"),
+    G("Der Dino frisst"," .","Blätter","Steine|Helme","Der Dino frisst Blätter.","🍃"),
+    G("Im","ist es grün.","Dschungel","Teller|Helm","Im Dschungel ist es grün.","🌴"),
+    G("Der","ist ruhig.","Vulkan","Kuchen|Stift","Der Vulkan ist ruhig.","🌋"),
+    G("Eine","wächst am Weg.","Blume","Ampel|Schule","Eine Blume wächst am Weg.","🌸"),
+    G("Der Dino trinkt"," .","Wasser","Sand|Papier","Der Dino trinkt Wasser.","💧"),
+    G("Die","zeigt den Weg.","Karte","Milch|Socke","Die Karte zeigt den Weg.","🗺️")
+  ],
+  rennen: [
+    G("Das","fährt los.","Auto","Schaf|Buch","Das Auto fährt los.","🚗"),
+    G("Der Fahrer trägt einen"," .","Helm","Kuchen|Fisch","Der Fahrer trägt einen Helm.","⛑️"),
+    G("Die","wird grün.","Ampel","Suppe|Wolke","Die Ampel wird grün.","🚦"),
+    G("Lionel gibt"," .","Gas","Milch|Sand","Lionel gibt Gas.","💨"),
+    G("Nach dem Ziel gibt es eine"," .","Medaille","Suppe|Socke","Nach dem Ziel gibt es eine Medaille.","🏅"),
+    G("Das Auto bremst in der"," .","Kurve","Schule|Suppe","Das Auto bremst in der Kurve.","↪️"),
+    G("Die karierte","weht am Ziel.","Flagge","Gabel|Seife","Die karierte Flagge weht am Ziel.","🏁"),
+    G("Der","ist rund und schwarz.","Reifen","Löffel|Heft","Der Reifen ist rund und schwarz.","⚫")
+  ],
+  robo: [
+    G("Die","beginnt um acht.","Schule","Sonne|Wiese","Die Schule beginnt um acht.","🏫"),
+    G("Das","hat weiche Wolle.","Schaf","Auto|Ei","Das Schaf hat weiche Wolle.","🐑"),
+    G("Robo dreht eine"," .","Schraube","Blume|Ampel","Robo dreht eine Schraube.","🔩"),
+    G("Wir","über den Witz.","lachen","laufen|legen","Wir lachen über den Witz.","😄"),
+    G("Auf dem Tisch steht"," .","Kuchen","Wasser|Sport","Auf dem Tisch steht Kuchen.","🍰"),
+    G("Am Himmel leuchtet ein"," .","Stern","Schaf|Dach","Am Himmel leuchtet ein Stern.","⭐"),
+    G("Lionel spielt ein"," .","Spiel","Schaf|Ei","Lionel spielt ein Spiel.","🎮"),
+    G("Im","sieht Robo sein Gesicht.","Spiegel","Dschungel|Helm","Im Spiegel sieht Robo sein Gesicht.","🪞")
+  ],
+  tiere: [
+    G("Die","fliegt in der Nacht.","Eule","Auto|Sonne","Die Eule fliegt in der Nacht.","🦉"),
+    G("Drei Vögel sitzen auf der"," .","Wiese","Schule|Ampel","Drei Vögel sitzen auf der Wiese.","🌿"),
+    G("Die","summt über die Blume.","Biene","Flagge|Schraube","Die Biene summt über die Blume.","🐝"),
+    G("Das","steht vor dem Haus.","Auto","Ei|Spiel","Das Auto steht vor dem Haus.","🚗"),
+    G("Die","huscht ins Gras.","Maus","Medaille|Schule","Die Maus huscht ins Gras.","🐭"),
+    G("Ein","liegt im Nest.","Ei","Helm|Reifen","Ein Ei liegt im Nest.","🥚"),
+    G("Der Freund kommt"," .","heute","gestern|nie","Der Freund kommt heute.","📅"),
+    G("Auf der Wiese stehen hohe"," .","Bäume","Helme|Pokale","Auf der Wiese stehen hohe Bäume.","🌳")
+  ]
+};
+const ORDERS = {
+  dino: ["Der Dino läuft schnell.","Fuchsi liest eine Geschichte.","Der Vulkan ist ruhig.","Die Palme spendet Schatten.","Der Dino teilt Beeren.","Im Dschungel singen Vögel.","Eine Fußspur führt zur Höhle.","Die Freunde spielen zusammen."],
+  rennen: ["Das Rennauto fährt los.","Lionel winkt dem Auto.","Bei Grün darf man fahren.","Die Kurve ist eng.","Nach dem Rennen jubeln alle.","Die Flagge weht im Wind.","Der Pokal ist golden.","Das Auto bremst vor der Kurve."],
+  robo: ["Robo geht in die Schule.","Das Schaf steht auf der Wiese.","Wir lachen über den Witz.","Das Dach ist rot.","Der Stern leuchtet hell.","Lionel spielt ein Spiel.","Robo dreht die Schraube.","Im Spiegel lacht Robo."],
+  tiere: ["Die Eule fliegt nachts.","Die Biene summt laut.","Das Auto steht am Haus.","Die Maus findet ein Ei.","Heute kommt ein Freund.","Die Taube sitzt im Baum.","Auf der Wiese wachsen Blumen.","Die Kinder zählen bis sieben."]
+};
+function Q(text, q, ok, bad) { return { text:text, q:q, ok:ok, bad:bad.split("|") }; }
+const QUIZ = {
+  dino: [
+    Q("Der kleine Dino findet eine Blume.","Was findet der Dino?","eine Blume","ein Auto|einen Stein"),
+    Q("Der Vulkan ist weit weg und ruhig.","Wie ist der Vulkan?","ruhig","sehr wütend|aus Glas"),
+    Q("Fuchsi und der Dino sind Freunde.","Wer ist mit dem Dino befreundet?","Fuchsi","eine Ampel|ein Stift"),
+    Q("Die Sonne scheint auf die Palme.","Worauf scheint die Sonne?","auf die Palme","auf die Suppe|auf den Stift")
+  ],
+  rennen: [
+    Q("Das rote Auto überholt das blaue Auto.","Welches Auto ist vorn?","das rote Auto","das blaue Auto|das Fahrrad"),
+    Q("Das Auto hält an der roten Ampel.","Was macht das Auto?","es hält an","es fliegt|es schläft"),
+    Q("Nach dem Ziel gibt es eine Medaille.","Was gibt es nach dem Ziel?","eine Medaille","eine Suppe|einen Regen"),
+    Q("Die Flagge am Ziel ist kariert.","Wie ist die Flagge?","kariert","ganz rund|unsichtbar")
+  ],
+  robo: [
+    Q("Robo lernt in der Schule den Laut sch.","Welchen Laut lernt Robo?","sch","m|l"),
+    Q("Wir lachen, weil der Witz lustig ist.","Warum lachen wir?","weil der Witz lustig ist","weil es schneit|weil das Auto schläft"),
+    Q("Am Himmel steht ein heller Stern.","Was steht am Himmel?","ein heller Stern","eine Socke|ein Löffel"),
+    Q("Im Spiegel sieht Robo sein Gesicht.","Was sieht Robo im Spiegel?","sein Gesicht","einen Vulkan|eine Suppe")
+  ],
+  tiere: [
+    Q("Die Eule sitzt auf dem Dach.","Wo sitzt die Eule?","auf dem Dach","im Auto|in der Schule"),
+    Q("Die Biene fliegt über die Wiese.","Wohin fliegt die Biene?","über die Wiese","in den Helm|unter den Tisch"),
+    Q("Die Maus findet ein Ei im Gras.","Was findet die Maus?","ein Ei","einen Helm|einen Pokal"),
+    Q("Heute besucht ein Freund die Eule.","Wann kommt der Freund?","heute","im letzten Winter|nie")
+  ]
+};
+const SPEAKS = {
+  dino: ["Der Dino ist groß.","Die Sonne scheint.","Ich mag den Dino.","Wir teilen die Beeren.","Der Vulkan ist ruhig.","Fuchsi liest vor."],
+  rennen: ["Das rote Auto fährt schnell.","Ich fahre um die Kurve.","Die Ampel ist grün.","Die Flagge weht.","Lionel bekommt die Medaille.","Das Auto bremst."],
+  robo: ["Ich lache auf dem Dach.","Der Stern steht über dem Spiel.","Robo geht zur Schule.","Die Schraube sitzt fest.","Wir lesen den Brief.","Das Schaf ist weiß."],
+  tiere: ["Die Biene fliegt über die Wiese.","Die Eule und die Maus sind Freunde.","Das Auto steht am Haus.","Heute kommt ein Freund.","Ein Ei liegt im Nest.","Auf der Wiese ist es grün."]
+};
+function storyPack(text, quizzes, gap, order, speak) {
+  return { text:text, quizzes:quizzes, gap:gap, order:order, speak:speak };
+}
+const STORIES = {
+  d7: storyPack("Der kleine Dino wacht in der Höhle auf. Draußen scheint die Sonne. Er folgt einer Fußspur durch den Dschungel. Am Vulkan trifft er Fuchsi. Zusammen finden sie eine Blume und teilen Beeren.", [
+    Q("Der kleine Dino wacht in der Höhle auf.","Wo wacht der Dino auf?","in der Höhle","im Auto|in der Schule"),
+    Q("Er folgt einer Fußspur durch den Dschungel.","Was folgt der Dino?","einer Fußspur","einem Helm|einer Ampel"),
+    Q("Am Vulkan trifft er Fuchsi.","Wen trifft der Dino?","Fuchsi","eine Ampel|einen Stift")
+  ], G("Der Dino folgt einer",".","Fußspur","Ampel|Socke","Der Dino folgt einer Fußspur.","🐾"), "Der Dino teilt die Beeren.", "Der Dino findet eine Blume."),
+  r7: storyPack("Das Rennauto steht am Start. Die Ampel wird grün. Lionel fährt durch die Kurve. Am Ziel weht die karierte Flagge. Fuchsi gibt ihm die Medaille.", [
+    Q("Die Ampel wird grün. Dann fährt Lionel los.","Wann fährt Lionel los?","als die Ampel grün wird","als es schneit|in der Schule"),
+    Q("Lionel fährt durch die Kurve.","Wohin fährt Lionel?","durch die Kurve","in die Suppe|auf das Dach"),
+    Q("Fuchsi gibt ihm die Medaille.","Was gibt Fuchsi ihm?","die Medaille","einen Stift|eine Socke")
+  ], G("Am Ziel weht die karierte",".","Flagge","Gabel|Seife","Am Ziel weht die karierte Flagge.","🏁"), "Lionel fährt durch die Kurve.", "Die Ampel ist grün."),
+  o8: storyPack("Robo schreibt einen Brief an die Schule. Er malt ein Schaf und einen Stern. Zum Schluss lacht er und klebt den Brief zu.", [
+    Q("Robo schreibt einen Brief an die Schule.","Woran schreibt Robo?","einen Brief","ein Rennauto|eine Suppe"),
+    Q("Er malt ein Schaf und einen Stern.","Was malt Robo?","ein Schaf und einen Stern","eine Ampel|einen Helm"),
+    Q("Zum Schluss lacht er.","Was tut Robo zum Schluss?","er lacht","er weint|er schläft")
+  ], G("Robo schreibt an die",".","Schule","Sonne|Wiese","Robo schreibt an die Schule.","🏫"), "Robo malt ein Schaf.", "Robo lacht über seinen Brief."),
+  t7: storyPack("Die kleine Eule sitzt auf dem Dach. Sie sieht eine Maus im Gras. Die Maus findet ein Ei. Zusammen schauen sie den Stern an.", [
+    Q("Die kleine Eule sitzt auf dem Dach.","Wo sitzt die Eule?","auf dem Dach","im Auto|in der Schule"),
+    Q("Sie sieht eine Maus im Gras.","Wen sieht die Eule?","eine Maus","einen Dino|einen Roboter"),
+    Q("Die Maus findet ein Ei.","Was findet die Maus?","ein Ei","einen Helm|einen Pokal")
+  ], G("Zusammen schauen sie den","an.","Stern","Kuchen|Helm","Zusammen schauen sie den Stern an.","⭐"), "Die Maus findet ein Ei.", "Die Eule und die Maus sind Freunde."),
+  b1: storyPack("Der Dino findet eine Truhe hinter dem Baum. In der Truhe liegen bunte Steine. Fuchsi sagt, die Steine gehören allen Freunden. Der Dino teilt sie.", [
+    Q("Der Dino findet eine Truhe hinter dem Baum.","Was findet der Dino?","eine Truhe","ein Auto|eine Schule"),
+    Q("In der Truhe liegen bunte Steine.","Was liegt in der Truhe?","bunte Steine","Schafe|Helme")
+  ], G("Der Dino teilt die",".","Steine","Helme|Suppen","Der Dino teilt die Steine.","💎"), "Der Dino findet eine Truhe.", "Der Dino teilt gern."),
+  b2: storyPack("Das Rennauto fährt in der Nacht. Der Stern zeigt den Weg. An der Ampel wartet Lionel. Bei Grün geht die Fahrt weiter.", [
+    Q("Das Rennauto fährt in der Nacht.","Wann fährt das Auto?","in der Nacht","in der Schule|im Suppentopf"),
+    Q("Der Stern zeigt den Weg.","Was zeigt den Weg?","der Stern","der Schuh|der Kuchen")
+  ], G("Bei Grün geht die","weiter.","Fahrt","Suppe|Schule","Bei Grün geht die Fahrt weiter.","🚦"), "Lionel wartet an der Ampel.", "Bei Grün fahren wir weiter."),
+  b3: storyPack("Robo schreibt einen zweiten Brief. Darin steht ein großes sch und ein ch. Er liest den Brief leise vor.", [
+    Q("Robo schreibt einen zweiten Brief.","Was schreibt Robo?","einen Brief","ein Auto|eine Suppe"),
+    Q("Er liest den Brief leise vor.","Wie liest Robo?","leise","mit geschlossenen Augen|im Schlaf")
+  ], G("Im Brief steht ein großes",".","sch","m|l","Im Brief steht ein großes sch.","✏️"), "Robo liest den Brief.", "Robo liest leise vor."),
+  b4: storyPack("Die Eule bringt der Maus ein Blatt. Darauf steht: Du bist ein guter Freund. Die Maus freut sich und winkt.", [
+    Q("Die Eule bringt der Maus ein Blatt.","Was bringt die Eule?","ein Blatt","einen Helm|ein Rennauto"),
+    Q("Darauf steht: Du bist ein guter Freund.","Was steht auf dem Blatt?","Du bist ein guter Freund","Geh sofort weg|Die Schule ist zu")
+  ], G("Du bist ein guter",".","Freund","Stein|Topf","Du bist ein guter Freund.","🤝"), "Die Maus freut sich und winkt.", "Du bist ein guter Freund."),
+  b5: storyPack("In der Nacht leuchtet der Vulkan nur ganz schwach. Der Dino hat keine Angst. Fuchsi hält die Karte. Zusammen gehen sie zurück zur Höhle.", [
+    Q("Der Vulkan leuchtet nur ganz schwach.","Wie leuchtet der Vulkan?","ganz schwach","grell und laut|gar nicht, er ist weg"),
+    Q("Fuchsi hält die Karte.","Was hält Fuchsi?","die Karte","einen Pokal|eine Suppe")
+  ], G("Zusammen gehen sie zur",".","Höhle","Schule|Ampel","Zusammen gehen sie zur Höhle.","🪨"), "Der Dino hat keine Angst.", "Wir gehen zur Höhle."),
+  b6: storyPack("Alle Autos stehen in einer Reihe. Die Flagge senkt sich. Lionel fährt fair und wartet in der Kurve. Am Ende jubeln die Freunde.", [
+    Q("Die Flagge senkt sich. Dann geht es los.","Was passiert mit der Flagge?","sie senkt sich","sie wird zur Suppe|sie verschwindet im Helm"),
+    Q("Lionel fährt fair und wartet in der Kurve.","Wie fährt Lionel?","fair","rücksichtslos|mit geschlossenen Augen")
+  ], G("Am Ende jubeln die",".","Freunde","Steine|Löffel","Am Ende jubeln die Freunde.","🤝"), "Lionel wartet in der Kurve.", "Die Freunde jubeln.")
+};
+
+function spec(id, title, teach, kinds) { return { id:id, title:title, teach:teach, kinds:kinds ? kinds.split(",") : [], story: !kinds }; }
+const SPECS = [
+  spec("d1","Silben klatschen","Ein Wort hat Silben. Di-no sind zwei.","syll,syll,listen,syll,listen,gap"),
+  spec("d2","Wörter im Tal","Hör genau hin und tippe das Wort.","listen,listen,syll,gap,order,quiz"),
+  spec("d3","Noch mehr Silben","Baue längere Wörter aus Silben.","syll,syll,syll,listen,gap,order"),
+  spec("d4","Kurze Sätze","Ein Satz fängt groß an und endet mit einem Punkt.","order,order,gap,gap,quiz,listen"),
+  spec("d5","Wer ist das?","Lies die Frage und tippe die passende Antwort.","listen,quiz,listen,gap,order,syll"),
+  spec("d6","Lücken füllen","In der Lücke fehlt genau ein Wort.","gap,gap,gap,order,quiz,listen"),
+  spec("d7","Geschichte im Tal","Lies die Geschichte. Danach kommen Fragen."),
+  spec("d8","Sätze bauen","Die Reihenfolge der Wörter macht den Satz.","order,order,gap,quiz,syll,listen"),
+  spec("d9","Laut vorlesen","Lies laut und deutlich. Fuchsi hört zu.","speak,order,speak,gap,quiz,listen"),
+  spec("d10","Wiederholung im Tal","Alles aus dem Dino-Tal, bunt gemischt.","listen,syll,order,gap,quiz,speak"),
+  spec("r1","Wörter in der Reihe","Die Wörter ergeben zusammen einen Satz.","order,order,gap,listen,quiz,syll"),
+  spec("r2","Das Rennauto","Rund um das Rennauto.","listen,syll,gap,order,quiz,gap"),
+  spec("r3","Ampel und Kurve","Ampel, Kurve und Bremse.","gap,order,quiz,listen,order,gap"),
+  spec("r4","Lücken auf der Strecke","In der Lücke fehlt ein Wort von der Strecke.","gap,gap,gap,order,quiz,syll"),
+  spec("r5","Wer ist vorn?","Lies genau. Wer ist vorn?","quiz,quiz,order,gap,listen,speak"),
+  spec("r6","Sätze legen","Lege die Wörter in die richtige Reihe.","order,order,order,gap,quiz,listen"),
+  spec("r7","Eine kleine Fahrt","Lies die Geschichte von der Fahrt."),
+  spec("r8","Medaille und Ziel","Ziel, Flagge und Medaille.","gap,order,quiz,listen,syll,speak"),
+  spec("r9","Laut vorlesen","Lies die Fahrsätze laut vor.","speak,gap,speak,order,quiz,listen"),
+  spec("r10","Wiederholung Rennen","Alles von der Rennstrecke, bunt gemischt.","order,gap,quiz,listen,syll,speak"),
+  spec("o1","Der Laut sch","sch klingt wie in Schule und Schaf.","listen,pick,syll,gap,quiz,listen","sch"),
+  spec("o2","sch in Sätzen","sch steht oft am Anfang eines Wortes.","gap,order,pick,quiz,speak,listen","sch"),
+  spec("o3","Der Laut ch","ch klingt wie in Dach und lachen.","listen,pick,syll,gap,quiz,order","ch"),
+  spec("o4","ch üben","Übe ch in Wörtern und in Sätzen.","pick,gap,order,quiz,listen,syll","ch"),
+  spec("o5","st am Anfang","st am Anfang liest du fast wie scht. Stern.","listen,pick,gap,order,quiz,syll","st"),
+  spec("o6","sp am Anfang","sp am Anfang liest du fast wie schp. Spiel.","listen,pick,gap,quiz,order,speak","sp"),
+  spec("o7","Alle Laute","sch, ch, st und sp. Schau genau hin.","pick:sch,pick:ch,pick:st,gap,order,quiz"),
+  spec("o8","Robo schreibt","Robo schreibt einen Brief. Lies mit."),
+  spec("o9","Laut vorlesen","Lies Robos Sätze laut vor.","speak,pick,speak,gap,quiz,order","sch"),
+  spec("o10","Wiederholung Werkstatt","Alles aus der Werkstatt, bunt gemischt.","pick:ch,listen,gap,order,quiz,speak"),
+  spec("t1","ei oder ie","ei wie in Ei. ie wie in Wiese. ie ist ein langes i.","pick:ei,pick:ie,listen,gap,quiz,syll"),
+  spec("t2","ei üben","ei ist ein eigener Klang. Ei, Seife, Leiter.","listen,pick,gap,order,quiz,speak","ei"),
+  spec("t3","ie üben","ie ist ein langes i. Wiese, Biene, Liebe.","listen,pick,syll,gap,order,quiz","ie"),
+  spec("t4","au und eu","au wie in Auto. eu wie in Eule.","pick:au,pick:eu,listen,gap,order,quiz"),
+  spec("t5","au üben","au übst du in Auto, Auge und Taube.","listen,pick,gap,syll,order,quiz","au"),
+  spec("t6","eu üben","eu übst du in Eule, heute und Freunde.","listen,pick,gap,order,quiz,speak","eu"),
+  spec("t7","Eule und Maus","Lies die Geschichte von Eule und Maus."),
+  spec("t8","Auf der Wiese","Wörter von der Wiese und aus dem Zoo.","gap,order,quiz,listen,syll,pick:äu"),
+  spec("t9","Laut vorlesen","Lies die Tiersätze laut vor.","speak,gap,speak,order,quiz,listen"),
+  spec("t10","Wiederholung Tiere","Alles von den Tieren, bunt gemischt.","pick:ie,syll,gap,order,quiz,speak"),
+  spec("b1","Schatz im Dino-Tal","Eine Extra-Geschichte nur für dich."),
+  spec("b2","Nachtfahrt","Das Rennauto fährt, wenn der Stern leuchtet."),
+  spec("b3","Robos Brief","Achte auf sch und ch."),
+  spec("b4","Eule und Maus","eu wie in Eule, au wie in Maus."),
+  spec("b5","Vulkan bei Nacht","Eine ruhige Nachtgeschichte zum Sparen."),
+  spec("b6","Das große Rennen","Die große Bonus-Fahrt. Dafür darf man sammeln.")
+];
+(function tagSounds() {
+  const map = { o1:"sch", o2:"sch", o3:"ch", o4:"ch", o5:"st", o6:"sp", o9:"sch", t2:"ei", t3:"ie", t5:"au", t6:"eu" };
+  SPECS.forEach(s => { if (map[s.id]) s.sound = map[s.id]; });
+})();
+
+const THEME_OF = { "theme-sun":"sun", "theme-night":"night", "theme-wiese":"wiese" };
+const SHOP = [
+  { id:"hat-dino", slot:"hat", cat:"Outfits", name:"Dino-Kappe", emoji:"🧢", price:22, desc:"Fuchsi trägt eine Kappe" },
+  { id:"hat-helm", slot:"hat", cat:"Outfits", name:"Rennhelm", emoji:"⛑️", price:30, desc:"Bereit für die Strecke" },
+  { id:"hat-schleife", slot:"hat", cat:"Outfits", name:"Festschleife", emoji:"🎀", price:40, desc:"Für besondere Tage" },
+  { id:"hat-crown", slot:"hat", cat:"Outfits", name:"Goldkrone", emoji:"👑", price:120, desc:"Zum langen Sparen" },
+  { id:"pet-dino", slot:"pet", cat:"Begleiter", name:"Mini-Dino", emoji:"🦕", price:36, desc:"Läuft neben Fuchsi her" },
+  { id:"pet-car", slot:"pet", cat:"Begleiter", name:"Rennauto", emoji:"🏎️", price:48, desc:"Brummt auf dem Pfad mit" },
+  { id:"pet-robo", slot:"pet", cat:"Begleiter", name:"Mini-Robo", emoji:"🤖", price:70, desc:"Winkt bei jeder Lektion" },
+  { id:"pet-saurier", slot:"pet", cat:"Begleiter", name:"Flugsaurier", emoji:"🦅", price:150, desc:"Der große Traum zum Sparen" },
+  { id:"theme-sun", slot:"theme", cat:"Farben", name:"Sonnenuntergang", emoji:"🌅", price:28, desc:"Warmes Abendlicht" },
+  { id:"theme-wiese", slot:"theme", cat:"Farben", name:"Frühlingswiese", emoji:"🌱", price:48, desc:"Alles wird grün und freundlich" },
+  { id:"theme-night", slot:"theme", cat:"Farben", name:"Nachtblau", emoji:"🌌", price:40, desc:"Dunkler Himmel, helle Schrift" },
+  { id:"trail-stars", slot:"trail", cat:"Effekte", name:"Sternenstaub", emoji:"✨", price:18, desc:"Sterne beim Jubeln" },
+  { id:"trail-hearts", slot:"trail", cat:"Effekte", name:"Herzkonfetti", emoji:"🧡", price:44, desc:"Herzen statt nur Sterne" },
+  { id:"sticker-dino", slot:"sticker", cat:"Effekte", name:"Dino-Sticker", emoji:"⭐", price:12, desc:"Für die Abzeichen-Wand" },
+  { id:"bonus-dino", slot:"bonus", cat:"Bonus", lesson:"b1", name:"Schatz im Dino-Tal", emoji:"🎁", price:24, desc:"Bonus-Geschichte" },
+  { id:"bonus-rennen", slot:"bonus", cat:"Bonus", lesson:"b2", name:"Nachtfahrt", emoji:"🌙", price:36, desc:"Bonus auf der Rennstrecke" },
+  { id:"bonus-robo", slot:"bonus", cat:"Bonus", lesson:"b3", name:"Robos Brief", emoji:"✉️", price:36, desc:"Bonus in der Werkstatt" },
+  { id:"bonus-tiere", slot:"bonus", cat:"Bonus", lesson:"b4", name:"Eule und Maus", emoji:"🦉", price:40, desc:"Bonus bei den Tieren" },
+  { id:"bonus-vulkan", slot:"bonus", cat:"Bonus", lesson:"b5", name:"Vulkan bei Nacht", emoji:"🌋", price:80, desc:"Eine ruhige Extra-Geschichte" },
+  { id:"bonus-rennen2", slot:"bonus", cat:"Bonus", lesson:"b6", name:"Das große Rennen", emoji:"🏁", price:120, desc:"Die lange Bonus-Fahrt" }
+];
+const ACH = [
+  { id:"first", name:"Erster Schritt", desc:"Schließe eine Lektion ab.", emoji:"🌱" },
+  { id:"perfect", name:"Drei Sterne", desc:"Schaffe eine Lektion ohne Patzer.", emoji:"⭐" },
+  { id:"ten", name:"Zehn Lektionen", desc:"Übe zehn verschiedene Lektionen.", emoji:"📚" },
+  { id:"streak3", name:"Drei Tage", desc:"Übe an drei Tagen hintereinander.", emoji:"🔥" },
+  { id:"coins100", name:"Münzen sammeln", desc:"Verdiene insgesamt 100 Münzen.", emoji:"🪙" },
+  { id:"world-dino", name:"Dino-Tal geschafft", desc:"Alle Lektionen im Dino-Tal.", emoji:"🦕" },
+  { id:"world-rennen", name:"Rennstrecke geschafft", desc:"Alle Lektionen auf der Strecke.", emoji:"🏁" },
+  { id:"world-robo", name:"Werkstatt geschafft", desc:"Alle Lektionen bei Robo.", emoji:"🤖" },
+  { id:"world-tiere", name:"Tiere geschafft", desc:"Alle Lektionen bei den Tieren.", emoji:"🦉" },
+  { id:"shop", name:"Erster Kauf", desc:"Kaufe etwas im Shop.", emoji:"🛍️" },
+  { id:"bonus", name:"Bonus-Geschichte", desc:"Lies eine freigeschaltete Geschichte.", emoji:"🎁" },
+  { id:"chest", name:"Erste Truhe", desc:"Öffne eine Truhe am Ende einer Welt.", emoji:"🧰" }
+];
+
+function seq(p, n) { const a = []; for (let i = 1; i <= n; i++) a.push(p + i); return a; }
+const UNITS = [
+  { id:"dino", name:"Dino-Tal", emoji:"🦕", blurb:"Dschungel, Vulkan und Fußspuren", deco:["🌴","🌋","🐾","🍃"], stroke:"#7dbe57", road:false, lessons:seq("d", 10) },
+  { id:"rennen", name:"Rennstrecke", emoji:"🏎️", blurb:"Asphalt, Kurven und die karierte Flagge", deco:["🏁","🛣️","🏆","💨"], stroke:"#8d939c", road:true, lessons:seq("r", 10) },
+  { id:"robo", name:"Roboter-Werkstatt", emoji:"🤖", blurb:"Zahnräder, Schrauben und Laute", deco:["⚙️","🔧","💡","🤖"], stroke:"#7f93ab", road:false, lessons:seq("o", 10) },
+  { id:"tiere", name:"Tiere", emoji:"🦉", blurb:"Wiese, Dach und leise Nacht", deco:["🌸","🦋","🌳","🦉"], stroke:"#8fbf78", road:false, lessons:seq("t", 10) },
+  { id:"bonus", name:"Bonus-Geschichten", emoji:"🎁", blurb:"Mit Münzen freischalten", deco:["✨","🎁","🌙","📜"], stroke:"#e2b203", road:false, bonus:true, lessons:seq("b", 6) }
+];
+const MAIN = UNITS.filter(u => !u.bonus).flatMap(u => u.lessons);
+const WORLD_EM = { dino:"🦕", rennen:"🏎️", robo:"🤖", tiere:"🦉", bonus:"🎁" };
+
+function shuf(rng, list) {
+  const a = list.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function take(rng, list, used, keyFn) {
+  let pool = list.filter(item => !used.has(keyFn(item)));
+  if (!pool.length) { used.clear(); pool = list.slice(); }
+  const item = pool[Math.floor(rng() * pool.length)];
+  used.add(keyFn(item));
+  return item;
+}
+function unitOfId(id) { return id[0] === "d" ? "dino" : id[0] === "r" ? "rennen" : id[0] === "o" ? "robo" : id[0] === "t" ? "tiere" : "bonus"; }
+function specById(id) { return SPECS.find(s => s.id === id); }
+function makeListen(unit, sound, rng, used) {
+  const all = BANK[unit];
+  let goods = all.filter(w => !sound || w.sound === sound);
+  if (!goods.length) goods = all.slice();
+  const good = take(rng, goods, used, w => w.w);
+  const bads = shuf(rng, all.filter(w => w.w !== good.w)).slice(0, 2);
+  return { t:"listen", say:good.w, prompt:"Welches Wort hörst du?", em:good.em, sound:sound, options:shuf(rng, [[good.em, good.w, 1], [bads[0].em, bads[0].w], [bads[1].em, bads[1].w]]) };
+}
+function makePick(unit, sound, rng) {
+  const all = BANK[unit];
+  let use = sound;
+  if (!use) {
+    const sounds = [...new Set(all.map(w => w.sound).filter(Boolean))];
+    use = sounds[Math.floor(rng() * sounds.length)];
+  }
+  const goods = all.filter(w => w.sound === use);
+  const bads = all.filter(w => w.sound !== use);
+  const good = goods[Math.floor(rng() * goods.length)];
+  const bad2 = shuf(rng, bads).slice(0, 2);
+  return { t:"pick", say:"Tippe das Wort mit " + use, prompt:"Tippe das Wort mit " + use + ".", em:good.em, sound:use, options:shuf(rng, [[good.em, good.w, 1], [bad2[0].em, bad2[0].w], [bad2[1].em, bad2[1].w]]) };
+}
+function makeSyll(unit, sound, rng, used) {
+  let all = BANK[unit].filter(w => w.syl.length >= 2 && (!sound || w.sound === sound));
+  if (all.length < 1) all = BANK[unit].filter(w => w.syl.length >= 2);
+  const good = take(rng, all, used, w => w.w);
+  const extras = [];
+  shuf(rng, BANK[unit].filter(w => w.w !== good.w)).forEach(o => {
+    o.syl.forEach(s => { if (!good.syl.includes(s) && extras.indexOf(s) < 0 && extras.length < 2) extras.push(s); });
+  });
+  return { t:"syll", em:good.em, word:good.w, parts:good.syl.slice(), pool:shuf(rng, good.syl.concat(extras)), prompt:"Baue das Wort.", sound:sound || "" };
+}
+function makeGap(unit, rng, used) {
+  const g = take(rng, GAPS[unit], used, item => item.say);
+  return { t:"gap", before:g.before, after:g.after, say:g.say, em:g.em, prompt:"Welches Wort fehlt?", options:shuf(rng, [[g.ok, 1], [g.bad[0]], [g.bad[1]]]) };
+}
+function makeOrder(unit, rng, used) {
+  const sentence = take(rng, ORDERS[unit], used, item => item);
+  const words = sentence.split(" ");
+  let order = shuf(rng, words);
+  if (order.join(" ") === words.join(" ") && words.length > 1) { const t = order[0]; order[0] = order[1]; order[1] = t; }
+  return { t:"order", words:words, order:order, em:WORLD_EM[unit], prompt:"Tippe die Wörter in die richtige Reihe." };
+}
+function makeQuiz(unit, rng, used) {
+  const q = take(rng, QUIZ[unit], used, item => item.q);
+  return { t:"quiz", text:q.text, q:q.q, say:q.text, em:"🔎", prompt:q.q, options:shuf(rng, [[q.ok, 1], [q.bad[0]], [q.bad[1]]]) };
+}
+function makeSpeak(unit, rng, used) {
+  const line = take(rng, SPEAKS[unit], used, item => item);
+  return { t:"speak", text:line, em:"🎤", prompt:"Lies den Satz laut vor." };
+}
+function storySet(spec, rng) {
+  const s = STORIES[spec.id];
+  const em = WORLD_EM[unitOfId(spec.id)] || "🎁";
+  const quizzes = s.quizzes.map(q => ({ t:"quiz", text:q.text, story:s.text, q:q.q, say:q.text, em:em, prompt:q.q, options:shuf(rng, [[q.ok, 1], [q.bad[0]], [q.bad[1]]]) }));
+  const g = s.gap;
+  const gap = { t:"gap", before:g.before, after:g.after, say:g.say, em:g.em, story:s.text, prompt:"Welches Wort fehlt?", options:shuf(rng, [[g.ok, 1], [g.bad[0]], [g.bad[1]]]) };
+  const words = s.order.split(" ");
+  let order = shuf(rng, words);
+  if (order.join(" ") === words.join(" ") && words.length > 1) { const t = order[0]; order[0] = order[1]; order[1] = t; }
+  return quizzes.concat([
+    gap,
+    { t:"order", words:words, order:order, em:em, story:s.text, prompt:"Tippe die Wörter in die richtige Reihe." },
+    { t:"speak", text:s.speak, em:"🎤", story:s.text, prompt:"Lies den Satz laut vor." }
+  ]);
+}
+function createExercises(specItem, rng) {
+  if (specItem.story) return storySet(specItem, rng);
+  const unit = unitOfId(specItem.id);
+  const used = { w:new Set(), g:new Set(), o:new Set(), q:new Set(), s:new Set() };
+  return specItem.kinds.map(raw => {
+    const bits = raw.split(":");
+    const kind = bits[0];
+    const sound = bits[1] || specItem.sound || "";
+    if (kind === "listen") return makeListen(unit, sound, rng, used.w);
+    if (kind === "pick") return makePick(unit, sound, rng);
+    if (kind === "syll") return makeSyll(unit, sound, rng, used.w);
+    if (kind === "gap") return makeGap(unit, rng, used.g);
+    if (kind === "order") return makeOrder(unit, rng, used.o);
+    if (kind === "quiz") return makeQuiz(unit, rng, used.q);
+    if (kind === "speak") return makeSpeak(unit, rng, used.s);
+    throw new Error("Art " + raw);
+  });
+}
+function correctCount(options) { return options.filter(op => op[op.length - 1] === 1).length; }
+function selfCheck() {
+  const ids = {};
+  SPECS.forEach(item => {
+    if (ids[item.id]) throw new Error("doppelt " + item.id);
+    ids[item.id] = 1;
+    [1, 2, 7].forEach(seed => {
+      const list = createExercises(item, mulberry32(seed + item.id.length * 17));
+      if (list.length < 5) throw new Error("kurz " + item.id);
+      list.forEach(ex => {
+        if (ex.t === "syll") {
+          if (ex.parts.length < 2) throw new Error("silbe " + item.id);
+          ex.parts.forEach(p => { if (ex.pool.indexOf(p) < 0) throw new Error("pool " + item.id); });
+        } else if (ex.t === "order") {
+          if (ex.words.length < 3 || ex.order.length !== ex.words.length) throw new Error("reihe " + item.id);
+        } else if (ex.t === "speak") {
+          if (!ex.text) throw new Error("satz " + item.id);
+        } else if (correctCount(ex.options) !== 1) throw new Error("wahl " + item.id + " " + ex.t);
+      });
+    });
+  });
+}
+
+const ALL = [];
+Object.keys(BANK).forEach(k => BANK[k].forEach(w => ALL.push(w)));
+function findWord(core) {
+  const n = core.toLowerCase();
+  return ALL.find(w => w.w.toLowerCase() === n) || null;
+}
+function shopById(id) { return SHOP.find(s => s.id === id); }
+function specOf(id) { return specById(id); }
+function unitOf(id) { return UNITS.find(u => u.lessons.indexOf(id) >= 0); }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function pickOne(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+let save = null;
+let storageOk = true;
+let ui = null;
+let session = null;
+let rec = null;
+let audioCtx = null;
+let voice = null;
+
+function defaultSave() {
+  return { v:1, coins:0, totalEarned:0, streak:0, lastDay:"", goalDoneOn:"", lessons:{}, paid:{}, owned:[], equip:{ hat:"", theme:"default", pet:"", trail:"" }, settings:{ rate:0.9, mic:true }, stats:{ answered:0, firstTry:0, lessons:0 }, achievements:[], chests:{} };
+}
+function clampInt(n) { n = Number(n); return Number.isFinite(n) && n > 0 ? Math.min(99999, Math.floor(n)) : 0; }
+function load() {
+  const blank = defaultSave();
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return blank;
+    const data = JSON.parse(raw);
+    if (!data || typeof data !== "object") return blank;
+    blank.coins = clampInt(data.coins);
+    blank.streak = clampInt(data.streak);
+    blank.lastDay = typeof data.lastDay === "string" ? data.lastDay : "";
+    blank.goalDoneOn = typeof data.goalDoneOn === "string" ? data.goalDoneOn : "";
+    if (data.lessons && typeof data.lessons === "object") {
+      Object.keys(data.lessons).forEach(id => {
+        if (!specById(id)) return;
+        const row = data.lessons[id] || {};
+        blank.lessons[id] = { done: !!row.done, stars: Math.max(0, Math.min(3, clampInt(row.stars))) };
+      });
+    }
+    if (data.paid && typeof data.paid === "object") {
+      Object.keys(data.paid).forEach(id => {
+        if (!specById(id) || !data.paid[id] || typeof data.paid[id] !== "object") return;
+        blank.paid[id] = {};
+        Object.keys(data.paid[id]).forEach(step => { blank.paid[id][step] = clampInt(data.paid[id][step]); });
+      });
+    }
+    blank.owned = Array.isArray(data.owned) ? data.owned.filter(id => shopById(id)) : [];
+    const spent = blank.owned.reduce((n, id) => n + shopById(id).price, 0);
+    blank.totalEarned = clampInt(data.totalEarned) || (blank.coins + spent);
+    const eq = data.equip || {};
+    const themeOk = ["default","sun","night","wiese"];
+    blank.equip.theme = themeOk.indexOf(eq.theme) >= 0 ? eq.theme : "default";
+    ["hat","pet","trail"].forEach(slot => {
+      const id = eq[slot];
+      blank.equip[slot] = blank.owned.indexOf(id) >= 0 && shopById(id) && shopById(id).slot === slot ? id : "";
+    });
+    if (blank.equip.theme !== "default") {
+      const match = Object.keys(THEME_OF).find(k => THEME_OF[k] === blank.equip.theme);
+      if (match && blank.owned.indexOf(match) < 0) blank.equip.theme = "default";
+    }
+    const rate = Number(data.settings && data.settings.rate);
+    blank.settings.rate = rate === 0.8 || rate === 1 ? rate : 0.9;
+    blank.settings.mic = !(data.settings && data.settings.mic === false);
+    if (data.stats) {
+      blank.stats.answered = clampInt(data.stats.answered);
+      blank.stats.firstTry = clampInt(data.stats.firstTry);
+      blank.stats.lessons = clampInt(data.stats.lessons);
+    }
+    blank.achievements = Array.isArray(data.achievements) ? data.achievements.filter(id => ACH.some(a => a.id === id)) : [];
+    if (data.chests && typeof data.chests === "object") {
+      Object.keys(data.chests).forEach(id => { if (data.chests[id]) blank.chests[id] = true; });
+    }
+    return blank;
+  } catch (e) { return blank; }
+}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); storageOk = true; } catch (e) { storageOk = false; } }
+function today() { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function dayBefore(iso) { const p = iso.split("-").map(Number); const d = new Date(p[0], p[1]-1, p[2]); d.setDate(d.getDate()-1); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function addCoins(n) { if (n <= 0) return; save.coins += n; save.totalEarned += n; }
+function checkAchievements() {
+  const have = {};
+  save.achievements.forEach(id => { have[id] = 1; });
+  const fresh = [];
+  const add = id => { if (!have[id]) { have[id] = 1; save.achievements.push(id); fresh.push(id); } };
+  const doneCount = MAIN.filter(id => save.lessons[id] && save.lessons[id].done).length;
+  if (doneCount >= 1) add("first");
+  if (doneCount >= 10) add("ten");
+  if (Object.keys(save.lessons).some(id => save.lessons[id].stars >= 3)) add("perfect");
+  if (save.streak >= 3) add("streak3");
+  if (save.totalEarned >= 100) add("coins100");
+  UNITS.forEach(u => { if (!u.bonus && u.lessons.every(id => save.lessons[id] && save.lessons[id].done)) add("world-" + u.id); });
+  if (save.owned.length) add("shop");
+  if (["b1","b2","b3","b4","b5","b6"].some(id => save.lessons[id] && save.lessons[id].done)) add("bonus");
+  if (Object.keys(save.chests).length) add("chest");
+  return fresh;
+}
+function isPlayable(lesson) {
+  if (unitOf(lesson.id).bonus) {
+    const item = SHOP.find(s => s.lesson === lesson.id);
+    return !!(item && save.owned.indexOf(item.id) >= 0);
+  }
+  const idx = MAIN.indexOf(lesson.id);
+  if (idx <= 0) return true;
+  const prev = save.lessons[MAIN[idx - 1]];
+  return !!(prev && prev.done);
+}
+function currentId() {
+  for (let i = 0; i < MAIN.length; i++) if (!(save.lessons[MAIN[i]] && save.lessons[MAIN[i]].done)) return MAIN[i];
+  return null;
+}
+function hatEmoji() { const s = shopById(save.equip.hat); return s ? s.emoji : ""; }
+function petEmoji() { const s = shopById(save.equip.pet); return s ? s.emoji : ""; }
+function trailBits() {
+  if (save.equip.trail === "trail-hearts") return ["🧡","💛","🧡","⭐","🧡"];
+  if (save.equip.trail === "trail-stars") return ["✨","⭐","✨","🌟","✨"];
+  return ["🧡","⭐","🎉","🧡","⭐"];
+}
+
+function unlockAudio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  try { if (!audioCtx) audioCtx = new AC(); if (audioCtx.state !== "running") audioCtx.resume().catch(() => {}); } catch (e) {}
+}
+function beep(freq, dur, type, gain) {
+  if (!audioCtx) return;
+  try {
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type || "sine";
+    o.frequency.value = freq;
+    const t0 = audioCtx.currentTime;
+    g.gain.setValueAtTime(gain || 0.05, t0);
+    g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t0); o.stop(t0 + dur);
+  } catch (e) {}
+}
+function sfx(kind) {
+  if (kind === "right") { beep(523,.1,"sine",.06); setTimeout(() => beep(659,.1,"sine",.05), 80); setTimeout(() => beep(784,.16,"sine",.05), 160); }
+  else if (kind === "soft") beep(311,.12,"triangle",.04);
+  else if (kind === "coin") beep(988,.12,"triangle",.05);
+  else if (kind === "fan") { beep(523,.12,"triangle",.06); setTimeout(() => beep(659,.12,"triangle",.05), 110); setTimeout(() => beep(784,.22,"triangle",.06), 220); }
+  else beep(620,.07,"sine",.04);
+}
+function voiceScore(v) {
+  const t = (v.name || "").toLowerCase();
+  let n = 0;
+  if (/premium/.test(t)) n += 60;
+  if (/natural|neural|online/.test(t)) n += 55;
+  if (/enhanced|erweitert|verbessert/.test(t)) n += 50;
+  if (/google/.test(t)) n += 30;
+  if (/anna|seraphina|petra|helena|katja|vicki|marlene|steffan|conrad/.test(t)) n += 20;
+  if (/grandpa|grandma|eddy|reed|rocko|bubbles|jester|organ|superstar|trinoids|whisper|wobble|zarvox|cellos|albert|fred|junior|ralph|bahh|bells|boing/.test(t)) n -= 50;
+  if (/^de[-_]de/i.test(v.lang || "")) n += 8;
+  else if (/^de/i.test(v.lang || "")) n += 3;
+  return n;
+}
+function refreshVoice() {
+  if (!window.speechSynthesis) return;
+  try {
+    const list = speechSynthesis.getVoices().filter(v => /^de([-_]|$)/i.test(v.lang || ""));
+    list.sort((a, b) => voiceScore(b) - voiceScore(a));
+    voice = list[0] || null;
+  } catch (e) {}
+}
+function speak(text) {
+  if (!window.speechSynthesis || !text) return;
+  try {
+    speechSynthesis.cancel();
+    refreshVoice();
+    const u = new SpeechSynthesisUtterance(String(text).replace(/[.?!,;:]+$/g, ""));
+    if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = "de-DE";
+    u.rate = save.settings.rate || 0.9;
+    u.pitch = 1.04;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+if (window.speechSynthesis) { refreshVoice(); try { speechSynthesis.addEventListener("voiceschanged", refreshVoice); } catch (e) {} }
+
+function normWord(w) { return String(w).toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]/g,""); }
+function lev(a, b) {
+  const m = a.length, n = b.length, d = [];
+  for (let i = 0; i <= m; i++) d[i] = [i];
+  for (let j = 1; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[m][n];
+}
+function sim(a, b) { if (!a && !b) return 1; if (!a || !b) return 0; return 1 - lev(a, b) / Math.max(a.length, b.length); }
+function gradeWords(target, heard) {
+  const t = String(target).split(/\s+/).map(normWord).filter(Boolean);
+  const h = String(heard).split(/\s+/).map(normWord).filter(Boolean);
+  let j = 0;
+  return t.map(word => {
+    let best = 0, at = j;
+    for (let k = j; k < Math.min(h.length, j + 4); k++) { const s = sim(word, h[k]); if (s > best) { best = s; at = k; } }
+    if (best >= 0.55) j = at + 1;
+    return best >= 0.9 ? "richtig" : best >= 0.55 ? "fast" : "fehlt";
+  });
+}
+function heardPasses(target, heard, grades) {
+  if (!heard || !String(heard).trim()) return false;
+  const good = grades.filter(g => g === "richtig" || g === "fast").length;
+  const need = Math.max(1, Math.ceil(grades.length * 0.6));
+  const whole = sim(normWord(String(target).replace(/\s+/g, " ")), normWord(String(heard).replace(/\s+/g, " ")));
+  return good >= need || whole >= 0.72;
+}
+function stopRec() { if (!rec) return; const old = rec; rec = null; try { old.onresult = null; old.onerror = null; old.onend = null; old.stop(); } catch (e) {} }
+function micNote(code) {
+  if (code === "not-allowed") return "Das Mikrofon ist nicht erlaubt. Du kannst ohne Mikrofon weiter.";
+  if (code === "service-not-allowed") return "Auf dem iPad muss die Diktierfunktion an sein. Du kannst auch ohne Mikrofon weiter.";
+  if (code === "no-speech") return "Ich habe noch nichts gehört. Nochmal oder ohne Mikrofon weiter.";
+  if (code === "audio-capture") return "Das Mikrofon ist gerade belegt. Du kannst ohne Mikrofon weiter.";
+  return "Das Zuhören klappt gerade nicht. Du kannst ohne Mikrofon weiter.";
+}
+function exNow() { return session.exercises[session.step]; }
+function exCount() { return session.exercises.length; }
+function startMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!save.settings.mic || !SR) { session.speakMsg = "Hier kann nicht zugehört werden. Lies leise mit und tippe auf Weiter ohne Mikrofon."; session.phase = "ask"; render(); return; }
+  stopRec();
+  session.phase = "ask";
+  session.listening = true;
+  session.speakMsg = "Ich höre zu …";
+  session.heard = "";
+  session.grades = [];
+  render();
+  const target = exNow().text;
+  rec = new SR();
+  rec.lang = "de-DE";
+  rec.interimResults = true;
+  rec.continuous = false;
+  rec.maxAlternatives = 3;
+  rec.onresult = (ev) => {
+    if (!session || session.phase !== "ask" || !exNow() || exNow().t !== "speak") return;
+    let transcript = "", final = false;
+    for (let i = 0; i < ev.results.length; i++) {
+      let localBest = "", localScore = -1;
+      const alts = ev.results[i];
+      for (let a = 0; a < alts.length; a++) {
+        const text = alts[a].transcript || "";
+        const score = sim(normWord(target), normWord(text));
+        if (score > localScore) { localScore = score; localBest = text; }
+      }
+      transcript += localBest + " ";
+      if (alts.isFinal) final = true;
+    }
+    transcript = transcript.trim();
+    session.heard = transcript;
+    session.grades = gradeWords(target, transcript);
+    if (final) {
+      session.listening = false;
+      stopRec();
+      if (heardPasses(target, transcript, session.grades)) resolve(session.wrongs === 0, "built");
+      else { session.wrongs++; session.banner = "retry"; session.feedback = "Fast!"; session.detail = "Der Satz ist: " + target; session.phase = "feedback"; sfx("soft"); render(); speak("Fast. Lies den Satz noch einmal."); }
+    } else render();
+  };
+  rec.onerror = (ev) => { if (!session || session.phase !== "ask") return; session.listening = false; session.speakMsg = micNote(ev.error); session.banner = "retry"; session.feedback = "Fast!"; session.detail = micNote(ev.error); session.phase = "feedback"; render(); };
+  rec.onend = () => { if (!session) return; session.listening = false; if (session.phase === "ask") render(); };
+  try { rec.start(); }
+  catch (e) { session.listening = false; session.speakMsg = "Das Mikrofon startet nicht. Du kannst ohne Mikrofon weiter."; session.phase = "feedback"; session.banner = "retry"; session.feedback = "Fast!"; session.detail = session.speakMsg; render(); }
+}
+
+function grant(n) {
+  const bag = save.paid[session.lessonId] || {};
+  if (bag[session.step]) return 0;
+  bag[session.step] = n;
+  save.paid[session.lessonId] = bag;
+  addCoins(n);
+  session.coins += n;
+  persist();
+  return n;
+}
+function starsFor(firsts, total) { const ratio = total ? firsts / total : 0; return ratio >= 0.8 ? 3 : ratio >= 0.5 ? 2 : 1; }
+function bumpDay() {
+  const t = today();
+  let daily = false;
+  if (save.goalDoneOn !== t) {
+    daily = true;
+    save.goalDoneOn = t;
+    addCoins(5);
+    session.coins += 5;
+    session.daily = 5;
+    if (save.lastDay !== t) {
+      save.streak = save.lastDay && dayBefore(t) === save.lastDay ? save.streak + 1 : 1;
+      save.lastDay = t;
+    }
+  }
+  return daily;
+}
+function finalizeLesson() {
+  if (session.finalized) return;
+  session.finalized = true;
+  const id = session.lessonId;
+  const prev = save.lessons[id];
+  const stars = starsFor(session.firsts, exCount());
+  const firstClear = !(prev && prev.done);
+  session.firstClear = firstClear;
+  if (firstClear) { addCoins(6); session.coins += 6; session.lessonBonus = 6; save.stats.lessons++; }
+  bumpDay();
+  save.lessons[id] = { done:true, stars: Math.max(stars, prev && prev.stars || 0) };
+  session.stars = save.lessons[id].stars;
+  const unit = unitOf(id);
+  session.unitReady = !!(firstClear && unit && !unit.bonus && unit.lessons.every(lid => save.lessons[lid] && save.lessons[lid].done) && !save.chests[unit.id]);
+  session.newAch = checkAchievements();
+  persist();
+}
+function answerTextOf(ex) {
+  if (!ex) return "";
+  if (ex.t === "speak") return ex.text;
+  if (ex.t === "syll") return ex.word;
+  if (ex.t === "order") return ex.words.join(" ");
+  const ok = (ex.options || []).find(op => op[op.length - 1] === 1);
+  if (!ok) return "";
+  return ok.length === 3 ? ok[1] : ok[0];
+}
+function resolve(ok, mode) {
+  if (!session || session.resolved) return;
+  session.resolved = true;
+  stopRec();
+  const built = mode === "built";
+  const skipped = mode === "skip";
+  if (ok) { session.firsts++; session.combo++; save.stats.firstTry++; }
+  else session.combo = 0;
+  save.stats.answered++;
+  let coins = skipped ? 1 : (ok ? 3 : 1);
+  if (ok && session.combo && session.combo % 3 === 0) coins += 1;
+  const paid = grant(coins);
+  session.fly = paid > 0 && !skipped;
+  const green = ok || built || skipped;
+  session.banner = green ? "good" : "warm";
+  session.feedback = skipped ? "Gut mitgemacht!" : green ? "Super!" : "Fast!";
+  const comboLine = ok && session.combo >= 3 ? session.combo + " richtig hintereinander!" : "";
+  session.detail = skipped ? "Ohne Mikrofon ist auch Üben." : green ? (comboLine || (ok ? pickOne(NICE) : "Geschafft. Beim nächsten Mal ohne Umweg.")) : ("Richtig ist: " + answerTextOf(exNow()));
+  if (session.step === exCount() - 1) finalizeLesson();
+  session.phase = "feedback";
+  sfx(green && !skipped ? "right" : "soft");
+  if (paid >= 3) setTimeout(() => sfx("coin"), 180);
+  render();
+  speak(skipped ? "Gut mitgemacht." : green ? "Super!" : ("Richtig ist " + answerTextOf(exNow())));
+}
+function skipMic() {
+  stopRec();
+  if (!session) return;
+  session.skipped = true;
+  session.combo = 0;
+  if (!session.resolved) {
+    session.resolved = true;
+    save.stats.answered++;
+    const paid = grant(1);
+    session.fly = paid > 0;
+    if (session.step === exCount() - 1) finalizeLesson();
+  }
+  session.banner = "good";
+  session.feedback = "Gut mitgemacht!";
+  session.detail = "Ohne Mikrofon ist auch Üben.";
+  session.phase = "feedback";
+  sfx("pop");
+  render();
+}
+function softMiss() {
+  session.wrongs++;
+  session.hint = session.wrongs >= 2;
+  session.note = session.hint ? "Die passende Kachel leuchtet jetzt." : "Noch nicht. Versuch die nächste Silbe.";
+  sfx("soft");
+  render();
+}
+function prepareStep() {
+  session.phase = "ask";
+  session.wrongs = 0;
+  session.hint = false;
+  session.note = "";
+  session.feedback = "";
+  session.detail = "";
+  session.heard = "";
+  session.grades = [];
+  session.speakMsg = "";
+  session.listening = false;
+  session.built = [];
+  session.used = {};
+  session.orderPick = [];
+  session.orderUsed = {};
+  session.resolved = false;
+  session.banner = "";
+  session.fly = false;
+}
+function beginLesson(id) {
+  stopRec();
+  const specItem = specOf(id);
+  ui.name = "lesson";
+  ui.note = "";
+  session = { lessonId:id, step:0, coins:0, firsts:0, combo:0, wrongs:0, finalized:false, exercises: createExercises(specItem, mulberry32((Date.now() ^ (id.charCodeAt(0) * 997)) >>> 0) ) };
+  prepareStep();
+  render();
+  speak(specItem.teach);
+}
+function nextStep() {
+  stopRec();
+  if (session.phase === "reward") { ui.name = "path"; session = null; render(); return; }
+  if (session.finalized && session.step === exCount() - 1 && session.phase === "feedback") {
+    session.phase = "reward";
+    sfx("fan");
+    render();
+    speak("Toll gemacht, " + CHILD + "!");
+    return;
+  }
+  session.step++;
+  prepareStep();
+  render();
+  const ex = exNow();
+  if (ex && ex.say) speak(ex.say);
+  else if (ex && ex.t === "speak") speak(ex.text);
+}
+
+function fox(mood) {
+  const mouth = mood === "oops"
+    ? '<path d="M46 94 H74" stroke="#3A2418" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    : mood === "think"
+      ? '<path d="M46 96 Q60 90 76 97" stroke="#3A2418" stroke-width="4" fill="none" stroke-linecap="round"/>'
+      : mood === "wow" || mood === "cheer"
+        ? '<ellipse cx="60" cy="96" rx="9" ry="8" fill="#3A2418"/>'
+        : '<path d="M44 90 Q60 106 76 90" stroke="#3A2418" stroke-width="4" fill="none" stroke-linecap="round"/>';
+  return '<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="78" rx="36" ry="30" fill="#F07F2A"/><path d="M18 44 L40 74 L14 84 Z" fill="#F07F2A"/><path d="M102 44 L80 74 L106 84 Z" fill="#F07F2A"/><path d="M24 50 L38 70 L20 78 Z" fill="#FFF7EE"/><path d="M96 50 L82 70 L100 78 Z" fill="#FFF7EE"/><ellipse cx="60" cy="86" rx="18" ry="14" fill="#FFF7EE"/><circle cx="40" cy="88" r="5" fill="#F4A28E"/><circle cx="80" cy="88" r="5" fill="#F4A28E"/><circle cx="47" cy="74" r="5" fill="#3A2418"/><circle cx="73" cy="74" r="5" fill="#3A2418"/><circle cx="48.6" cy="72.6" r="1.7" fill="#fff"/><circle cx="74.6" cy="72.6" r="1.7" fill="#fff"/><ellipse cx="60" cy="84" rx="4" ry="3" fill="#C95F14"/>' + mouth + '</svg>';
+}
+function mascot(mood, hat, pet, cls) {
+  return '<div class="foxbox ' + (cls || "") + '">' + fox(mood) + (hat ? '<span class="hat">' + hat + '</span>' : '') + (pet ? '<span class="pet">' + pet + '</span>' : '') + '</div>';
+}
+function paintWord(label, sound) {
+  const raw = String(label);
+  if (!sound) return esc(raw);
+  const lower = raw.toLowerCase();
+  let at = -1, len = sound.length;
+  if ((sound === "sch" || sound === "st" || sound === "sp") && lower.indexOf(sound) === 0) at = 0;
+  else if (sound === "ch") { const i = lower.indexOf("ch"); at = i > 0 && lower.charAt(i - 1) === "s" ? lower.indexOf("ch", i + 1) : i; }
+  else at = lower.indexOf(sound);
+  if (at < 0) return esc(raw);
+  return esc(raw.slice(0, at)) + '<span class="hot">' + esc(raw.slice(at, at + len)) + '</span>' + esc(raw.slice(at + len));
+}
+function sylHtml(syls) { return syls.map((p, i) => '<span class="syl s' + (i % 4) + '">' + esc(p) + '<i class="bogen"></i></span>').join(""); }
+function richText(sentence) {
+  return String(sentence).split(/(\s+)/).map(part => {
+    if (!part.trim()) return esc(part);
+    const punct = (part.match(/[.?!,;:]+$/) || [""])[0];
+    const core = part.slice(0, part.length - punct.length);
+    const found = findWord(core);
+    const inner = found ? sylHtml(found.syl) : esc(core);
+    return '<button type="button" class="word" data-act="say" data-say="' + esc(core) + '">' + inner + esc(punct) + '</button>';
+  }).join("");
+}
+function optionButtons(options, sound, hint) {
+  return '<div class="choices">' + options.map(op => {
+    let emoji = "", label = "", mark = false;
+    if (op.length === 3) { emoji = op[0]; label = op[1]; mark = op[2] === 1; }
+    else if (typeof op[1] === "string") { emoji = op[0]; label = op[1]; }
+    else { label = op[0]; mark = op[1] === 1; }
+    const text = (emoji ? '<span class="bigem" aria-hidden="true">' + emoji + '</span>' : '') + '<span>' + paintWord(label, sound) + '</span>';
+    return '<button type="button" class="choice" data-act="answer" ' + (mark ? 'data-ok="1"' : '') + (hint && mark ? ' style="box-shadow:0 0 0 5px var(--accent)"' : '') + '>' + text + '</button>';
+  }).join("") + '</div>';
+}
+function confetti() {
+  if (!session || session.phase === "ask") return "";
+  if (!(session.phase === "reward" || session.banner === "good")) return "";
+  const bits = trailBits();
+  return '<div class="confetti" aria-hidden="true">' + bits.concat(bits).map((b, i) => '<i style="left:' + (6 + (i * 9) % 90) + '%;animation-delay:' + (i * 0.04) + 's">' + b + '</i>').join("") + '</div>' + (session.fly ? '<span class="fly" aria-hidden="true">🪙</span>' : '');
+}
+function goalRing() {
+  const full = 88, off = save.goalDoneOn === today() ? 0 : full;
+  return '<svg class="goal" viewBox="0 0 36 36" aria-label="Tagesziel"><circle class="track" cx="18" cy="18" r="14" stroke-width="4"/><circle class="prog" cx="18" cy="18" r="14" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + full + '" stroke-dashoffset="' + off + '" transform="rotate(-90 18 18)"/></svg>';
+}
+function bar() {
+  const back = ui.name === "path" ? "" : '<button type="button" class="pill" data-act="' + (ui.name === "lesson" && session && session.phase !== "reward" ? "quit" : "home") + '" aria-label="Zurück">←</button>';
+  let title = "Lese-Abenteuer";
+  if (ui.name === "shop") title = "Shop";
+  else if (ui.name === "album") title = "Abzeichen";
+  else if (ui.name === "parents") title = "Für Eltern";
+  else if (ui.name === "gate") title = "Elternfrage";
+  else if (ui.name === "chest") title = "Truhe";
+  else if (ui.name === "lesson" && session) title = session.phase === "reward" ? "Geschafft" : specOf(session.lessonId).title;
+  const flame = save.streak ? '<span class="pill" aria-label="Serie ' + save.streak + '">🔥 ' + save.streak + '</span>' : '';
+  return '<header class="bar">' + back + '<h1>' + esc(title) + '</h1>' + goalRing() + flame +
+    '<button type="button" class="pill" data-act="shop" data-coins="' + save.coins + '">🪙 ' + save.coins + '</button></header>';
+}
+function reminder() {
+  const t = today();
+  if (save.goalDoneOn === t) return "Tagesziel geschafft. Die Serie bleibt warm.";
+  if (save.streak > 0 && (save.lastDay === t || (save.lastDay && dayBefore(t) === save.lastDay))) return "Noch eine Lektion heute, dann bleibt deine Serie von " + save.streak + (save.streak === 1 ? " Tag." : " Tagen.");
+  return "Schön, dass du da bist. Eine Lektion reicht für heute.";
+}
+function exerciseBody(specItem, ex) {
+  const sound = ex.sound || "";
+  let body = '<div class="qcard card"><div>' + mascot(session.phase === "ask" ? "think" : "happy", hatEmoji(), "", "sm") + '</div><div><div class="kicker">Aufgabe ' + (session.step + 1) + ' von ' + exCount() + ' · etwa ' + (specItem.story ? 5 : 4) + ' Min.</div>';
+  if (specItem.teach && session.step === 0) body += '<button type="button" class="word" data-act="say" data-say="' + esc(specItem.teach) + '">' + esc(specItem.teach) + '</button>';
+  body += '<div class="prompt">' + esc(ex.prompt || "") + '</div>';
+  if (ex.em && ex.t !== "listen" && ex.t !== "pick") body += '<div class="bigem" aria-hidden="true">' + ex.em + '</div>';
+  if (ex.t === "syll") body += '<div class="slots">' + ex.parts.map((p, i) => '<span class="slot">' + (session.built[i] ? '<span class="s' + (i % 4) + '">' + esc(session.built[i]) + '</span>' : '') + '</span>').join("") + '</div>';
+  if (ex.t === "order") body += '<div class="tray read">' + (session.orderPick.length ? session.orderPick.map(w => esc(w)).join(" ") : "…") + '</div>';
+  body += '</div></div>';
+  if (ex.story) body += '<div class="card read">' + richText(ex.story) + '</div>';
+  if (ex.t === "listen" || ex.t === "pick") {
+    body += '<button type="button" class="primary" data-act="replay">🔊 Nochmal hören</button>';
+    body += optionButtons(ex.options, sound, session.hint);
+  } else   if (ex.t === "syll") {
+    const need = ex.parts[session.built.length];
+    body += '<div class="choices">' + ex.pool.map((p, i) => session.used[i] ? "" : '<button type="button" class="choice" data-act="syll" data-i="' + i + '" ' + (p === need ? 'data-ok="1"' : '') + (session.hint && p === need ? ' style="box-shadow:0 0 0 5px var(--accent)"' : '') + '>' + esc(p) + '</button>').join("") + '</div>';
+  } else if (ex.t === "gap") {
+    body += '<div class="card read">' + richText(ex.before) + ' <span class="blank"></span> ' + richText(ex.after) + '</div>';
+    body += '<button type="button" class="primary" data-act="replay">🔊 Satz hören</button>';
+    body += optionButtons(ex.options, sound, session.hint);
+  } else if (ex.t === "order") {
+    const need = ex.words[session.orderPick.length];
+    body += '<div class="choices">' + ex.order.map((w, i) => session.orderUsed[i] ? "" : '<button type="button" class="choice" data-act="order" data-i="' + i + '" ' + (w === need ? 'data-ok="1"' : '') + (session.hint && w === need ? ' style="box-shadow:0 0 0 5px var(--accent)"' : '') + '>' + esc(w) + '</button>').join("") + '</div>';
+  } else if (ex.t === "quiz") {
+    if (!ex.story) body += '<div class="card read">' + richText(ex.text) + '</div>';
+    body += optionButtons(ex.options, sound, session.hint);
+  } else if (ex.t === "speak") {
+    const grades = session.grades || [];
+    const parts = ex.text.split(/\s+/);
+    const colored = grades.length ? parts.map((w, i) => '<span class="w ' + esc(grades[i] || "") + '">' + esc(w) + '</span>').join(" ") : richText(ex.text);
+    const sr = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const micOk = save.settings.mic && !!sr;
+    body += '<div class="card read">' + colored + (session.heard ? '<p class="hintline">Gehört: ' + esc(session.heard) + '</p>' : '') + (session.speakMsg && session.phase === "ask" ? '<p class="hintline">' + esc(session.speakMsg) + '</p>' : '') + '</div>';
+    body += '<div class="row"><button type="button" data-act="replay">🔊 Vorlesen</button>' + (micOk ? '<button type="button" class="primary" data-act="mic"' + (session.listening ? " disabled" : "") + '>' + (session.listening ? "Ich höre zu …" : "🎤 Ich lese vor") + '</button>' : '') + '<button type="button" class="green" data-act="skip-mic">Weiter ohne Mikrofon</button></div>';
+  }
+  if (session.note && session.phase === "ask") body += '<p class="hintline">' + esc(session.note) + '</p>';
+  return body;
+}
+function banner() {
+  if (!session || session.phase !== "feedback") return "";
+  if (session.banner === "retry") {
+    return '<div class="banner-pop warm" data-banner="warm"><div class="grow"><strong>' + esc(session.feedback) + '</strong><p>' + esc(session.detail || "") + '</p></div><button type="button" data-act="mic-again">Nochmal</button><button type="button" class="green" data-act="skip-mic">Weiter ohne Mikrofon</button></div>';
+  }
+  return '<div class="banner-pop ' + session.banner + '" data-banner="' + session.banner + '">' + mascot(session.banner === "good" ? "cheer" : "oops", hatEmoji(), "", "sm") + '<div class="grow"><strong>' + esc(session.feedback) + '</strong><p>' + esc(session.detail || "") + '</p></div><button type="button" class="primary" data-act="next">Weiter</button></div>';
+}
+function chestSvg() {
+  return '<svg viewBox="0 0 120 86" width="140" height="100" aria-hidden="true"><rect x="10" y="34" width="100" height="44" rx="8" fill="#C95F14"/><path d="M12 40 Q60 8 108 40" fill="#F07F2A"/><rect x="52" y="40" width="16" height="14" rx="3" fill="#FFE08A"/><rect x="10" y="48" width="100" height="8" fill="#E2B203"/></svg>';
+}
+function renderLesson() {
+  const specItem = specOf(session.lessonId);
+  if (session.phase === "feedback" && session.banner !== "retry") {
+    return '<div style="min-height:62vh;display:flex;align-items:center"><div class="card" style="text-align:center;width:100%">' + mascot(session.banner === "good" ? "cheer" : "oops", hatEmoji(), petEmoji(), "lg") +
+      '<div class="prompt">' + esc(session.feedback) + '</div><p class="read" style="font-size:clamp(26px,4vw,36px)">' + esc(session.detail || "") + '</p>' +
+      '<button type="button" class="primary" data-act="next">Weiter</button></div></div>' + banner();
+  }
+  if (session.phase === "reward") {
+    const ach = (session.newAch || []).map(id => ACH.find(a => a.id === id)).filter(Boolean);
+    return '<div class="card" style="text-align:center">' + mascot("cheer", hatEmoji(), petEmoji(), "lg") + chestSvg() +
+      '<h2 style="font-size:40px;margin:8px 0">Truhe geöffnet!</h2><div style="color:var(--gold);font-size:36px;letter-spacing:4px" aria-label="' + session.stars + ' Sterne">' + "★".repeat(session.stars) + "☆".repeat(3 - session.stars) + '</div>' +
+      '<p class="prompt" style="margin:8px 0">+' + session.coins + ' Münzen</p><p class="hintline">Erfahrung aus dieser Lektion: ' + session.coins + '</p>' +
+      (session.daily ? '<p class="card" style="background:var(--goodbg);color:var(--good)">Tagestruhe +' + session.daily + ' Münzen</p>' : '') +
+      (session.unitReady ? '<p class="card" style="background:var(--warmbg)">Die große Truhe am Ende dieser Welt wartet auf dem Pfad.</p>' : '') +
+      (ach.length ? '<p class="hintline">Neues Abzeichen: ' + esc(ach.map(a => a.name).join(", ")) + '</p>' : '') +
+      (session.firstClear ? '' : '<p class="hintline">Diese Lektion kanntest du schon. Deine Sterne bleiben mindestens so gut.</p>') +
+      '<button type="button" class="primary" data-act="home">Zur Strecke</button></div>';
+  }
+  return '<div class="lesson-grid">' + exerciseBody(specItem, exNow()) + '</div>' + banner();
+}
+function renderPath() {
+  const cur = currentId();
+  const ampBase = Math.min(460, Math.max(280, window.innerWidth - 36));
+  let html = '<div class="card hello">' + mascot("happy", hatEmoji(), petEmoji()) + '<div><div class="prompt" style="font-size:clamp(28px,4vw,40px)">Hallo ' + CHILD + '!</div><p>' + esc(reminder()) + '</p></div></div>';
+  if (ui.note) html += '<div class="card" style="background:var(--warmbg)">' + esc(ui.note) + '</div>';
+  const stickers = save.owned.map(shopById).filter(s => s && s.slot === "sticker");
+  if (stickers.length) html += '<p class="hintline">Deine Sticker: ' + stickers.map(s => s.emoji).join(" ") + '</p>';
+  UNITS.forEach(unit => {
+    const items = unit.lessons.map(specOf);
+    const amp = Math.max(28, (ampBase - 180) / 2);
+    const step = 158, topPad = 108;
+    const count = items.length + (unit.bonus ? 0 : 1);
+    const H = topPad + count * step + 36;
+    const pts = [];
+    for (let i = 0; i < count; i++) pts.push({ x: Math.round(Math.sin(i * 1.05) * amp), y: topPad + i * step + 48 });
+    const d = pts.map((p, i) => (i ? "L" : "M") + (ampBase / 2 + p.x) + " " + p.y).join(" ");
+    const doneN = unit.lessons.filter(id => save.lessons[id] && save.lessons[id].done).length;
+    html += '<section class="world world-' + unit.id + '"><span class="deco" style="top:24px;left:8px">' + unit.deco[0] + '</span><span class="deco" style="top:120px;right:8px">' + unit.deco[1] + '</span><span class="deco" style="top:280px;left:6px">' + unit.deco[2] + '</span><span class="deco" style="bottom:30px;right:10px">' + unit.deco[3] + '</span>';
+    html += '<div class="ribbon"><b>' + unit.emoji + " " + esc(unit.name) + '</b><small>' + esc(unit.blurb) + " · " + doneN + " von " + unit.lessons.length + '</small></div>';
+    html += '<div class="pathcol" style="width:' + ampBase + 'px;height:' + H + 'px"><svg class="trail" viewBox="0 0 ' + ampBase + " " + H + '" aria-hidden="true"><path d="' + d + '" fill="none" stroke="' + unit.stroke + '" stroke-width="' + (unit.road ? 28 : 16) + '" stroke-linecap="round" stroke-linejoin="round"' + (unit.id === "dino" ? ' stroke-dasharray="3 18"' : '') + '/>' + (unit.road ? '<path d="' + d + '" fill="none" stroke="#f2d36b" stroke-width="4" stroke-dasharray="12 14" stroke-linecap="round"/>' : '') + '</svg>';
+    items.forEach((lesson, i) => {
+      const p = pts[i];
+      const done = save.lessons[lesson.id] && save.lessons[lesson.id].done;
+      const play = isPlayable(lesson);
+      const stars = done ? save.lessons[lesson.id].stars : 0;
+      const current = lesson.id === cur;
+      const item = SHOP.find(s => s.lesson === lesson.id);
+      const glow = unit.bonus && play && !done;
+      const face = play ? unit.emoji : "🔒";
+      const full = 289, offset = stars ? Math.round(full * (1 - stars / 3)) : full;
+      const ringColor = done ? "#E2B203" : "#F07F2A";
+      html += '<button type="button" class="nodewrap' + (play ? "" : " lock") + (current ? " now" : "") + (glow ? " glow" : "") + '" style="left:calc(50% + ' + p.x + 'px);top:' + (p.y - 48) + 'px" data-act="' + (play ? "open" : "locked") + '" data-id="' + lesson.id + '" data-done="' + (done ? 1 : 0) + '" data-stars="' + stars + '"><span class="bubble"><svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#E7D7C6" stroke-width="6"/><circle cx="50" cy="50" r="46" fill="none" stroke="' + ringColor + '" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + full + '" stroke-dashoffset="' + offset + '" transform="rotate(-90 50 50)"/></svg><span class="em">' + face + '</span></span><span class="caption">' + esc(lesson.title) + '</span>' + (done ? '<span class="starsmini">' + "★".repeat(stars) + '</span>' : (!play && item ? '<span class="starsmini">' + item.price + " Münzen</span>" : "")) + '</button>';
+      if (current) html += '<div class="marker" style="left:calc(50% + ' + p.x + 'px);top:' + (p.y - 128) + 'px"><div class="here">Du bist hier</div>' + mascot("happy", hatEmoji(), petEmoji()) + '</div>';
+    });
+    if (!unit.bonus) {
+      const p = pts[items.length];
+      const ready = unit.lessons.every(id => save.lessons[id] && save.lessons[id].done);
+      const opened = !!save.chests[unit.id];
+      const act = opened ? "chest-done" : ready ? "chest" : "locked";
+      html += '<button type="button" class="nodewrap' + (ready && !opened ? " glow" : "") + (ready ? "" : " lock") + '" style="left:calc(50% + ' + p.x + 'px);top:' + (p.y - 48) + 'px" data-act="' + act + '" data-unit="' + unit.id + '"><span class="bubble"><span class="em">' + (opened ? "✅" : "🧰") + '</span></span><span class="caption">' + (opened ? "Truhe offen" : "Truhe") + '</span></button>';
+    }
+    html += '</div></section>';
+  });
+  html += '<div class="row" style="justify-content:center;margin-top:8px"><button type="button" data-act="album">Abzeichen</button><button type="button" data-act="shop">Shop</button><button type="button" data-act="gate">Für Eltern</button></div>';
+  return html;
+}
+function themeBg(item) {
+  if (item.slot === "theme") return THEME_OF[item.id] === "night" ? "#243044" : THEME_OF[item.id] === "wiese" ? "#D9F3C8" : "#FFE1C4";
+  if (item.slot === "bonus") return "#FFF4CC";
+  return "var(--soft)";
+}
+function renderShop() {
+  let html = '<p class="hintline">Münzen gibt es fürs Üben. Nichts kostet echtes Geld.</p>';
+  if (ui.shopMsg) html += '<div class="card" data-msg style="background:var(--goodbg);color:var(--good)">' + esc(ui.shopMsg) + '</div>';
+  let cat = "";
+  SHOP.forEach(item => {
+    if (item.cat !== cat) { cat = item.cat; html += '<h2 class="cat">' + esc(cat) + '</h2><div class="shopgrid">'; }
+    const owned = save.owned.indexOf(item.id) >= 0;
+    const equipped = item.slot === "hat" ? save.equip.hat === item.id : item.slot === "pet" ? save.equip.pet === item.id : item.slot === "trail" ? save.equip.trail === item.id : item.slot === "theme" ? THEME_OF[item.id] === save.equip.theme : false;
+    const label = owned ? (item.slot === "bonus" || item.slot === "sticker" ? "Dabei" : equipped ? "Angezogen" : "Anziehen") : "Kaufen · " + item.price;
+    let preview = "";
+    if (item.slot === "hat") preview = mascot("happy", item.emoji, "", "lg");
+    else if (item.slot === "pet") preview = mascot("happy", hatEmoji(), item.emoji, "lg");
+    else if (item.slot === "theme") preview = mascot("happy", hatEmoji(), petEmoji(), "lg");
+    else if (item.slot === "trail") preview = '<div style="font-size:40px">' + item.emoji + item.emoji + item.emoji + '</div>' + mascot("cheer", hatEmoji(), "", "sm");
+    else preview = '<div style="font-size:64px">' + item.emoji + '</div>';
+    html += '<button type="button" class="item" data-act="buy" data-id="' + item.id + '" data-owned="' + (owned ? 1 : 0) + '" data-equipped="' + (equipped ? 1 : 0) + '"><div class="preview" style="background:' + themeBg(item) + '">' + preview + '</div><b>' + item.emoji + " " + esc(item.name) + '</b><span class="hintline" style="display:block">' + esc(item.desc) + "<br>" + label + '</span></button>';
+    const next = SHOP[SHOP.indexOf(item) + 1];
+    if (!next || next.cat !== cat) html += '</div>';
+  });
+  return html;
+}
+function renderAlbum() {
+  let html = '<p class="hintline">Abzeichen bleiben hier, auch wenn du Münzen ausgibst.</p><div class="achgrid">';
+  ACH.forEach(a => {
+    const on = save.achievements.indexOf(a.id) >= 0;
+    html += '<div class="card ach' + (on ? " on" : "") + '"><div style="font-size:40px">' + a.emoji + '</div><b>' + esc(a.name) + '</b><div class="hintline">' + esc(a.desc) + '</div></div>';
+  });
+  html += '</div>';
+  const stickers = save.owned.map(shopById).filter(s => s && s.slot === "sticker");
+  if (stickers.length) html += '<h2 class="cat">Sticker</h2><p style="font-size:40px">' + stickers.map(s => s.emoji).join(" ") + '</p>';
+  return html;
+}
+function renderChest() {
+  const unit = UNITS.find(u => u.id === ui.chestUnit);
+  return '<div class="card" style="text-align:center">' + chestSvg() + '<h2>Welt-Truhe</h2><p class="prompt">' + esc(unit ? unit.name : "") + '</p><p>+15 Münzen</p><button type="button" class="primary" data-act="home">Weiter</button></div>';
+}
+function renderGate() {
+  return '<div class="card" style="text-align:center" data-a="' + ui.gateA + '" data-b="' + ui.gateB + '"><p>Kleine Elternfrage, damit hier nicht aus Versehen etwas verstellt wird.</p><div class="prompt">' + ui.gateA + ' × ' + ui.gateB + ' = ?</div><div class="read">' + esc(ui.gate || ' ') + '</div>' + (ui.gateBad ? '<p class="hintline">Noch einmal versuchen.</p>' : '') + '<div class="pad">' + ['1','2','3','4','5','6','7','8','9','⌫','0','OK'].map(k => '<button type="button" data-act="' + (k === 'OK' ? 'gate-ok' : k === '⌫' ? 'gate-del' : 'digit') + '"' + (k >= '0' && k <= '9' ? ' data-d="' + k + '"' : '') + '>' + k + '</button>').join('') + '</div></div>';
+}
+function renderParents() {
+  const done = MAIN.filter(id => save.lessons[id] && save.lessons[id].done).length;
+  const starSum = Object.keys(save.lessons).reduce((n, id) => n + (save.lessons[id].stars || 0), 0);
+  const acc = save.stats.answered ? Math.round(save.stats.firstTry / save.stats.answered * 100) : 0;
+  let units = UNITS.filter(u => !u.bonus).map(u => '<div class="card"><b>' + esc(u.name) + '</b><div>' + u.lessons.filter(id => save.lessons[id] && save.lessons[id].done).length + " / " + u.lessons.length + " Lektionen</div></div>").join("");
+  return '<div class="card"><p>Alles bleibt nur auf diesem iPad im Browser. Kein Konto, kein Tracking, kein Kauf mit echtem Geld.</p><p><b>' + done + '</b> von ' + MAIN.length + ' Lektionen · <b>' + save.coins + '</b> Münzen · Serie <b>' + save.streak + '</b> · erster Versuch <b>' + acc + ' %</b> · Sterne <b>' + starSum + '</b> · Abzeichen <b>' + save.achievements.length + '</b></p>' + (storageOk ? '' : '<p>Der Browser-Speicher ist hier nicht verfügbar.</p>') + '</div>' + units +
+    '<div class="card"><div class="kicker">Vorlesestimme</div><p class="hintline">Etwas langsamer ist fürs Lesenlernen angenehm. Am iPad klingen Premium- oder erweiterte deutsche Stimmen am besten, zum Beispiel Anna.</p><div class="row">' +
+    [['0.8','Langsamer'],['0.9','Normal'],['1','Etwas schneller']].map(pair => '<button type="button" data-act="rate" data-rate="' + pair[0] + '"' + (String(save.settings.rate) === pair[0] ? ' class="primary"' : '') + '>' + pair[1] + '</button>').join("") +
+    '<button type="button" data-act="hear">Stimme anhören</button></div></div>' +
+    '<div class="card"><div class="kicker">Mikrofon</div><p class="hintline">Zuhören klappt am zuverlässigsten in einem normalen Safari-Tab. Als Home-Bildschirm-App ist die Erkennung manchmal stumm. Weiter ohne Mikrofon geht immer.</p><button type="button" data-act="mic-toggle" class="' + (save.settings.mic ? "primary" : "") + '">' + (save.settings.mic ? "Mikrofon ist an" : "Mikrofon ist aus") + '</button></div>' +
+    '<div class="card">' + (ui.resetAsk ? '<p>Wirklich alle Münzen, Abzeichen und Lektionen auf diesem Gerät löschen?</p><div class="row"><button type="button" data-act="reset-yes">Ja, löschen</button><button type="button" data-act="reset-no">Abbrechen</button></div>' : '<button type="button" data-act="reset-ask">Fortschritt zurücksetzen</button>') + '</div>';
+}
+function celebrate() {
+  if (!ui.celebrate) return "";
+  const item = shopById(ui.celebrate);
+  if (!item) return "";
+  return '<button type="button" class="cele" data-act="celebrate-ok"><span class="card"><h2 style="font-size:40px;margin:0 0 8px">Gekauft!</h2><div class="preview" style="background:' + themeBg(item) + '">' + (item.slot === "hat" ? mascot("cheer", item.emoji, "", "lg") : item.slot === "pet" ? mascot("cheer", hatEmoji(), item.emoji, "lg") : '<div style="font-size:64px">' + item.emoji + '</div>') + '</div><p>' + esc(item.name) + ' gehört dir.</p><p class="hintline">Tippe, um weiterzumachen.</p></span></button>';
+}
+function render() {
+  document.body.dataset.theme = save.equip.theme || "default";
+  document.body.classList.toggle("show-banner", !!(session && session.phase === "feedback"));
+  let screen = ui.name;
+  if (ui.name === "lesson" && session && session.phase === "reward") screen = "reward";
+  let inner = "";
+  if (ui.name === "lesson" && session) inner = renderLesson();
+  else if (ui.name === "shop") inner = renderShop();
+  else if (ui.name === "album") inner = renderAlbum();
+  else if (ui.name === "chest") inner = renderChest();
+  else if (ui.name === "gate") inner = renderGate();
+  else if (ui.name === "parents") inner = renderParents();
+  else { inner = renderPath(); screen = "path"; }
+  const root = document.getElementById("app");
+  root.innerHTML = confetti() + bar() + inner + celebrate();
+  root.dataset.screen = screen;
+  if (session && (session.phase === "feedback" || session.phase === "reward") || ui.name === "chest") window.scrollTo(0, 0);
+  root.dataset.hat = save.equip.hat || "";
+  root.dataset.pet = save.equip.pet || "";
+  root.dataset.ready = "1";
+}
+document.getElementById("app").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]");
+  if (!b || b.hasAttribute("disabled")) return;
+  unlockAudio();
+  const act = b.getAttribute("data-act");
+  if (act === "celebrate-ok") { ui.celebrate = ""; render(); return; }
+  if (act === "say") { speak(b.getAttribute("data-say")); sfx("pop"); return; }
+  if (act === "mic" || act === "mic-again") { if (session && session.listening) return; if (act === "mic-again" && session) { session.phase = "ask"; session.banner = ""; } startMic(); return; }
+  if (act === "replay") { const ex = session && exNow(); if (ex) speak(ex.say || ex.text || ex.prompt || ""); return; }
+  if (act === "shop") { stopRec(); ui.name = "shop"; ui.shopMsg = ""; ui.celebrate = ""; render(); return; }
+  if (act === "album") { stopRec(); ui.name = "album"; session = null; render(); return; }
+  if (act === "home" || act === "quit") { stopRec(); ui.name = "path"; ui.note = ""; session = null; render(); return; }
+  if (act === "locked" || act === "chest-done") {
+    const lesson = specOf(b.getAttribute("data-id") || "");
+    ui.note = act === "chest-done" ? "Diese Truhe ist schon offen." : (lesson && unitOf(lesson.id).bonus ? "Diese Geschichte gibt es im Shop für Münzen." : "Erst die Lektion davor zu Ende üben.");
+    sfx("soft"); render(); return;
+  }
+  if (act === "chest") {
+    const unit = b.getAttribute("data-unit");
+    if (save.chests[unit]) { ui.note = "Diese Truhe ist schon offen."; render(); return; }
+    save.chests[unit] = true;
+    addCoins(15);
+    ui.chestUnit = unit;
+    ui.name = "chest";
+    ui.note = "";
+    checkAchievements();
+    persist();
+    sfx("fan");
+    render();
+    speak("Die Truhe ist offen!");
+    return;
+  }
+  if (act === "open") {
+    try { beginLesson(b.getAttribute("data-id")); }
+    catch (err) { ui.name = "path"; ui.note = "Diese Lektion mag gerade nicht. Versuch es noch einmal."; session = null; render(); }
+    return;
+  }
+  if (act === "gate") { ui.name = "gate"; ui.gate = ""; ui.gateBad = false; ui.gateA = 6 + Math.floor(Math.random() * 4); ui.gateB = 6 + Math.floor(Math.random() * 4); render(); return; }
+  if (act === "digit") { if (ui.gate.length < 2) ui.gate += b.getAttribute("data-d"); ui.gateBad = false; render(); return; }
+  if (act === "gate-del") { ui.gate = ui.gate.slice(0, -1); render(); return; }
+  if (act === "gate-ok") { if (Number(ui.gate) === ui.gateA * ui.gateB) { ui.name = "parents"; ui.resetAsk = false; } else { ui.gate = ""; ui.gateBad = true; } render(); return; }
+  if (act === "rate") { save.settings.rate = Number(b.getAttribute("data-rate")); persist(); speak("Hallo " + CHILD + ", ich lese dir vor."); render(); return; }
+  if (act === "hear") { speak("Hallo " + CHILD + ", ich lese dir vor."); return; }
+  if (act === "mic-toggle") { save.settings.mic = !save.settings.mic; persist(); render(); return; }
+  if (act === "reset-ask") { ui.resetAsk = true; render(); return; }
+  if (act === "reset-no") { ui.resetAsk = false; render(); return; }
+  if (act === "reset-yes") { save = defaultSave(); persist(); ui = { name:"path", note:"", shopMsg:"", celebrate:"", gate:"", gateBad:false, resetAsk:false }; session = null; render(); return; }
+  if (act === "buy") {
+    const item = shopById(b.getAttribute("data-id"));
+    if (!item) return;
+    const owned = save.owned.indexOf(item.id) >= 0;
+    if (owned) {
+      if (item.slot === "hat") save.equip.hat = item.id;
+      else if (item.slot === "pet") save.equip.pet = item.id;
+      else if (item.slot === "trail") save.equip.trail = item.id;
+      else if (item.slot === "theme") save.equip.theme = THEME_OF[item.id];
+      ui.shopMsg = item.name + " ist angezogen.";
+      persist(); sfx("pop"); render(); return;
+    }
+    if (save.coins < item.price) { ui.shopMsg = "Noch " + (item.price - save.coins) + " Münzen. Du schaffst das."; sfx("soft"); render(); return; }
+    save.coins -= item.price;
+    save.owned.push(item.id);
+    if (item.slot === "hat") save.equip.hat = item.id;
+    else if (item.slot === "pet") save.equip.pet = item.id;
+    else if (item.slot === "trail") save.equip.trail = item.id;
+    else if (item.slot === "theme") save.equip.theme = THEME_OF[item.id];
+    ui.shopMsg = item.name + " gehört dir!";
+    ui.celebrate = item.id;
+    checkAchievements();
+    persist(); sfx("fan"); render(); return;
+  }
+  if (!session) return;
+  if (act === "skip-mic") { skipMic(); return; }
+  if (act === "next") { if (session.phase === "feedback") nextStep(); return; }
+  if (session.phase !== "ask") return;
+  if (act === "answer") { if (b.getAttribute("data-ok") === "1") resolve(session.wrongs === 0, "choice"); else { session.wrongs++; resolve(false, "choice"); } return; }
+  if (act === "syll") {
+    const ex = exNow();
+    const i = Number(b.getAttribute("data-i"));
+    const part = ex.pool[i];
+    if (part !== ex.parts[session.built.length]) { softMiss(); return; }
+    session.used[i] = true;
+    session.built.push(part);
+    if (session.built.length === ex.parts.length) resolve(session.wrongs === 0, "built");
+    else { sfx("pop"); render(); }
+    return;
+  }
+  if (act === "order") {
+    const ex = exNow();
+    const i = Number(b.getAttribute("data-i"));
+    const word = ex.order[i];
+    if (word !== ex.words[session.orderPick.length]) { softMiss(); return; }
+    session.orderUsed[i] = true;
+    session.orderPick.push(word);
+    if (session.orderPick.length === ex.words.length) resolve(session.wrongs === 0, "built");
+    else { sfx("pop"); render(); }
+  }
+});
+window.addEventListener("resize", () => { if (ui && ui.name === "path") { const y = window.scrollY; render(); window.scrollTo(0, y); } });
+try {
+  selfCheck();
+  save = load();
+  ui = { name:"path", note:"", shopMsg:"", celebrate:"", gate:"", gateA:0, gateB:0, gateBad:false, resetAsk:false, chestUnit:"" };
+  window.__lesenReady = true;
+  render();
+} catch (err) {
+  document.getElementById("app").textContent = "Inhaltfehler: " + err.message;
+}
+</script>
+</body>
+</html>
