@@ -1,0 +1,7343 @@
+{
+ "name": "Dance-Pop-Zoe Girl A web asset pack (test, Way A)",
+ "version": 1,
+ "canvas": {
+  "width": 512,
+  "height": 768,
+  "sourceWidth": 682,
+  "sourceHeight": 1024,
+  "scale": 0.75,
+  "feetBaselineY": 753,
+  "note": "all frames share one canvas (transparent PNG-like WebP). Draw every frame at the same position/size; feet baseline y=753 is identical in all frames (spin/jump included, jump frames lift off naturally). Moonwalk drift is baked in."
+ },
+ "neutral": "neutral",
+ "idle": {
+  "loop": [
+   "neutral",
+   "idle-2",
+   "idle-3",
+   "idle-4",
+   "idle-5",
+   "idle-6",
+   "idle-7",
+   "idle-8"
+  ],
+  "ms": 120,
+  "cycle": "loop 1->8 then repeat (not ping-pong)",
+  "note": "Frame 1 == neutral. Start a move when idle is at frame index 0 (neutral) - every move begins and ends at neutral."
+ },
+ "timing": {
+  "randomMoveEveryMs": [
+   2000,
+   4000
+  ]
+ },
+ "moves": {
+  "armsup": {
+   "label_de": "Arme hoch",
+   "in": [
+    "armsup-1",
+    "armsup-2",
+    "armsup-3",
+    "armsup-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "armsup-5"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "armsup-4",
+    "armsup-3",
+    "armsup-2",
+    "armsup-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100,
+    100
+   ]
+  },
+  "jump": {
+   "label_de": "Sprung",
+   "in": [
+    "jump-1",
+    "jump-2",
+    "jump-3",
+    "jump-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "jump-5"
+   ],
+   "hold_ms": [
+    350
+   ],
+   "out": [
+    "jump-6"
+   ],
+   "out_ms": [
+    140
+   ],
+   "note": "out = Landen frame, then neutral/idle"
+  },
+  "kick": {
+   "label_de": "Sidekick",
+   "in": [
+    "kick-1",
+    "kick-2",
+    "kick-3",
+    "kick-4",
+    "kick-5"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "kick-6"
+   ],
+   "hold_ms": [
+    500
+   ],
+   "out": [
+    "kick-5",
+    "kick-4",
+    "kick-3",
+    "kick-2",
+    "kick-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ]
+  },
+  "spin": {
+   "label_de": "Drehung",
+   "in": [
+    "spin-1",
+    "spin-2",
+    "spin-3",
+    "spin-4",
+    "spin-5",
+    "spin-6",
+    "spin-7",
+    "spin-8"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "spin-9"
+   ],
+   "hold_ms": [
+    500
+   ],
+   "out": [
+    "spin-1"
+   ],
+   "out_ms": [
+    100
+   ],
+   "note": "one full turn (front -> back -> front); back-view frames spin-4..7 have no face anchors (facing=back)"
+  },
+  "point": {
+   "label_de": "Zeigen",
+   "in": [
+    "point-1",
+    "point-2",
+    "point-3",
+    "point-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "point-5"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "point-3",
+    "point-2",
+    "point-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100
+   ]
+  },
+  "hips": {
+   "label_de": "Hüftschwung",
+   "in": [
+    "hips-1",
+    "hips-2",
+    "hips-3",
+    "hips-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "hips-5",
+    "hips-6",
+    "hips-7",
+    "hips-6",
+    "hips-5",
+    "hips-6",
+    "hips-7",
+    "hips-6",
+    "hips-5"
+   ],
+   "hold_ms": [
+    200,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    250
+   ],
+   "out": [
+    "hips-3",
+    "hips-2",
+    "hips-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100
+   ]
+  },
+  "step": {
+   "label_de": "Schritt",
+   "in": [
+    "step-1",
+    "step-2",
+    "step-3",
+    "step-4",
+    "step-5"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "step-6"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "step-4",
+    "step-3",
+    "step-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100
+   ]
+  },
+  "heart": {
+   "label_de": "Herz",
+   "in": [
+    "heart-1",
+    "heart-2",
+    "heart-3",
+    "heart-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "heart-5"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "heart-3",
+    "heart-2",
+    "heart-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100
+   ]
+  },
+  "hairflip": {
+   "label_de": "Haarwurf",
+   "in": [
+    "hairflip-1",
+    "hairflip-2",
+    "hairflip-3",
+    "hairflip-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "hairflip-5"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "hairflip-6",
+    "hairflip-7"
+   ],
+   "out_ms": [
+    100,
+    100
+   ]
+  },
+  "wave": {
+   "label_de": "Winken",
+   "in": [
+    "wave-1",
+    "wave-2",
+    "wave-3",
+    "wave-5"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "wave-4",
+    "wave-6",
+    "wave-4",
+    "wave-5",
+    "wave-4",
+    "wave-6",
+    "wave-4"
+   ],
+   "hold_ms": [
+    200,
+    120,
+    120,
+    120,
+    120,
+    120,
+    250
+   ],
+   "out": [
+    "wave-3",
+    "wave-2",
+    "wave-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100
+   ]
+  },
+  "robot": {
+   "label_de": "Robot Dance",
+   "in": [
+    "robot-1",
+    "robot-2",
+    "robot-3",
+    "robot-4"
+   ],
+   "in_ms": [
+    160,
+    160,
+    160,
+    160
+   ],
+   "hold": [
+    "robot-5"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "robot-3",
+    "robot-1"
+   ],
+   "out_ms": [
+    160,
+    160
+   ]
+  },
+  "splits": {
+   "label_de": "Spagat",
+   "in": [
+    "splits-1",
+    "splits-2",
+    "splits-3",
+    "splits-4",
+    "splits-5",
+    "splits-6",
+    "splits-7"
+   ],
+   "in_ms": [
+    100,
+    110,
+    110,
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "splits-8"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "splits-6",
+    "splits-5",
+    "splits-4",
+    "splits-3",
+    "splits-2",
+    "splits-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100,
+    110,
+    110,
+    100
+   ]
+  },
+  "lunge": {
+   "label_de": "Ausfallschritt",
+   "in": [
+    "lunge-1",
+    "lunge-2",
+    "lunge-3",
+    "lunge-4",
+    "lunge-5"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "lunge-6"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "lunge-4",
+    "lunge-3",
+    "lunge-2",
+    "lunge-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100,
+    100
+   ]
+  },
+  "kneel": {
+   "label_de": "Kniepose",
+   "in": [
+    "kneel-1",
+    "kneel-2",
+    "kneel-3",
+    "kneel-4",
+    "kneel-5",
+    "kneel-6"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+   ],
+   "hold": [
+    "kneel-7"
+   ],
+   "hold_ms": [
+    450
+   ],
+   "out": [
+    "kneel-5",
+    "kneel-4",
+    "kneel-3",
+    "kneel-2",
+    "kneel-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100,
+    110,
+    100
+   ]
+  },
+  "clap": {
+   "label_de": "Klatschen",
+   "in": [
+    "clap-1",
+    "clap-2",
+    "clap-3",
+    "clap-4"
+   ],
+   "in_ms": [
+    100,
+    100,
+    100,
+    90
+   ],
+   "hold": [
+    "clap-5",
+    "clap-4",
+    "clap-5"
+   ],
+   "hold_ms": [
+    200,
+    120,
+    450
+   ],
+   "out": [
+    "clap-4",
+    "clap-3",
+    "clap-2",
+    "clap-1"
+   ],
+   "out_ms": [
+    100,
+    100,
+    100,
+    100
+   ]
+  },
+  "moonwalk": {
+   "label_de": "Mondwalk",
+   "in": [
+    "moonwalk-1",
+    "moonwalk-2",
+    "moonwalk-3",
+    "moonwalk-4"
+   ],
+   "in_ms": [
+    110,
+    110,
+    110,
+    110
+   ],
+   "hold": [
+    "moonwalk-5",
+    "moonwalk-7",
+    "moonwalk-8",
+    "moonwalk-9",
+    "moonwalk-10",
+    "moonwalk-11",
+    "moonwalk-12",
+    "moonwalk-13",
+    "moonwalk-14"
+   ],
+   "hold_ms": [
+    150,
+    110,
+    150,
+    110,
+    150,
+    110,
+    150,
+    110,
+    450
+   ],
+   "out": [
+    "moonwalk-15",
+    "moonwalk-16",
+    "moonwalk-17",
+    "moonwalk-18"
+   ],
+   "out_ms": [
+    110,
+    110,
+    110,
+    110
+   ],
+   "note": "backward glide is baked into the frames (hold frames drift up to 72 px of the 682x1024 source to the viewer's right, out frames glide back to x=0); keep character x fixed while playing it"
+  }
+ },
+ "frames": {
+  "neutral": {
+   "file": "frames/neutral.webp",
+   "mask": "masks/neutral.webp",
+   "skin": "skin/neutral.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.4,
+     88.0
+    ],
+    "ed": 36.08,
+    "angleDeg": -4.86,
+    "crown": [
+     244.3,
+     16.1
+    ],
+    "earL": [
+     219.8,
+     104.7
+    ],
+    "earR": [
+     289.1,
+     91.3
+    ],
+    "bow": [
+     282.6,
+     43.6
+    ],
+    "neck": [
+     257.0,
+     165.3
+    ],
+    "pendant": [
+     250.4,
+     88.0
+    ],
+    "glasses": [
+     250.4,
+     88.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "idle-2": {
+   "file": "frames/idle-2.webp",
+   "mask": "masks/idle-2.webp",
+   "skin": "skin/idle-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     235.0,
+     102.3
+    ],
+    "ed": 35.27,
+    "angleDeg": -9.78,
+    "crown": [
+     223.0,
+     32.8
+    ],
+    "earL": [
+     206.5,
+     121.1
+    ],
+    "earR": [
+     272.9,
+     102.2
+    ],
+    "bow": [
+     262.5,
+     56.4
+    ],
+    "neck": [
+     247.9,
+     177.0
+    ],
+    "pendant": [
+     235.0,
+     102.3
+    ],
+    "glasses": [
+     235.0,
+     102.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "idle-3": {
+   "file": "frames/idle-3.webp",
+   "mask": "masks/idle-3.webp",
+   "skin": "skin/idle-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     232.2,
+     100.6
+    ],
+    "ed": 35.66,
+    "angleDeg": -12.82,
+    "crown": [
+     216.3,
+     31.1
+    ],
+    "earL": [
+     204.5,
+     121.2
+    ],
+    "earR": [
+     270.5,
+     98.6
+    ],
+    "bow": [
+     257.5,
+     52.8
+    ],
+    "neck": [
+     249.2,
+     175.4
+    ],
+    "pendant": [
+     232.2,
+     100.6
+    ],
+    "glasses": [
+     232.2,
+     100.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "idle-4": {
+   "file": "frames/idle-4.webp",
+   "mask": "masks/idle-4.webp",
+   "skin": "skin/idle-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     244.8,
+     102.4
+    ],
+    "ed": 35.78,
+    "angleDeg": -13.61,
+    "crown": [
+     228.0,
+     32.9
+    ],
+    "earL": [
+     217.3,
+     123.4
+    ],
+    "earR": [
+     283.2,
+     99.8
+    ],
+    "bow": [
+     269.6,
+     54.1
+    ],
+    "neck": [
+     262.9,
+     177.2
+    ],
+    "pendant": [
+     244.8,
+     102.4
+    ],
+    "glasses": [
+     244.8,
+     102.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "idle-5": {
+   "file": "frames/idle-5.webp",
+   "mask": "masks/idle-5.webp",
+   "skin": "skin/idle-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     239.9,
+     110.3
+    ],
+    "ed": 35.83,
+    "angleDeg": -7.52,
+    "crown": [
+     230.5,
+     39.2
+    ],
+    "earL": [
+     210.2,
+     128.2
+    ],
+    "earR": [
+     278.4,
+     111.7
+    ],
+    "bow": [
+     269.7,
+     64.7
+    ],
+    "neck": [
+     250.0,
+     186.6
+    ],
+    "pendant": [
+     239.9,
+     110.3
+    ],
+    "glasses": [
+     239.9,
+     110.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "idle-6": {
+   "file": "frames/idle-6.webp",
+   "mask": "masks/idle-6.webp",
+   "skin": "skin/idle-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.7,
+     94.6
+    ],
+    "ed": 36.13,
+    "angleDeg": -9.41,
+    "crown": [
+     239.9,
+     23.3
+    ],
+    "earL": [
+     222.4,
+     113.7
+    ],
+    "earR": [
+     290.6,
+     94.8
+    ],
+    "bow": [
+     280.2,
+     47.8
+    ],
+    "neck": [
+     264.4,
+     171.3
+    ],
+    "pendant": [
+     251.7,
+     94.6
+    ],
+    "glasses": [
+     251.7,
+     94.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "idle-7": {
+   "file": "frames/idle-7.webp",
+   "mask": "masks/idle-7.webp",
+   "skin": "skin/idle-7.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.1,
+     91.3
+    ],
+    "ed": 35.44,
+    "angleDeg": -13.93,
+    "crown": [
+     231.0,
+     22.5
+    ],
+    "earL": [
+     221.0,
+     112.2
+    ],
+    "earR": [
+     286.1,
+     88.5
+    ],
+    "bow": [
+     272.4,
+     43.3
+    ],
+    "neck": [
+     266.5,
+     165.3
+    ],
+    "pendant": [
+     248.1,
+     91.3
+    ],
+    "glasses": [
+     248.1,
+     91.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-7.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "idle-8": {
+   "file": "frames/idle-8.webp",
+   "mask": "masks/idle-8.webp",
+   "skin": "skin/idle-8.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     258.2,
+     107.3
+    ],
+    "ed": 34.97,
+    "angleDeg": -14.36,
+    "crown": [
+     240.8,
+     39.5
+    ],
+    "earL": [
+     231.5,
+     128.1
+    ],
+    "earR": [
+     295.7,
+     104.2
+    ],
+    "bow": [
+     281.8,
+     59.7
+    ],
+    "neck": [
+     276.8,
+     180.1
+    ],
+    "pendant": [
+     258.2,
+     107.3
+    ],
+    "glasses": [
+     258.2,
+     107.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-idle-v2-8.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "point-1": {
+   "file": "frames/point-1.webp",
+   "mask": "masks/point-1.webp",
+   "skin": "skin/point-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     260.4,
+     101.0
+    ],
+    "ed": 34.91,
+    "angleDeg": -8.99,
+    "crown": [
+     249.5,
+     32.1
+    ],
+    "earL": [
+     232.0,
+     119.3
+    ],
+    "earR": [
+     298.0,
+     101.5
+    ],
+    "bow": [
+     288.3,
+     56.0
+    ],
+    "neck": [
+     272.2,
+     175.2
+    ],
+    "pendant": [
+     260.4,
+     101.0
+    ],
+    "glasses": [
+     260.4,
+     101.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-point-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "point-2": {
+   "file": "frames/point-2.webp",
+   "mask": "masks/point-2.webp",
+   "skin": "skin/point-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.1,
+     95.2
+    ],
+    "ed": 35.07,
+    "angleDeg": -10.08,
+    "crown": [
+     238.8,
+     26.2
+    ],
+    "earL": [
+     222.9,
+     114.1
+    ],
+    "earR": [
+     288.9,
+     95.0
+    ],
+    "bow": [
+     278.3,
+     49.4
+    ],
+    "neck": [
+     264.3,
+     169.5
+    ],
+    "pendant": [
+     251.1,
+     95.2
+    ],
+    "glasses": [
+     251.1,
+     95.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-point-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "point-3": {
+   "file": "frames/point-3.webp",
+   "mask": "masks/point-3.webp",
+   "skin": "skin/point-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     253.5,
+     100.8
+    ],
+    "ed": 35.96,
+    "angleDeg": -10.36,
+    "crown": [
+     240.5,
+     30.1
+    ],
+    "earL": [
+     224.6,
+     120.3
+    ],
+    "earR": [
+     292.1,
+     100.4
+    ],
+    "bow": [
+     281.1,
+     53.7
+    ],
+    "neck": [
+     267.4,
+     176.9
+    ],
+    "pendant": [
+     253.5,
+     100.8
+    ],
+    "glasses": [
+     253.5,
+     100.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-point-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "point-4": {
+   "file": "frames/point-4.webp",
+   "mask": "masks/point-4.webp",
+   "skin": "skin/point-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.9,
+     97.0
+    ],
+    "ed": 35.56,
+    "angleDeg": -11.22,
+    "crown": [
+     239.1,
+     27.2
+    ],
+    "earL": [
+     224.7,
+     116.7
+    ],
+    "earR": [
+     291.1,
+     96.0
+    ],
+    "bow": [
+     279.5,
+     50.0
+    ],
+    "neck": [
+     267.8,
+     172.0
+    ],
+    "pendant": [
+     252.9,
+     97.0
+    ],
+    "glasses": [
+     252.9,
+     97.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-point-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "point-5": {
+   "file": "frames/point-5.webp",
+   "mask": "masks/point-5.webp",
+   "skin": "skin/point-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     257.0,
+     102.5
+    ],
+    "ed": 35.68,
+    "angleDeg": -9.64,
+    "crown": [
+     245.1,
+     32.2
+    ],
+    "earL": [
+     228.2,
+     121.5
+    ],
+    "earR": [
+     295.4,
+     102.6
+    ],
+    "bow": [
+     285.0,
+     56.2
+    ],
+    "neck": [
+     269.9,
+     178.2
+    ],
+    "pendant": [
+     257.0,
+     102.5
+    ],
+    "glasses": [
+     257.0,
+     102.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-point-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hips-1": {
+   "file": "frames/hips-1.webp",
+   "mask": "masks/hips-1.webp",
+   "skin": "skin/hips-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.2,
+     104.1
+    ],
+    "ed": 34.01,
+    "angleDeg": -6.38,
+    "crown": [
+     242.7,
+     36.5
+    ],
+    "earL": [
+     221.8,
+     120.6
+    ],
+    "earR": [
+     286.7,
+     106.2
+    ],
+    "bow": [
+     279.4,
+     61.5
+    ],
+    "neck": [
+     258.4,
+     176.8
+    ],
+    "pendant": [
+     250.2,
+     104.1
+    ],
+    "glasses": [
+     250.2,
+     104.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hips-2": {
+   "file": "frames/hips-2.webp",
+   "mask": "masks/hips-2.webp",
+   "skin": "skin/hips-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     256.5,
+     112.0
+    ],
+    "ed": 33.81,
+    "angleDeg": -4.84,
+    "crown": [
+     250.8,
+     44.6
+    ],
+    "earL": [
+     227.8,
+     127.6
+    ],
+    "earR": [
+     292.7,
+     115.1
+    ],
+    "bow": [
+     286.6,
+     70.4
+    ],
+    "neck": [
+     262.6,
+     184.4
+    ],
+    "pendant": [
+     256.5,
+     112.0
+    ],
+    "glasses": [
+     256.5,
+     112.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "hips-3": {
+   "file": "frames/hips-3.webp",
+   "mask": "masks/hips-3.webp",
+   "skin": "skin/hips-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     263.4,
+     128.7
+    ],
+    "ed": 32.93,
+    "angleDeg": 10.57,
+    "crown": [
+     275.5,
+     63.9
+    ],
+    "earL": [
+     232.4,
+     135.9
+    ],
+    "earR": [
+     296.7,
+     140.9
+    ],
+    "bow": [
+     302.5,
+     97.4
+    ],
+    "neck": [
+     250.4,
+     198.3
+    ],
+    "pendant": [
+     263.4,
+     128.7
+    ],
+    "glasses": [
+     263.4,
+     128.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hips-4": {
+   "file": "frames/hips-4.webp",
+   "mask": "masks/hips-4.webp",
+   "skin": "skin/hips-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     278.2,
+     130.8
+    ],
+    "ed": 33.57,
+    "angleDeg": 13.7,
+    "crown": [
+     294.2,
+     65.6
+    ],
+    "earL": [
+     246.3,
+     136.5
+    ],
+    "earR": [
+     311.4,
+     145.1
+    ],
+    "bow": [
+     319.7,
+     101.2
+    ],
+    "neck": [
+     261.1,
+     200.9
+    ],
+    "pendant": [
+     278.2,
+     130.8
+    ],
+    "glasses": [
+     278.2,
+     130.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "hips-5": {
+   "file": "frames/hips-5.webp",
+   "mask": "masks/hips-5.webp",
+   "skin": "skin/hips-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     271.3,
+     129.7
+    ],
+    "ed": 33.88,
+    "angleDeg": 9.04,
+    "crown": [
+     281.9,
+     62.8
+    ],
+    "earL": [
+     239.6,
+     138.0
+    ],
+    "earR": [
+     305.8,
+     141.4
+    ],
+    "bow": [
+     310.6,
+     96.5
+    ],
+    "neck": [
+     259.8,
+     201.7
+    ],
+    "pendant": [
+     271.3,
+     129.7
+    ],
+    "glasses": [
+     271.3,
+     129.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "hips-6": {
+   "file": "frames/hips-6.webp",
+   "mask": "masks/hips-6.webp",
+   "skin": "skin/hips-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     270.6,
+     129.7
+    ],
+    "ed": 34.0,
+    "angleDeg": 8.78,
+    "crown": [
+     281.0,
+     62.5
+    ],
+    "earL": [
+     238.8,
+     138.2
+    ],
+    "earR": [
+     305.3,
+     141.3
+    ],
+    "bow": [
+     309.9,
+     96.2
+    ],
+    "neck": [
+     259.4,
+     201.9
+    ],
+    "pendant": [
+     270.6,
+     129.7
+    ],
+    "glasses": [
+     270.6,
+     129.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "hips-7": {
+   "file": "frames/hips-7.webp",
+   "mask": "masks/hips-7.webp",
+   "skin": "skin/hips-7.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     270.4,
+     129.5
+    ],
+    "ed": 34.05,
+    "angleDeg": 8.85,
+    "crown": [
+     280.9,
+     62.3
+    ],
+    "earL": [
+     238.6,
+     138.0
+    ],
+    "earR": [
+     305.1,
+     141.2
+    ],
+    "bow": [
+     309.8,
+     96.0
+    ],
+    "neck": [
+     259.1,
+     201.9
+    ],
+    "pendant": [
+     270.4,
+     129.5
+    ],
+    "glasses": [
+     270.4,
+     129.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hips-v2-7.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "step-1": {
+   "file": "frames/step-1.webp",
+   "mask": "masks/step-1.webp",
+   "skin": "skin/step-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     253.1,
+     102.3
+    ],
+    "ed": 34.64,
+    "angleDeg": 0.27,
+    "crown": [
+     253.4,
+     33.1
+    ],
+    "earL": [
+     222.3,
+     115.7
+    ],
+    "earR": [
+     289.8,
+     108.8
+    ],
+    "bow": [
+     287.6,
+     62.7
+    ],
+    "neck": [
+     252.7,
+     176.8
+    ],
+    "pendant": [
+     253.1,
+     102.3
+    ],
+    "glasses": [
+     253.1,
+     102.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-step-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "step-2": {
+   "file": "frames/step-2.webp",
+   "mask": "masks/step-2.webp",
+   "skin": "skin/step-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     258.9,
+     109.0
+    ],
+    "ed": 34.13,
+    "angleDeg": 6.76,
+    "crown": [
+     267.0,
+     41.2
+    ],
+    "earL": [
+     227.3,
+     118.6
+    ],
+    "earR": [
+     294.1,
+     119.4
+    ],
+    "bow": [
+     297.1,
+     74.0
+    ],
+    "neck": [
+     250.3,
+     181.9
+    ],
+    "pendant": [
+     258.9,
+     109.0
+    ],
+    "glasses": [
+     258.9,
+     109.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-step-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "step-3": {
+   "file": "frames/step-3.webp",
+   "mask": "masks/step-3.webp",
+   "skin": "skin/step-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     254.2,
+     124.1
+    ],
+    "ed": 33.67,
+    "angleDeg": 9.93,
+    "crown": [
+     265.8,
+     57.7
+    ],
+    "earL": [
+     222.6,
+     131.8
+    ],
+    "earR": [
+     288.3,
+     136.2
+    ],
+    "bow": [
+     293.8,
+     91.6
+    ],
+    "neck": [
+     241.7,
+     195.4
+    ],
+    "pendant": [
+     254.2,
+     124.1
+    ],
+    "glasses": [
+     254.2,
+     124.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-step-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "step-4": {
+   "file": "frames/step-4.webp",
+   "mask": "masks/step-4.webp",
+   "skin": "skin/step-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.4,
+     123.7
+    ],
+    "ed": 33.86,
+    "angleDeg": 9.0,
+    "crown": [
+     263.0,
+     56.8
+    ],
+    "earL": [
+     220.7,
+     132.0
+    ],
+    "earR": [
+     286.9,
+     135.4
+    ],
+    "bow": [
+     291.7,
+     90.5
+    ],
+    "neck": [
+     241.0,
+     195.6
+    ],
+    "pendant": [
+     252.4,
+     123.7
+    ],
+    "glasses": [
+     252.4,
+     123.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-step-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "step-5": {
+   "file": "frames/step-5.webp",
+   "mask": "masks/step-5.webp",
+   "skin": "skin/step-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     273.3,
+     135.3
+    ],
+    "ed": 33.32,
+    "angleDeg": 10.22,
+    "crown": [
+     285.2,
+     69.7
+    ],
+    "earL": [
+     242.0,
+     142.8
+    ],
+    "earR": [
+     307.0,
+     147.5
+    ],
+    "bow": [
+     312.6,
+     103.5
+    ],
+    "neck": [
+     260.6,
+     205.8
+    ],
+    "pendant": [
+     273.3,
+     135.3
+    ],
+    "glasses": [
+     273.3,
+     135.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-step-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "step-6": {
+   "file": "frames/step-6.webp",
+   "mask": "masks/step-6.webp",
+   "skin": "skin/step-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     273.4,
+     138.2
+    ],
+    "ed": 33.9,
+    "angleDeg": 10.46,
+    "crown": [
+     285.8,
+     71.6
+    ],
+    "earL": [
+     241.5,
+     145.8
+    ],
+    "earR": [
+     307.7,
+     150.8
+    ],
+    "bow": [
+     313.6,
+     106.0
+    ],
+    "neck": [
+     260.2,
+     209.9
+    ],
+    "pendant": [
+     273.4,
+     138.2
+    ],
+    "glasses": [
+     273.4,
+     138.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-step-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "heart-1": {
+   "file": "frames/heart-1.webp",
+   "mask": "masks/heart-1.webp",
+   "skin": "skin/heart-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.0,
+     86.4
+    ],
+    "ed": 35.46,
+    "angleDeg": -3.88,
+    "crown": [
+     243.2,
+     15.6
+    ],
+    "earL": [
+     217.6,
+     102.3
+    ],
+    "earR": [
+     286.0,
+     90.3
+    ],
+    "bow": [
+     280.3,
+     43.3
+    ],
+    "neck": [
+     253.2,
+     162.5
+    ],
+    "pendant": [
+     248.0,
+     86.4
+    ],
+    "glasses": [
+     248.0,
+     86.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-heart-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "heart-2": {
+   "file": "frames/heart-2.webp",
+   "mask": "masks/heart-2.webp",
+   "skin": "skin/heart-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.1,
+     86.1
+    ],
+    "ed": 35.42,
+    "angleDeg": -4.12,
+    "crown": [
+     243.0,
+     15.4
+    ],
+    "earL": [
+     217.8,
+     102.0
+    ],
+    "earR": [
+     286.0,
+     89.8
+    ],
+    "bow": [
+     280.2,
+     42.9
+    ],
+    "neck": [
+     253.6,
+     162.0
+    ],
+    "pendant": [
+     248.1,
+     86.1
+    ],
+    "glasses": [
+     248.1,
+     86.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-heart-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "heart-3": {
+   "file": "frames/heart-3.webp",
+   "mask": "masks/heart-3.webp",
+   "skin": "skin/heart-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     247.6,
+     86.8
+    ],
+    "ed": 36.06,
+    "angleDeg": -6.01,
+    "crown": [
+     240.1,
+     15.0
+    ],
+    "earL": [
+     217.3,
+     104.0
+    ],
+    "earR": [
+     286.3,
+     89.3
+    ],
+    "bow": [
+     278.8,
+     41.8
+    ],
+    "neck": [
+     255.7,
+     163.9
+    ],
+    "pendant": [
+     247.6,
+     86.8
+    ],
+    "glasses": [
+     247.6,
+     86.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-heart-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "heart-4": {
+   "file": "frames/heart-4.webp",
+   "mask": "masks/heart-4.webp",
+   "skin": "skin/heart-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     246.9,
+     86.1
+    ],
+    "ed": 35.85,
+    "angleDeg": -4.67,
+    "crown": [
+     241.1,
+     14.6
+    ],
+    "earL": [
+     216.4,
+     102.5
+    ],
+    "earR": [
+     285.3,
+     89.5
+    ],
+    "bow": [
+     278.9,
+     42.1
+    ],
+    "neck": [
+     253.2,
+     162.9
+    ],
+    "pendant": [
+     246.9,
+     86.1
+    ],
+    "glasses": [
+     246.9,
+     86.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-heart-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "heart-5": {
+   "file": "frames/heart-5.webp",
+   "mask": "masks/heart-5.webp",
+   "skin": "skin/heart-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     247.6,
+     90.4
+    ],
+    "ed": 36.5,
+    "angleDeg": -10.02,
+    "crown": [
+     234.8,
+     18.5
+    ],
+    "earL": [
+     218.2,
+     110.0
+    ],
+    "earR": [
+     286.8,
+     90.2
+    ],
+    "bow": [
+     275.9,
+     42.7
+    ],
+    "neck": [
+     261.2,
+     167.7
+    ],
+    "pendant": [
+     247.6,
+     90.4
+    ],
+    "glasses": [
+     247.6,
+     90.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-heart-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-1": {
+   "file": "frames/hairflip-1.webp",
+   "mask": "masks/hairflip-1.webp",
+   "skin": "skin/hairflip-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     245.9,
+     98.8
+    ],
+    "ed": 34.31,
+    "angleDeg": -11.9,
+    "crown": [
+     231.7,
+     31.7
+    ],
+    "earL": [
+     218.9,
+     118.1
+    ],
+    "earR": [
+     282.8,
+     97.4
+    ],
+    "bow": [
+     271.0,
+     53.2
+    ],
+    "neck": [
+     261.1,
+     171.0
+    ],
+    "pendant": [
+     245.9,
+     98.8
+    ],
+    "glasses": [
+     245.9,
+     98.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-2": {
+   "file": "frames/hairflip-2.webp",
+   "mask": "masks/hairflip-2.webp",
+   "skin": "skin/hairflip-2.webp",
+   "facing": "front",
+   "anchorQuality": "manual (eyes closed)",
+   "anchors": {
+    "eyeMid": [
+     233.5,
+     117.0
+    ],
+    "ed": 43.19,
+    "angleDeg": -20.32,
+    "crown": [
+     203.4,
+     36.0
+    ],
+    "earL": [
+     203.4,
+     146.0
+    ],
+    "earR": [
+     279.1,
+     108.4
+    ],
+    "bow": [
+     256.3,
+     55.6
+    ],
+    "neck": [
+     265.8,
+     204.1
+    ],
+    "pendant": [
+     233.5,
+     117.0
+    ],
+    "glasses": [
+     233.5,
+     117.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-3": {
+   "file": "frames/hairflip-3.webp",
+   "mask": "masks/hairflip-3.webp",
+   "skin": "skin/hairflip-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     241.6,
+     209.7
+    ],
+    "ed": 27.7,
+    "angleDeg": -14.52,
+    "crown": [
+     227.7,
+     156.1
+    ],
+    "earL": [
+     220.6,
+     226.3
+    ],
+    "earR": [
+     271.3,
+     207.2
+    ],
+    "bow": [
+     260.2,
+     172.0
+    ],
+    "neck": [
+     256.6,
+     267.4
+    ],
+    "pendant": [
+     241.6,
+     209.7
+    ],
+    "glasses": [
+     241.6,
+     209.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-4": {
+   "file": "frames/hairflip-4.webp",
+   "mask": "masks/hairflip-4.webp",
+   "skin": "skin/hairflip-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     263.9,
+     162.5
+    ],
+    "ed": 30.84,
+    "angleDeg": 14.85,
+    "crown": [
+     279.7,
+     102.9
+    ],
+    "earL": [
+     234.4,
+     167.1
+    ],
+    "earR": [
+     294.1,
+     176.3
+    ],
+    "bow": [
+     302.5,
+     136.0
+    ],
+    "neck": [
+     246.9,
+     226.6
+    ],
+    "pendant": [
+     263.9,
+     162.5
+    ],
+    "glasses": [
+     263.9,
+     162.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-5": {
+   "file": "frames/hairflip-5.webp",
+   "mask": "masks/hairflip-5.webp",
+   "skin": "skin/hairflip-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     257.1,
+     140.9
+    ],
+    "ed": 31.41,
+    "angleDeg": 15.62,
+    "crown": [
+     274.1,
+     80.4
+    ],
+    "earL": [
+     227.0,
+     145.2
+    ],
+    "earR": [
+     287.7,
+     155.3
+    ],
+    "bow": [
+     296.9,
+     114.5
+    ],
+    "neck": [
+     238.9,
+     205.9
+    ],
+    "pendant": [
+     257.1,
+     140.9
+    ],
+    "glasses": [
+     257.1,
+     140.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-6": {
+   "file": "frames/hairflip-6.webp",
+   "mask": "masks/hairflip-6.webp",
+   "skin": "skin/hairflip-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.6,
+     136.5
+    ],
+    "ed": 30.29,
+    "angleDeg": 2.27,
+    "crown": [
+     255.0,
+     76.0
+    ],
+    "earL": [
+     225.3,
+     147.2
+    ],
+    "earR": [
+     284.4,
+     143.3
+    ],
+    "bow": [
+     283.9,
+     102.9
+    ],
+    "neck": [
+     250.0,
+     201.6
+    ],
+    "pendant": [
+     252.6,
+     136.5
+    ],
+    "glasses": [
+     252.6,
+     136.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "hairflip-7": {
+   "file": "frames/hairflip-7.webp",
+   "mask": "masks/hairflip-7.webp",
+   "skin": "skin/hairflip-7.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.4,
+     87.6
+    ],
+    "ed": 36.25,
+    "angleDeg": -3.96,
+    "crown": [
+     245.3,
+     15.2
+    ],
+    "earL": [
+     219.3,
+     103.8
+    ],
+    "earR": [
+     289.1,
+     91.5
+    ],
+    "bow": [
+     283.3,
+     43.5
+    ],
+    "neck": [
+     255.7,
+     165.3
+    ],
+    "pendant": [
+     250.4,
+     87.6
+    ],
+    "glasses": [
+     250.4,
+     87.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-hairflip-v2-7.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "wave-1": {
+   "file": "frames/wave-1.webp",
+   "mask": "masks/wave-1.webp",
+   "skin": "skin/wave-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.8,
+     83.8
+    ],
+    "ed": 35.64,
+    "angleDeg": -3.76,
+    "crown": [
+     246.1,
+     12.7
+    ],
+    "earL": [
+     220.2,
+     99.7
+    ],
+    "earR": [
+     289.0,
+     87.8
+    ],
+    "bow": [
+     283.4,
+     40.6
+    ],
+    "neck": [
+     255.9,
+     160.3
+    ],
+    "pendant": [
+     250.8,
+     83.8
+    ],
+    "glasses": [
+     250.8,
+     83.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-wave-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "wave-2": {
+   "file": "frames/wave-2.webp",
+   "mask": "masks/wave-2.webp",
+   "skin": "skin/wave-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.6,
+     86.2
+    ],
+    "ed": 35.75,
+    "angleDeg": -6.03,
+    "crown": [
+     241.1,
+     15.1
+    ],
+    "earL": [
+     218.6,
+     103.4
+    ],
+    "earR": [
+     287.0,
+     88.7
+    ],
+    "bow": [
+     279.5,
+     41.6
+    ],
+    "neck": [
+     256.7,
+     162.6
+    ],
+    "pendant": [
+     248.6,
+     86.2
+    ],
+    "glasses": [
+     248.6,
+     86.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-wave-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "wave-3": {
+   "file": "frames/wave-3.webp",
+   "mask": "masks/wave-3.webp",
+   "skin": "skin/wave-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.2,
+     89.2
+    ],
+    "ed": 35.33,
+    "angleDeg": -4.99,
+    "crown": [
+     242.0,
+     18.8
+    ],
+    "earL": [
+     218.2,
+     105.6
+    ],
+    "earR": [
+     286.1,
+     92.3
+    ],
+    "bow": [
+     279.5,
+     45.7
+    ],
+    "neck": [
+     254.8,
+     164.9
+    ],
+    "pendant": [
+     248.2,
+     89.2
+    ],
+    "glasses": [
+     248.2,
+     89.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-wave-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "wave-5": {
+   "file": "frames/wave-5.webp",
+   "mask": "masks/wave-5.webp",
+   "skin": "skin/wave-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     257.3,
+     117.6
+    ],
+    "ed": 35.54,
+    "angleDeg": -13.36,
+    "crown": [
+     240.9,
+     48.5
+    ],
+    "earL": [
+     229.9,
+     138.4
+    ],
+    "earR": [
+     295.4,
+     115.2
+    ],
+    "bow": [
+     282.1,
+     69.7
+    ],
+    "neck": [
+     275.0,
+     192.0
+    ],
+    "pendant": [
+     257.3,
+     117.6
+    ],
+    "glasses": [
+     257.3,
+     117.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-wave-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "wave-4": {
+   "file": "frames/wave-4.webp",
+   "mask": "masks/wave-4.webp",
+   "skin": "skin/wave-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.9,
+     96.3
+    ],
+    "ed": 35.25,
+    "angleDeg": -6.53,
+    "crown": [
+     243.9,
+     26.2
+    ],
+    "earL": [
+     222.5,
+     113.4
+    ],
+    "earR": [
+     289.8,
+     98.4
+    ],
+    "bow": [
+     282.0,
+     52.0
+    ],
+    "neck": [
+     260.6,
+     171.6
+    ],
+    "pendant": [
+     251.9,
+     96.3
+    ],
+    "glasses": [
+     251.9,
+     96.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-wave-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "wave-6": {
+   "file": "frames/wave-6.webp",
+   "mask": "masks/wave-6.webp",
+   "skin": "skin/wave-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     204.5,
+     126.5
+    ],
+    "ed": 35.93,
+    "angleDeg": -17.13,
+    "crown": [
+     183.3,
+     57.8
+    ],
+    "earL": [
+     178.2,
+     149.2
+    ],
+    "earR": [
+     242.8,
+     121.5
+    ],
+    "bow": [
+     226.3,
+     76.5
+    ],
+    "neck": [
+     227.2,
+     200.3
+    ],
+    "pendant": [
+     204.5,
+     126.5
+    ],
+    "glasses": [
+     204.5,
+     126.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-wave-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "robot-1": {
+   "file": "frames/robot-1.webp",
+   "mask": "masks/robot-1.webp",
+   "skin": "skin/robot-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.9,
+     95.3
+    ],
+    "ed": 35.62,
+    "angleDeg": -5.43,
+    "crown": [
+     244.2,
+     24.4
+    ],
+    "earL": [
+     220.8,
+     112.1
+    ],
+    "earR": [
+     289.1,
+     98.2
+    ],
+    "bow": [
+     282.2,
+     51.2
+    ],
+    "neck": [
+     258.2,
+     171.6
+    ],
+    "pendant": [
+     250.9,
+     95.3
+    ],
+    "glasses": [
+     250.9,
+     95.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-robot-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "robot-2": {
+   "file": "frames/robot-2.webp",
+   "mask": "masks/robot-2.webp",
+   "skin": "skin/robot-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.6,
+     98.7
+    ],
+    "ed": 35.82,
+    "angleDeg": -4.6,
+    "crown": [
+     245.8,
+     27.2
+    ],
+    "earL": [
+     221.1,
+     115.1
+    ],
+    "earR": [
+     290.0,
+     102.1
+    ],
+    "bow": [
+     283.7,
+     54.7
+    ],
+    "neck": [
+     257.8,
+     175.4
+    ],
+    "pendant": [
+     251.6,
+     98.7
+    ],
+    "glasses": [
+     251.6,
+     98.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-robot-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "robot-3": {
+   "file": "frames/robot-3.webp",
+   "mask": "masks/robot-3.webp",
+   "skin": "skin/robot-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     237.4,
+     105.1
+    ],
+    "ed": 35.65,
+    "angleDeg": -16.79,
+    "crown": [
+     216.8,
+     36.9
+    ],
+    "earL": [
+     211.2,
+     127.5
+    ],
+    "earR": [
+     275.5,
+     100.4
+    ],
+    "bow": [
+     259.4,
+     55.7
+    ],
+    "neck": [
+     259.6,
+     178.5
+    ],
+    "pendant": [
+     237.4,
+     105.1
+    ],
+    "glasses": [
+     237.4,
+     105.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-robot-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "robot-4": {
+   "file": "frames/robot-4.webp",
+   "mask": "masks/robot-4.webp",
+   "skin": "skin/robot-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     233.8,
+     104.8
+    ],
+    "ed": 35.17,
+    "angleDeg": -13.99,
+    "crown": [
+     216.8,
+     36.6
+    ],
+    "earL": [
+     206.9,
+     125.6
+    ],
+    "earR": [
+     271.5,
+     102.0
+    ],
+    "bow": [
+     257.8,
+     57.2
+    ],
+    "neck": [
+     252.1,
+     178.2
+    ],
+    "pendant": [
+     233.8,
+     104.8
+    ],
+    "glasses": [
+     233.8,
+     104.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-robot-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "robot-5": {
+   "file": "frames/robot-5.webp",
+   "mask": "masks/robot-5.webp",
+   "skin": "skin/robot-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     253.6,
+     104.5
+    ],
+    "ed": 36.55,
+    "angleDeg": -7.79,
+    "crown": [
+     243.7,
+     32.1
+    ],
+    "earL": [
+     223.4,
+     123.0
+    ],
+    "earR": [
+     292.9,
+     105.8
+    ],
+    "bow": [
+     283.8,
+     57.9
+    ],
+    "neck": [
+     264.2,
+     182.4
+    ],
+    "pendant": [
+     253.6,
+     104.5
+    ],
+    "glasses": [
+     253.6,
+     104.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-robot-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "splits-1": {
+   "file": "frames/splits-1.webp",
+   "mask": "masks/splits-1.webp",
+   "skin": "skin/splits-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.6,
+     95.0
+    ],
+    "ed": 35.58,
+    "angleDeg": -3.59,
+    "crown": [
+     246.2,
+     24.0
+    ],
+    "earL": [
+     220.0,
+     110.7
+    ],
+    "earR": [
+     288.7,
+     99.0
+    ],
+    "bow": [
+     283.3,
+     51.9
+    ],
+    "neck": [
+     255.4,
+     171.3
+    ],
+    "pendant": [
+     250.6,
+     95.0
+    ],
+    "glasses": [
+     250.6,
+     95.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "splits-2": {
+   "file": "frames/splits-2.webp",
+   "mask": "masks/splits-2.webp",
+   "skin": "skin/splits-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     255.1,
+     360.5
+    ],
+    "ed": 38.3,
+    "angleDeg": -4.68,
+    "crown": [
+     248.8,
+     284.2
+    ],
+    "earL": [
+     222.5,
+     378.1
+    ],
+    "earR": [
+     296.1,
+     364.1
+    ],
+    "bow": [
+     289.3,
+     313.5
+    ],
+    "neck": [
+     261.8,
+     442.6
+    ],
+    "pendant": [
+     255.1,
+     360.5
+    ],
+    "glasses": [
+     255.1,
+     360.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "splits-3": {
+   "file": "frames/splits-3.webp",
+   "mask": "masks/splits-3.webp",
+   "skin": "skin/splits-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.3,
+     351.2
+    ],
+    "ed": 36.94,
+    "angleDeg": -4.11,
+    "crown": [
+     246.0,
+     277.5
+    ],
+    "earL": [
+     219.7,
+     367.9
+    ],
+    "earR": [
+     290.8,
+     355.1
+    ],
+    "bow": [
+     284.8,
+     306.2
+    ],
+    "neck": [
+     257.0,
+     430.5
+    ],
+    "pendant": [
+     251.3,
+     351.2
+    ],
+    "glasses": [
+     251.3,
+     351.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "splits-4": {
+   "file": "frames/splits-4.webp",
+   "mask": "masks/splits-4.webp",
+   "skin": "skin/splits-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.0,
+     362.9
+    ],
+    "ed": 36.13,
+    "angleDeg": -3.44,
+    "crown": [
+     246.6,
+     290.7
+    ],
+    "earL": [
+     219.9,
+     378.8
+    ],
+    "earR": [
+     289.6,
+     367.1
+    ],
+    "bow": [
+     284.2,
+     319.2
+    ],
+    "neck": [
+     255.7,
+     440.4
+    ],
+    "pendant": [
+     251.0,
+     362.9
+    ],
+    "glasses": [
+     251.0,
+     362.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "splits-5": {
+   "file": "frames/splits-5.webp",
+   "mask": "masks/splits-5.webp",
+   "skin": "skin/splits-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.8,
+     385.2
+    ],
+    "ed": 33.91,
+    "angleDeg": -4.52,
+    "crown": [
+     247.5,
+     317.6
+    ],
+    "earL": [
+     223.9,
+     400.7
+    ],
+    "earR": [
+     289.2,
+     388.5
+    ],
+    "bow": [
+     283.3,
+     343.6
+    ],
+    "neck": [
+     258.6,
+     457.8
+    ],
+    "pendant": [
+     252.8,
+     385.2
+    ],
+    "glasses": [
+     252.8,
+     385.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "splits-6": {
+   "file": "frames/splits-6.webp",
+   "mask": "masks/splits-6.webp",
+   "skin": "skin/splits-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     254.7,
+     443.2
+    ],
+    "ed": 31.43,
+    "angleDeg": -5.75,
+    "crown": [
+     248.4,
+     380.7
+    ],
+    "earL": [
+     228.3,
+     458.2
+    ],
+    "earR": [
+     288.5,
+     445.5
+    ],
+    "bow": [
+     282.1,
+     404.1
+    ],
+    "neck": [
+     261.5,
+     510.4
+    ],
+    "pendant": [
+     254.7,
+     443.2
+    ],
+    "glasses": [
+     254.7,
+     443.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "splits-7": {
+   "file": "frames/splits-7.webp",
+   "mask": "masks/splits-7.webp",
+   "skin": "skin/splits-7.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     255.2,
+     455.3
+    ],
+    "ed": 29.74,
+    "angleDeg": -6.0,
+    "crown": [
+     249.0,
+     396.1
+    ],
+    "earL": [
+     230.2,
+     469.5
+    ],
+    "earR": [
+     287.2,
+     457.4
+    ],
+    "bow": [
+     281.0,
+     418.2
+    ],
+    "neck": [
+     261.9,
+     518.9
+    ],
+    "pendant": [
+     255.2,
+     455.3
+    ],
+    "glasses": [
+     255.2,
+     455.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-7.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "splits-8": {
+   "file": "frames/splits-8.webp",
+   "mask": "masks/splits-8.webp",
+   "skin": "skin/splits-8.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     254.9,
+     463.5
+    ],
+    "ed": 29.32,
+    "angleDeg": -4.55,
+    "crown": [
+     250.2,
+     405.1
+    ],
+    "earL": [
+     229.9,
+     476.9
+    ],
+    "earR": [
+     286.3,
+     466.3
+    ],
+    "bow": [
+     281.2,
+     427.6
+    ],
+    "neck": [
+     259.9,
+     526.3
+    ],
+    "pendant": [
+     254.9,
+     463.5
+    ],
+    "glasses": [
+     254.9,
+     463.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-splits-v2-8.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "lunge-1": {
+   "file": "frames/lunge-1.webp",
+   "mask": "masks/lunge-1.webp",
+   "skin": "skin/lunge-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.3,
+     90.2
+    ],
+    "ed": 35.65,
+    "angleDeg": -4.34,
+    "crown": [
+     244.9,
+     19.2
+    ],
+    "earL": [
+     219.8,
+     106.5
+    ],
+    "earR": [
+     288.4,
+     93.8
+    ],
+    "bow": [
+     282.4,
+     46.7
+    ],
+    "neck": [
+     256.1,
+     166.7
+    ],
+    "pendant": [
+     250.3,
+     90.2
+    ],
+    "glasses": [
+     250.3,
+     90.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-lunge-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "lunge-2": {
+   "file": "frames/lunge-2.webp",
+   "mask": "masks/lunge-2.webp",
+   "skin": "skin/lunge-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     247.7,
+     98.8
+    ],
+    "ed": 35.99,
+    "angleDeg": -5.36,
+    "crown": [
+     240.9,
+     27.1
+    ],
+    "earL": [
+     217.2,
+     115.7
+    ],
+    "earR": [
+     286.3,
+     101.7
+    ],
+    "bow": [
+     279.3,
+     54.2
+    ],
+    "neck": [
+     254.9,
+     175.8
+    ],
+    "pendant": [
+     247.7,
+     98.8
+    ],
+    "glasses": [
+     247.7,
+     98.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-lunge-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "lunge-3": {
+   "file": "frames/lunge-3.webp",
+   "mask": "masks/lunge-3.webp",
+   "skin": "skin/lunge-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     246.8,
+     95.1
+    ],
+    "ed": 35.61,
+    "angleDeg": -6.01,
+    "crown": [
+     239.3,
+     24.2
+    ],
+    "earL": [
+     216.9,
+     112.1
+    ],
+    "earR": [
+     285.0,
+     97.5
+    ],
+    "bow": [
+     277.6,
+     50.6
+    ],
+    "neck": [
+     254.8,
+     171.2
+    ],
+    "pendant": [
+     246.8,
+     95.1
+    ],
+    "glasses": [
+     246.8,
+     95.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-lunge-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "lunge-4": {
+   "file": "frames/lunge-4.webp",
+   "mask": "masks/lunge-4.webp",
+   "skin": "skin/lunge-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     236.0,
+     135.1
+    ],
+    "ed": 37.51,
+    "angleDeg": -7.3,
+    "crown": [
+     226.4,
+     60.7
+    ],
+    "earL": [
+     204.9,
+     153.7
+    ],
+    "earR": [
+     276.3,
+     136.8
+    ],
+    "bow": [
+     267.3,
+     87.6
+    ],
+    "neck": [
+     246.2,
+     215.1
+    ],
+    "pendant": [
+     236.0,
+     135.1
+    ],
+    "glasses": [
+     236.0,
+     135.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-lunge-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": true
+   }
+  },
+  "lunge-5": {
+   "file": "frames/lunge-5.webp",
+   "mask": "masks/lunge-5.webp",
+   "skin": "skin/lunge-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     231.3,
+     164.1
+    ],
+    "ed": 39.94,
+    "angleDeg": -9.71,
+    "crown": [
+     217.8,
+     85.4
+    ],
+    "earL": [
+     199.1,
+     185.4
+    ],
+    "earR": [
+     274.3,
+     164.1
+    ],
+    "bow": [
+     262.6,
+     112.2
+    ],
+    "neck": [
+     245.8,
+     248.8
+    ],
+    "pendant": [
+     231.3,
+     164.1
+    ],
+    "glasses": [
+     231.3,
+     164.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-lunge-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "lunge-6": {
+   "file": "frames/lunge-6.webp",
+   "mask": "masks/lunge-6.webp",
+   "skin": "skin/lunge-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     222.7,
+     181.2
+    ],
+    "ed": 39.79,
+    "angleDeg": -11.72,
+    "crown": [
+     206.6,
+     103.2
+    ],
+    "earL": [
+     191.4,
+     203.5
+    ],
+    "earR": [
+     265.5,
+     179.7
+    ],
+    "bow": [
+     252.0,
+     128.3
+    ],
+    "neck": [
+     240.1,
+     264.9
+    ],
+    "pendant": [
+     222.7,
+     181.2
+    ],
+    "glasses": [
+     222.7,
+     181.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-lunge-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "kneel-1": {
+   "file": "frames/kneel-1.webp",
+   "mask": "masks/kneel-1.webp",
+   "skin": "skin/kneel-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.7,
+     86.5
+    ],
+    "ed": 36.1,
+    "angleDeg": -4.8,
+    "crown": [
+     245.7,
+     14.5
+    ],
+    "earL": [
+     221.0,
+     103.1
+    ],
+    "earR": [
+     290.4,
+     89.8
+    ],
+    "bow": [
+     283.9,
+     42.1
+    ],
+    "neck": [
+     258.2,
+     163.8
+    ],
+    "pendant": [
+     251.7,
+     86.5
+    ],
+    "glasses": [
+     251.7,
+     86.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "kneel-2": {
+   "file": "frames/kneel-2.webp",
+   "mask": "masks/kneel-2.webp",
+   "skin": "skin/kneel-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.1,
+     172.4
+    ],
+    "ed": 34.99,
+    "angleDeg": -4.83,
+    "crown": [
+     245.2,
+     102.7
+    ],
+    "earL": [
+     221.4,
+     188.6
+    ],
+    "earR": [
+     288.6,
+     175.6
+    ],
+    "bow": [
+     282.3,
+     129.4
+    ],
+    "neck": [
+     257.5,
+     247.4
+    ],
+    "pendant": [
+     251.1,
+     172.4
+    ],
+    "glasses": [
+     251.1,
+     172.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kneel-3": {
+   "file": "frames/kneel-3.webp",
+   "mask": "masks/kneel-3.webp",
+   "skin": "skin/kneel-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     255.0,
+     223.8
+    ],
+    "ed": 33.48,
+    "angleDeg": -4.36,
+    "crown": [
+     249.9,
+     157.0
+    ],
+    "earL": [
+     226.4,
+     239.0
+    ],
+    "earR": [
+     290.8,
+     227.1
+    ],
+    "bow": [
+     285.1,
+     182.8
+    ],
+    "neck": [
+     260.4,
+     295.6
+    ],
+    "pendant": [
+     255.0,
+     223.8
+    ],
+    "glasses": [
+     255.0,
+     223.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kneel-4": {
+   "file": "frames/kneel-4.webp",
+   "mask": "masks/kneel-4.webp",
+   "skin": "skin/kneel-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     257.8,
+     238.6
+    ],
+    "ed": 33.24,
+    "angleDeg": -3.62,
+    "crown": [
+     253.6,
+     172.2
+    ],
+    "earL": [
+     229.2,
+     253.3
+    ],
+    "earR": [
+     293.3,
+     242.4
+    ],
+    "bow": [
+     288.2,
+     198.3
+    ],
+    "neck": [
+     262.3,
+     309.9
+    ],
+    "pendant": [
+     257.8,
+     238.6
+    ],
+    "glasses": [
+     257.8,
+     238.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kneel-5": {
+   "file": "frames/kneel-5.webp",
+   "mask": "masks/kneel-5.webp",
+   "skin": "skin/kneel-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.3,
+     289.6
+    ],
+    "ed": 34.54,
+    "angleDeg": -16.09,
+    "crown": [
+     231.1,
+     223.2
+    ],
+    "earL": [
+     224.6,
+     311.0
+    ],
+    "earR": [
+     287.2,
+     285.5
+    ],
+    "bow": [
+     272.2,
+     241.9
+    ],
+    "neck": [
+     270.9,
+     361.0
+    ],
+    "pendant": [
+     250.3,
+     289.6
+    ],
+    "glasses": [
+     250.3,
+     289.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kneel-6": {
+   "file": "frames/kneel-6.webp",
+   "mask": "masks/kneel-6.webp",
+   "skin": "skin/kneel-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     247.7,
+     278.4
+    ],
+    "ed": 35.75,
+    "angleDeg": -18.02,
+    "crown": [
+     225.5,
+     210.4
+    ],
+    "earL": [
+     221.8,
+     301.4
+    ],
+    "earR": [
+     285.7,
+     272.8
+    ],
+    "bow": [
+     268.6,
+     228.3
+    ],
+    "neck": [
+     271.5,
+     351.4
+    ],
+    "pendant": [
+     247.7,
+     278.4
+    ],
+    "glasses": [
+     247.7,
+     278.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-6.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kneel-7": {
+   "file": "frames/kneel-7.webp",
+   "mask": "masks/kneel-7.webp",
+   "skin": "skin/kneel-7.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     246.2,
+     280.6
+    ],
+    "ed": 35.18,
+    "angleDeg": -18.1,
+    "crown": [
+     224.3,
+     213.7
+    ],
+    "earL": [
+     220.9,
+     303.2
+    ],
+    "earR": [
+     283.7,
+     275.0
+    ],
+    "bow": [
+     266.8,
+     231.3
+    ],
+    "neck": [
+     269.8,
+     352.5
+    ],
+    "pendant": [
+     246.2,
+     280.6
+    ],
+    "glasses": [
+     246.2,
+     280.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-kneel-v2-7.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "clap-1": {
+   "file": "frames/clap-1.webp",
+   "mask": "masks/clap-1.webp",
+   "skin": "skin/clap-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     251.0,
+     115.8
+    ],
+    "ed": 33.74,
+    "angleDeg": -4.04,
+    "crown": [
+     246.2,
+     48.5
+    ],
+    "earL": [
+     222.1,
+     131.0
+    ],
+    "earR": [
+     287.1,
+     119.4
+    ],
+    "bow": [
+     281.6,
+     74.7
+    ],
+    "neck": [
+     256.1,
+     188.2
+    ],
+    "pendant": [
+     251.0,
+     115.8
+    ],
+    "glasses": [
+     251.0,
+     115.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-clap-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "clap-2": {
+   "file": "frames/clap-2.webp",
+   "mask": "masks/clap-2.webp",
+   "skin": "skin/clap-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     255.0,
+     130.3
+    ],
+    "ed": 33.1,
+    "angleDeg": -6.42,
+    "crown": [
+     247.6,
+     64.5
+    ],
+    "earL": [
+     227.3,
+     146.3
+    ],
+    "earR": [
+     290.5,
+     132.3
+    ],
+    "bow": [
+     283.3,
+     88.8
+    ],
+    "neck": [
+     262.9,
+     201.0
+    ],
+    "pendant": [
+     255.0,
+     130.3
+    ],
+    "glasses": [
+     255.0,
+     130.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-clap-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "clap-3": {
+   "file": "frames/clap-3.webp",
+   "mask": "masks/clap-3.webp",
+   "skin": "skin/clap-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     249.1,
+     121.7
+    ],
+    "ed": 34.51,
+    "angleDeg": -6.26,
+    "crown": [
+     241.6,
+     53.1
+    ],
+    "earL": [
+     220.2,
+     138.4
+    ],
+    "earR": [
+     286.2,
+     124.0
+    ],
+    "bow": [
+     278.8,
+     78.6
+    ],
+    "neck": [
+     257.2,
+     195.5
+    ],
+    "pendant": [
+     249.1,
+     121.7
+    ],
+    "glasses": [
+     249.1,
+     121.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-clap-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "clap-4": {
+   "file": "frames/clap-4.webp",
+   "mask": "masks/clap-4.webp",
+   "skin": "skin/clap-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.4,
+     158.5
+    ],
+    "ed": 31.32,
+    "angleDeg": -4.77,
+    "crown": [
+     243.2,
+     96.1
+    ],
+    "earL": [
+     221.8,
+     172.9
+    ],
+    "earR": [
+     282.0,
+     161.4
+    ],
+    "bow": [
+     276.3,
+     120.0
+    ],
+    "neck": [
+     254.0,
+     225.6
+    ],
+    "pendant": [
+     248.4,
+     158.5
+    ],
+    "glasses": [
+     248.4,
+     158.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-clap-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "clap-5": {
+   "file": "frames/clap-5.webp",
+   "mask": "masks/clap-5.webp",
+   "skin": "skin/clap-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     247.8,
+     155.2
+    ],
+    "ed": 29.44,
+    "angleDeg": -4.75,
+    "crown": [
+     242.9,
+     96.5
+    ],
+    "earL": [
+     222.7,
+     168.8
+    ],
+    "earR": [
+     279.3,
+     157.9
+    ],
+    "bow": [
+     274.1,
+     119.0
+    ],
+    "neck": [
+     253.0,
+     218.3
+    ],
+    "pendant": [
+     247.8,
+     155.2
+    ],
+    "glasses": [
+     247.8,
+     155.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-clap-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-1": {
+   "file": "frames/moonwalk-1.webp",
+   "mask": "masks/moonwalk-1.webp",
+   "skin": "skin/moonwalk-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     247.5,
+     92.3
+    ],
+    "ed": 34.86,
+    "angleDeg": -7.46,
+    "crown": [
+     238.5,
+     23.2
+    ],
+    "earL": [
+     218.7,
+     109.8
+    ],
+    "earR": [
+     285.0,
+     93.8
+    ],
+    "bow": [
+     276.6,
+     48.1
+    ],
+    "neck": [
+     257.3,
+     166.7
+    ],
+    "pendant": [
+     247.5,
+     92.3
+    ],
+    "glasses": [
+     247.5,
+     92.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-1.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-2": {
+   "file": "frames/moonwalk-2.webp",
+   "mask": "masks/moonwalk-2.webp",
+   "skin": "skin/moonwalk-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     246.6,
+     99.2
+    ],
+    "ed": 35.15,
+    "angleDeg": -8.63,
+    "crown": [
+     236.0,
+     29.7
+    ],
+    "earL": [
+     217.8,
+     117.4
+    ],
+    "earR": [
+     284.4,
+     99.9
+    ],
+    "bow": [
+     275.0,
+     54.0
+    ],
+    "neck": [
+     257.9,
+     173.9
+    ],
+    "pendant": [
+     246.6,
+     99.2
+    ],
+    "glasses": [
+     246.6,
+     99.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-2.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-3": {
+   "file": "frames/moonwalk-3.webp",
+   "mask": "masks/moonwalk-3.webp",
+   "skin": "skin/moonwalk-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     244.3,
+     95.4
+    ],
+    "ed": 35.69,
+    "angleDeg": -7.86,
+    "crown": [
+     234.6,
+     24.7
+    ],
+    "earL": [
+     214.9,
+     113.4
+    ],
+    "earR": [
+     282.7,
+     96.6
+    ],
+    "bow": [
+     273.8,
+     49.9
+    ],
+    "neck": [
+     254.8,
+     171.4
+    ],
+    "pendant": [
+     244.3,
+     95.4
+    ],
+    "glasses": [
+     244.3,
+     95.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-3.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-4": {
+   "file": "frames/moonwalk-4.webp",
+   "mask": "masks/moonwalk-4.webp",
+   "skin": "skin/moonwalk-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     235.6,
+     103.3
+    ],
+    "ed": 33.66,
+    "angleDeg": -12.68,
+    "crown": [
+     220.8,
+     37.6
+    ],
+    "earL": [
+     209.4,
+     122.6
+    ],
+    "earR": [
+     271.8,
+     101.4
+    ],
+    "bow": [
+     259.6,
+     58.2
+    ],
+    "neck": [
+     251.5,
+     173.9
+    ],
+    "pendant": [
+     235.6,
+     103.3
+    ],
+    "glasses": [
+     235.6,
+     103.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-4.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": true
+   }
+  },
+  "moonwalk-5": {
+   "file": "frames/moonwalk-5.webp",
+   "mask": "masks/moonwalk-5.webp",
+   "skin": "skin/moonwalk-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     229.6,
+     107.8
+    ],
+    "ed": 33.34,
+    "angleDeg": -12.95,
+    "crown": [
+     214.6,
+     42.8
+    ],
+    "earL": [
+     203.7,
+     127.0
+    ],
+    "earR": [
+     265.4,
+     105.8
+    ],
+    "bow": [
+     253.2,
+     63.0
+    ],
+    "neck": [
+     245.6,
+     177.7
+    ],
+    "pendant": [
+     229.6,
+     107.8
+    ],
+    "glasses": [
+     229.6,
+     107.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-5.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": true
+   }
+  },
+  "moonwalk-7": {
+   "file": "frames/moonwalk-7.webp",
+   "mask": "masks/moonwalk-7.webp",
+   "skin": "skin/moonwalk-7.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     238.0,
+     103.3
+    ],
+    "ed": 33.7,
+    "angleDeg": -12.44,
+    "crown": [
+     223.4,
+     37.5
+    ],
+    "earL": [
+     211.6,
+     122.5
+    ],
+    "earR": [
+     274.2,
+     101.6
+    ],
+    "bow": [
+     262.2,
+     58.3
+    ],
+    "neck": [
+     253.6,
+     174.1
+    ],
+    "pendant": [
+     238.0,
+     103.3
+    ],
+    "glasses": [
+     238.0,
+     103.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-7.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-8": {
+   "file": "frames/moonwalk-8.webp",
+   "mask": "masks/moonwalk-8.webp",
+   "skin": "skin/moonwalk-8.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     240.6,
+     107.5
+    ],
+    "ed": 33.14,
+    "angleDeg": -12.03,
+    "crown": [
+     226.8,
+     42.7
+    ],
+    "earL": [
+     214.6,
+     126.2
+    ],
+    "earR": [
+     276.3,
+     106.0
+    ],
+    "bow": [
+     264.8,
+     63.4
+    ],
+    "neck": [
+     255.5,
+     177.2
+    ],
+    "pendant": [
+     240.6,
+     107.5
+    ],
+    "glasses": [
+     240.6,
+     107.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-8.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-9": {
+   "file": "frames/moonwalk-9.webp",
+   "mask": "masks/moonwalk-9.webp",
+   "skin": "skin/moonwalk-9.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.3,
+     103.1
+    ],
+    "ed": 33.55,
+    "angleDeg": -12.15,
+    "crown": [
+     238.1,
+     37.5
+    ],
+    "earL": [
+     226.0,
+     122.1
+    ],
+    "earR": [
+     288.3,
+     101.6
+    ],
+    "bow": [
+     276.6,
+     58.4
+    ],
+    "neck": [
+     267.5,
+     173.7
+    ],
+    "pendant": [
+     252.3,
+     103.1
+    ],
+    "glasses": [
+     252.3,
+     103.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-9.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-10": {
+   "file": "frames/moonwalk-10.webp",
+   "mask": "masks/moonwalk-10.webp",
+   "skin": "skin/moonwalk-10.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     256.7,
+     107.9
+    ],
+    "ed": 33.19,
+    "angleDeg": -12.29,
+    "crown": [
+     242.6,
+     43.0
+    ],
+    "earL": [
+     230.7,
+     126.7
+    ],
+    "earR": [
+     292.4,
+     106.3
+    ],
+    "bow": [
+     280.7,
+     63.6
+    ],
+    "neck": [
+     271.9,
+     177.6
+    ],
+    "pendant": [
+     256.7,
+     107.9
+    ],
+    "glasses": [
+     256.7,
+     107.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-10.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": true
+   }
+  },
+  "moonwalk-11": {
+   "file": "frames/moonwalk-11.webp",
+   "mask": "masks/moonwalk-11.webp",
+   "skin": "skin/moonwalk-11.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     273.2,
+     103.2
+    ],
+    "ed": 33.34,
+    "angleDeg": -12.24,
+    "crown": [
+     259.1,
+     38.1
+    ],
+    "earL": [
+     247.1,
+     122.1
+    ],
+    "earR": [
+     309.1,
+     101.6
+    ],
+    "bow": [
+     297.4,
+     58.8
+    ],
+    "neck": [
+     288.5,
+     173.3
+    ],
+    "pendant": [
+     273.2,
+     103.2
+    ],
+    "glasses": [
+     273.2,
+     103.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-11.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-12": {
+   "file": "frames/moonwalk-12.webp",
+   "mask": "masks/moonwalk-12.webp",
+   "skin": "skin/moonwalk-12.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     278.0,
+     107.4
+    ],
+    "ed": 33.25,
+    "angleDeg": -12.07,
+    "crown": [
+     264.0,
+     42.4
+    ],
+    "earL": [
+     251.9,
+     126.2
+    ],
+    "earR": [
+     313.7,
+     105.9
+    ],
+    "bow": [
+     302.2,
+     63.1
+    ],
+    "neck": [
+     292.9,
+     177.3
+    ],
+    "pendant": [
+     278.0,
+     107.4
+    ],
+    "glasses": [
+     278.0,
+     107.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-12.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-13": {
+   "file": "frames/moonwalk-13.webp",
+   "mask": "masks/moonwalk-13.webp",
+   "skin": "skin/moonwalk-13.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     287.3,
+     103.3
+    ],
+    "ed": 33.87,
+    "angleDeg": -12.15,
+    "crown": [
+     273.0,
+     37.0
+    ],
+    "earL": [
+     260.7,
+     122.4
+    ],
+    "earR": [
+     323.7,
+     101.7
+    ],
+    "bow": [
+     311.9,
+     58.1
+    ],
+    "neck": [
+     302.6,
+     174.5
+    ],
+    "pendant": [
+     287.3,
+     103.3
+    ],
+    "glasses": [
+     287.3,
+     103.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-13.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-14": {
+   "file": "frames/moonwalk-14.webp",
+   "mask": "masks/moonwalk-14.webp",
+   "skin": "skin/moonwalk-14.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     283.8,
+     107.8
+    ],
+    "ed": 33.84,
+    "angleDeg": -12.11,
+    "crown": [
+     269.6,
+     41.6
+    ],
+    "earL": [
+     257.2,
+     126.9
+    ],
+    "earR": [
+     320.2,
+     106.3
+    ],
+    "bow": [
+     308.4,
+     62.7
+    ],
+    "neck": [
+     299.1,
+     178.9
+    ],
+    "pendant": [
+     283.8,
+     107.8
+    ],
+    "glasses": [
+     283.8,
+     107.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-14.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": true
+   }
+  },
+  "moonwalk-15": {
+   "file": "frames/moonwalk-15.webp",
+   "mask": "masks/moonwalk-15.webp",
+   "skin": "skin/moonwalk-15.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     279.3,
+     103.4
+    ],
+    "ed": 33.7,
+    "angleDeg": -12.18,
+    "crown": [
+     265.1,
+     37.5
+    ],
+    "earL": [
+     252.9,
+     122.5
+    ],
+    "earR": [
+     315.5,
+     101.8
+    ],
+    "bow": [
+     303.7,
+     58.5
+    ],
+    "neck": [
+     294.6,
+     174.2
+    ],
+    "pendant": [
+     279.3,
+     103.4
+    ],
+    "glasses": [
+     279.3,
+     103.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-15.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-16": {
+   "file": "frames/moonwalk-16.webp",
+   "mask": "masks/moonwalk-16.webp",
+   "skin": "skin/moonwalk-16.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     276.5,
+     95.6
+    ],
+    "ed": 35.55,
+    "angleDeg": -8.38,
+    "crown": [
+     266.1,
+     25.2
+    ],
+    "earL": [
+     247.3,
+     113.8
+    ],
+    "earR": [
+     314.7,
+     96.4
+    ],
+    "bow": [
+     305.4,
+     50.0
+    ],
+    "neck": [
+     287.6,
+     171.2
+    ],
+    "pendant": [
+     276.5,
+     95.6
+    ],
+    "glasses": [
+     276.5,
+     95.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-16.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-17": {
+   "file": "frames/moonwalk-17.webp",
+   "mask": "masks/moonwalk-17.webp",
+   "skin": "skin/moonwalk-17.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     268.2,
+     99.2
+    ],
+    "ed": 35.64,
+    "angleDeg": -8.52,
+    "crown": [
+     257.6,
+     28.7
+    ],
+    "earL": [
+     239.0,
+     117.6
+    ],
+    "earR": [
+     306.5,
+     100.0
+    ],
+    "bow": [
+     297.1,
+     53.5
+    ],
+    "neck": [
+     279.6,
+     175.0
+    ],
+    "pendant": [
+     268.2,
+     99.2
+    ],
+    "glasses": [
+     268.2,
+     99.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-17.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "moonwalk-18": {
+   "file": "frames/moonwalk-18.webp",
+   "mask": "masks/moonwalk-18.webp",
+   "skin": "skin/moonwalk-18.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     257.9,
+     92.5
+    ],
+    "ed": 34.7,
+    "angleDeg": -7.55,
+    "crown": [
+     248.8,
+     23.7
+    ],
+    "earL": [
+     229.2,
+     109.9
+    ],
+    "earR": [
+     295.2,
+     93.9
+    ],
+    "bow": [
+     286.8,
+     48.4
+    ],
+    "neck": [
+     267.7,
+     166.5
+    ],
+    "pendant": [
+     257.9,
+     92.5
+    ],
+    "glasses": [
+     257.9,
+     92.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "girl-a-mv-moonwalk-v2-18.jpg",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "armsup-1": {
+   "file": "frames/armsup-1.webp",
+   "mask": "masks/armsup-1.webp",
+   "skin": "skin/armsup-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     250.8,
+     101.8
+    ],
+    "ed": 35.21,
+    "angleDeg": -5.75,
+    "crown": [
+     243.7,
+     31.7
+    ],
+    "earL": [
+     221.1,
+     118.6
+    ],
+    "earR": [
+     288.6,
+     104.4
+    ],
+    "bow": [
+     281.5,
+     58.0
+    ],
+    "neck": [
+     258.4,
+     177.2
+    ],
+    "pendant": [
+     250.8,
+     101.8
+    ],
+    "glasses": [
+     250.8,
+     101.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-armsup-tw2-armsup-1.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "armsup-2": {
+   "file": "frames/armsup-2.webp",
+   "mask": "masks/armsup-2.webp",
+   "skin": "skin/armsup-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     248.2,
+     95.6
+    ],
+    "ed": 34.98,
+    "angleDeg": -6.67,
+    "crown": [
+     240.0,
+     26.1
+    ],
+    "earL": [
+     219.0,
+     112.7
+    ],
+    "earR": [
+     285.7,
+     97.6
+    ],
+    "bow": [
+     277.9,
+     51.6
+    ],
+    "neck": [
+     256.9,
+     170.3
+    ],
+    "pendant": [
+     248.2,
+     95.6
+    ],
+    "glasses": [
+     248.2,
+     95.6
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-armsup-tw2-armsup-2.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "armsup-3": {
+   "file": "frames/armsup-3.webp",
+   "mask": "masks/armsup-3.webp",
+   "skin": "skin/armsup-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     256.4,
+     122.3
+    ],
+    "ed": 33.72,
+    "angleDeg": -11.0,
+    "crown": [
+     243.5,
+     56.1
+    ],
+    "earL": [
+     229.6,
+     140.9
+    ],
+    "earR": [
+     292.7,
+     121.5
+    ],
+    "bow": [
+     281.8,
+     77.9
+    ],
+    "neck": [
+     270.3,
+     193.5
+    ],
+    "pendant": [
+     256.4,
+     122.3
+    ],
+    "glasses": [
+     256.4,
+     122.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-armsup-old-armsup-1.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "armsup-4": {
+   "file": "frames/armsup-4.webp",
+   "mask": "masks/armsup-4.webp",
+   "skin": "skin/armsup-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     255.2,
+     122.2
+    ],
+    "ed": 34.13,
+    "angleDeg": -9.0,
+    "crown": [
+     244.5,
+     54.8
+    ],
+    "earL": [
+     227.4,
+     140.1
+    ],
+    "earR": [
+     292.0,
+     122.7
+    ],
+    "bow": [
+     282.5,
+     78.2
+    ],
+    "neck": [
+     266.7,
+     194.7
+    ],
+    "pendant": [
+     255.2,
+     122.2
+    ],
+    "glasses": [
+     255.2,
+     122.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-armsup-tw2-armsup-3.png",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "armsup-5": {
+   "file": "frames/armsup-5.webp",
+   "mask": "masks/armsup-5.webp",
+   "skin": "skin/armsup-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     259.6,
+     130.9
+    ],
+    "ed": 33.42,
+    "angleDeg": -9.76,
+    "crown": [
+     248.3,
+     65.0
+    ],
+    "earL": [
+     232.6,
+     148.7
+    ],
+    "earR": [
+     295.6,
+     130.8
+    ],
+    "bow": [
+     285.7,
+     87.4
+    ],
+    "neck": [
+     271.8,
+     201.7
+    ],
+    "pendant": [
+     259.6,
+     130.9
+    ],
+    "glasses": [
+     259.6,
+     130.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-armsup-old-pose-armsup.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "jump-1": {
+   "file": "frames/jump-1.webp",
+   "mask": "masks/jump-1.webp",
+   "skin": "skin/jump-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     249.4,
+     128.9
+    ],
+    "ed": 35.92,
+    "angleDeg": -5.78,
+    "crown": [
+     242.2,
+     57.4
+    ],
+    "earL": [
+     219.1,
+     146.0
+    ],
+    "earR": [
+     287.9,
+     131.5
+    ],
+    "bow": [
+     280.6,
+     84.2
+    ],
+    "neck": [
+     257.2,
+     205.7
+    ],
+    "pendant": [
+     249.4,
+     128.9
+    ],
+    "glasses": [
+     249.4,
+     128.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-jump-tw3-jump-1.png",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "jump-2": {
+   "file": "frames/jump-2.webp",
+   "mask": "masks/jump-2.webp",
+   "skin": "skin/jump-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     213.4,
+     186.8
+    ],
+    "ed": 43.0,
+    "angleDeg": -7.47,
+    "crown": [
+     202.2,
+     101.5
+    ],
+    "earL": [
+     177.8,
+     208.3
+    ],
+    "earR": [
+     259.6,
+     188.6
+    ],
+    "bow": [
+     249.2,
+     132.2
+    ],
+    "neck": [
+     225.4,
+     278.4
+    ],
+    "pendant": [
+     213.4,
+     186.8
+    ],
+    "glasses": [
+     213.4,
+     186.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-jump-old-jump-1.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "jump-3": {
+   "file": "frames/jump-3.webp",
+   "mask": "masks/jump-3.webp",
+   "skin": "skin/jump-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.3,
+     103.9
+    ],
+    "ed": 35.36,
+    "angleDeg": 7.77,
+    "crown": [
+     261.9,
+     33.8
+    ],
+    "earL": [
+     219.4,
+     113.3
+    ],
+    "earR": [
+     288.6,
+     115.3
+    ],
+    "bow": [
+     292.5,
+     68.3
+    ],
+    "neck": [
+     242.0,
+     179.2
+    ],
+    "pendant": [
+     252.3,
+     103.9
+    ],
+    "glasses": [
+     252.3,
+     103.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-jump-tw2-jump-2.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "jump-4": {
+   "file": "frames/jump-4.webp",
+   "mask": "masks/jump-4.webp",
+   "skin": "skin/jump-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     265.0,
+     107.3
+    ],
+    "ed": 35.12,
+    "angleDeg": 8.02,
+    "crown": [
+     274.8,
+     37.8
+    ],
+    "earL": [
+     232.3,
+     116.5
+    ],
+    "earR": [
+     301.0,
+     118.8
+    ],
+    "bow": [
+     305.1,
+     72.2
+    ],
+    "neck": [
+     254.5,
+     182.1
+    ],
+    "pendant": [
+     265.0,
+     107.3
+    ],
+    "glasses": [
+     265.0,
+     107.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-jump-old-jump-2.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "jump-5": {
+   "file": "frames/jump-5.webp",
+   "mask": "masks/jump-5.webp",
+   "skin": "skin/jump-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     267.8,
+     105.3
+    ],
+    "ed": 35.68,
+    "angleDeg": 8.61,
+    "crown": [
+     278.5,
+     34.8
+    ],
+    "earL": [
+     234.5,
+     114.3
+    ],
+    "earR": [
+     304.3,
+     117.4
+    ],
+    "bow": [
+     309.0,
+     70.0
+    ],
+    "neck": [
+     256.3,
+     181.2
+    ],
+    "pendant": [
+     267.8,
+     105.3
+    ],
+    "glasses": [
+     267.8,
+     105.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-jump-old-pose-jump.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "jump-6": {
+   "file": "frames/jump-6.webp",
+   "mask": "masks/jump-6.webp",
+   "skin": "skin/jump-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.4,
+     124.1
+    ],
+    "ed": 34.6,
+    "angleDeg": 6.05,
+    "crown": [
+     259.7,
+     55.3
+    ],
+    "earL": [
+     220.5,
+     134.3
+    ],
+    "earR": [
+     288.3,
+     134.2
+    ],
+    "bow": [
+     290.7,
+     88.2
+    ],
+    "neck": [
+     244.6,
+     198.1
+    ],
+    "pendant": [
+     252.4,
+     124.1
+    ],
+    "glasses": [
+     252.4,
+     124.1
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-jump-tw2-jump-3.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "kick-1": {
+   "file": "frames/kick-1.webp",
+   "mask": "masks/kick-1.webp",
+   "skin": "skin/kick-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     257.5,
+     98.9
+    ],
+    "ed": 34.66,
+    "angleDeg": -10.26,
+    "crown": [
+     245.2,
+     30.6
+    ],
+    "earL": [
+     229.7,
+     117.6
+    ],
+    "earR": [
+     294.8,
+     98.5
+    ],
+    "bow": [
+     284.2,
+     53.5
+    ],
+    "neck": [
+     270.8,
+     172.2
+    ],
+    "pendant": [
+     257.5,
+     98.9
+    ],
+    "glasses": [
+     257.5,
+     98.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-kick-tw2-kick-1.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "kick-2": {
+   "file": "frames/kick-2.webp",
+   "mask": "masks/kick-2.webp",
+   "skin": "skin/kick-2.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     252.8,
+     88.8
+    ],
+    "ed": 35.11,
+    "angleDeg": -7.94,
+    "crown": [
+     243.1,
+     19.2
+    ],
+    "earL": [
+     223.9,
+     106.6
+    ],
+    "earR": [
+     290.5,
+     89.9
+    ],
+    "bow": [
+     281.7,
+     44.0
+    ],
+    "neck": [
+     263.2,
+     163.5
+    ],
+    "pendant": [
+     252.8,
+     88.8
+    ],
+    "glasses": [
+     252.8,
+     88.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-kick-tw3-kick-2.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "kick-3": {
+   "file": "frames/kick-3.webp",
+   "mask": "masks/kick-3.webp",
+   "skin": "skin/kick-3.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     240.3,
+     105.3
+    ],
+    "ed": 35.24,
+    "angleDeg": -10.07,
+    "crown": [
+     227.9,
+     35.9
+    ],
+    "earL": [
+     211.9,
+     124.2
+    ],
+    "earR": [
+     278.2,
+     105.0
+    ],
+    "bow": [
+     267.6,
+     59.3
+    ],
+    "neck": [
+     253.5,
+     179.9
+    ],
+    "pendant": [
+     240.3,
+     105.3
+    ],
+    "glasses": [
+     240.3,
+     105.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-kick-old-kick-1.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": true
+   }
+  },
+  "kick-4": {
+   "file": "frames/kick-4.webp",
+   "mask": "masks/kick-4.webp",
+   "skin": "skin/kick-4.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     239.9,
+     137.8
+    ],
+    "ed": 34.03,
+    "angleDeg": 5.7,
+    "crown": [
+     246.7,
+     70.1
+    ],
+    "earL": [
+     208.6,
+     147.9
+    ],
+    "earR": [
+     275.2,
+     147.5
+    ],
+    "bow": [
+     277.4,
+     102.2
+    ],
+    "neck": [
+     232.6,
+     210.6
+    ],
+    "pendant": [
+     239.9,
+     137.8
+    ],
+    "glasses": [
+     239.9,
+     137.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-kick-tw2-kick-3.png",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kick-5": {
+   "file": "frames/kick-5.webp",
+   "mask": "masks/kick-5.webp",
+   "skin": "skin/kick-5.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     213.7,
+     146.2
+    ],
+    "ed": 32.88,
+    "angleDeg": 6.13,
+    "crown": [
+     220.7,
+     80.8
+    ],
+    "earL": [
+     183.4,
+     155.8
+    ],
+    "earR": [
+     247.7,
+     155.8
+    ],
+    "bow": [
+     250.1,
+     112.0
+    ],
+    "neck": [
+     206.1,
+     216.5
+    ],
+    "pendant": [
+     213.7,
+     146.2
+    ],
+    "glasses": [
+     213.7,
+     146.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-kick-tw2-kick-4.png",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "kick-6": {
+   "file": "frames/kick-6.webp",
+   "mask": "masks/kick-6.webp",
+   "skin": "skin/kick-6.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     205.8,
+     152.0
+    ],
+    "ed": 33.06,
+    "angleDeg": 6.69,
+    "crown": [
+     213.5,
+     86.3
+    ],
+    "earL": [
+     175.2,
+     161.3
+    ],
+    "earR": [
+     239.9,
+     162.0
+    ],
+    "bow": [
+     242.8,
+     118.0
+    ],
+    "neck": [
+     197.5,
+     222.6
+    ],
+    "pendant": [
+     205.8,
+     152.0
+    ],
+    "glasses": [
+     205.8,
+     152.0
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-kick-old-pose-sidekick.png",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "spin-1": {
+   "file": "frames/spin-1.webp",
+   "mask": "masks/spin-1.webp",
+   "skin": "skin/spin-1.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     231.6,
+     92.3
+    ],
+    "ed": 29.65,
+    "angleDeg": -13.08,
+    "crown": [
+     218.1,
+     34.5
+    ],
+    "earL": [
+     208.6,
+     109.4
+    ],
+    "earR": [
+     263.4,
+     90.4
+    ],
+    "bow": [
+     252.5,
+     52.4
+    ],
+    "neck": [
+     246.0,
+     154.3
+    ],
+    "pendant": [
+     231.6,
+     92.3
+    ],
+    "glasses": [
+     231.6,
+     92.3
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw2-spin-1.png",
+   "earGoldDetected": {
+    "earL": false,
+    "earR": false
+   }
+  },
+  "spin-2": {
+   "file": "frames/spin-2.webp",
+   "mask": "masks/spin-2.webp",
+   "skin": "skin/spin-2.webp",
+   "facing": "side",
+   "anchorQuality": "manual (turned head, approximate)",
+   "anchors": {
+    "eyeMid": [
+     216.6,
+     105.8
+    ],
+    "ed": 30.0,
+    "angleDeg": -4.86,
+    "crown": [
+     211.5,
+     46.0
+    ],
+    "earL": [
+     191.1,
+     119.6
+    ],
+    "earR": [
+     248.7,
+     108.5
+    ],
+    "bow": [
+     243.3,
+     68.8
+    ],
+    "neck": [
+     222.1,
+     170.0
+    ],
+    "pendant": [
+     216.6,
+     105.8
+    ],
+    "glasses": [
+     216.6,
+     105.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": false,
+    "earL": false,
+    "earR": false,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw3-spin-045.png"
+  },
+  "spin-3": {
+   "file": "frames/spin-3.webp",
+   "mask": "masks/spin-3.webp",
+   "skin": "skin/spin-3.webp",
+   "facing": "side",
+   "anchorQuality": "manual (turned head, approximate)",
+   "anchors": {
+    "eyeMid": [
+     202.7,
+     102.8
+    ],
+    "ed": 27.0,
+    "angleDeg": -2.86,
+    "crown": [
+     200.0,
+     48.8
+    ],
+    "earL": [
+     179.3,
+     114.4
+    ],
+    "earR": [
+     231.5,
+     106.2
+    ],
+    "bow": [
+     227.9,
+     70.4
+    ],
+    "neck": [
+     205.6,
+     160.7
+    ],
+    "pendant": [
+     202.7,
+     102.8
+    ],
+    "glasses": [
+     202.7,
+     102.8
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": false,
+    "earL": false,
+    "earR": false,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw3-spin-090.png"
+  },
+  "spin-4": {
+   "file": "frames/spin-4.webp",
+   "mask": "masks/spin-4.webp",
+   "skin": "skin/spin-4.webp",
+   "facing": "back",
+   "anchorQuality": "estimated-from-silhouette",
+   "anchors": {
+    "eyeMid": [
+     231.2,
+     114.9
+    ],
+    "ed": 33.23,
+    "angleDeg": 0.0,
+    "crown": [
+     231.2,
+     48.5
+    ],
+    "earL": [
+     201.7,
+     127.9
+    ],
+    "earR": [
+     266.4,
+     121.0
+    ],
+    "bow": [
+     264.1,
+     76.7
+    ],
+    "neck": [
+     231.2,
+     186.4
+    ],
+    "pendant": [
+     231.2,
+     114.9
+    ],
+    "glasses": [
+     231.2,
+     114.9
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": false,
+    "earL": false,
+    "earR": false,
+    "pendant": false,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw3-spin-135.png"
+  },
+  "spin-5": {
+   "file": "frames/spin-5.webp",
+   "mask": "masks/spin-5.webp",
+   "skin": "skin/spin-5.webp",
+   "facing": "back",
+   "anchorQuality": "estimated-from-silhouette",
+   "anchors": {
+    "eyeMid": [
+     243.0,
+     113.4
+    ],
+    "ed": 33.23,
+    "angleDeg": 0.0,
+    "crown": [
+     243.0,
+     47.0
+    ],
+    "earL": [
+     213.6,
+     126.4
+    ],
+    "earR": [
+     278.3,
+     119.5
+    ],
+    "bow": [
+     276.0,
+     75.2
+    ],
+    "neck": [
+     243.0,
+     184.9
+    ],
+    "pendant": [
+     243.0,
+     113.4
+    ],
+    "glasses": [
+     243.0,
+     113.4
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": false,
+    "earL": false,
+    "earR": false,
+    "pendant": false,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw3-spin-180.png"
+  },
+  "spin-6": {
+   "file": "frames/spin-6.webp",
+   "mask": "masks/spin-6.webp",
+   "skin": "skin/spin-6.webp",
+   "facing": "back",
+   "anchorQuality": "estimated-from-silhouette",
+   "anchors": {
+    "eyeMid": [
+     278.9,
+     111.2
+    ],
+    "ed": 33.23,
+    "angleDeg": 0.0,
+    "crown": [
+     278.9,
+     44.7
+    ],
+    "earL": [
+     249.5,
+     124.1
+    ],
+    "earR": [
+     314.2,
+     117.2
+    ],
+    "bow": [
+     311.9,
+     73.0
+    ],
+    "neck": [
+     278.9,
+     182.6
+    ],
+    "pendant": [
+     278.9,
+     111.2
+    ],
+    "glasses": [
+     278.9,
+     111.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": false,
+    "earL": false,
+    "earR": false,
+    "pendant": false,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw3-spin-225.png"
+  },
+  "spin-7": {
+   "file": "frames/spin-7.webp",
+   "mask": "masks/spin-7.webp",
+   "skin": "skin/spin-7.webp",
+   "facing": "back",
+   "anchorQuality": "estimated-from-silhouette",
+   "anchors": {
+    "eyeMid": [
+     269.5,
+     112.7
+    ],
+    "ed": 33.23,
+    "angleDeg": 0.0,
+    "crown": [
+     269.5,
+     46.2
+    ],
+    "earL": [
+     240.1,
+     125.6
+    ],
+    "earR": [
+     304.7,
+     118.7
+    ],
+    "bow": [
+     302.4,
+     74.5
+    ],
+    "neck": [
+     269.5,
+     184.1
+    ],
+    "pendant": [
+     269.5,
+     112.7
+    ],
+    "glasses": [
+     269.5,
+     112.7
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": false,
+    "earL": false,
+    "earR": false,
+    "pendant": false,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-tw3-spin-270.png"
+  },
+  "spin-8": {
+   "file": "frames/spin-8.webp",
+   "mask": "masks/spin-8.webp",
+   "skin": "skin/spin-8.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     277.3,
+     115.5
+    ],
+    "ed": 32.33,
+    "angleDeg": -12.09,
+    "crown": [
+     263.7,
+     52.2
+    ],
+    "earL": [
+     251.9,
+     133.7
+    ],
+    "earR": [
+     312.0,
+     114.0
+    ],
+    "bow": [
+     300.8,
+     72.4
+    ],
+    "neck": [
+     291.9,
+     183.4
+    ],
+    "pendant": [
+     277.3,
+     115.5
+    ],
+    "glasses": [
+     277.3,
+     115.5
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-old-spin-1.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  },
+  "spin-9": {
+   "file": "frames/spin-9.webp",
+   "mask": "masks/spin-9.webp",
+   "skin": "skin/spin-9.webp",
+   "facing": "front",
+   "anchorQuality": "detected",
+   "anchors": {
+    "eyeMid": [
+     271.5,
+     114.2
+    ],
+    "ed": 32.43,
+    "angleDeg": -12.02,
+    "crown": [
+     257.9,
+     50.7
+    ],
+    "earL": [
+     246.0,
+     132.5
+    ],
+    "earR": [
+     306.3,
+     112.8
+    ],
+    "bow": [
+     295.1,
+     71.0
+    ],
+    "neck": [
+     286.0,
+     182.4
+    ],
+    "pendant": [
+     271.5,
+     114.2
+    ],
+    "glasses": [
+     271.5,
+     114.2
+    ]
+   },
+   "accessoryVisible": {
+    "glasses": true,
+    "earL": true,
+    "earR": true,
+    "pendant": true,
+    "crown": true,
+    "bow": true
+   },
+   "source": "norm-spin-old-pose-spin.png",
+   "earGoldDetected": {
+    "earL": true,
+    "earR": false
+   }
+  }
+ },
+ "recolor": {
+  "maskFiles": {
+   "rgb": "masks/<id>.webp (lossless, opaque): R=hair, G=top/cardigan, B=skirt/bottom (0..255 soft coverage)",
+   "skin": "skin/<id>.webp (lossless, opaque grayscale): skin coverage"
+  },
+  "baseColorsRGB": {
+   "hair": [
+    203,
+    161,
+    135
+   ],
+   "top": [
+    222,
+    227,
+    207
+   ],
+   "skirt": [
+    219,
+    193,
+    225
+   ],
+   "skin": [
+    236,
+    181,
+    151
+   ]
+  },
+  "howTo": "Draw frame to canvas, read mask pixels (same size), for each pixel with coverage c>0 shift the frame pixel towards the new colour: convert to HSL, set hue to target hue, scale saturation/lightness by target/base (keep line-art: weight = c * (0.35+0.65*smoothstep(L 0.2..0.55))). Mask files must be loaded lossless; never premultiply (masks are opaque).",
+  "notes": "Face is protected (eyes/skin are never in the hair mask); white blouse, shoes and gold items are in no mask."
+ },
+ "accessories": {
+  "crown": {
+   "file": "acc/crown.webp",
+   "label_de": "Krone",
+   "w": 400,
+   "h": 256,
+   "anchor": [
+    200.0,
+    128.1
+   ],
+   "placeWidthInEyeDistances": 2.7,
+   "anchorFrame": "crown",
+   "rotate": "angleDeg",
+   "note": "sprite centre sits on frame anchor \"crown\"; width = 2.7 * anchors.ed"
+  },
+  "earL": {
+   "file": "acc/earL.webp",
+   "label_de": "Stern-Ohrring links",
+   "w": 39,
+   "h": 66,
+   "anchor": [
+    20.4,
+    3.2
+   ],
+   "refEyeDistance": 42.4,
+   "anchorFrame": "earL",
+   "rotate": "angleDeg",
+   "note": "scale = frame.anchors.ed / refEyeDistance; sprite anchor point sits on the frame anchor",
+   "visibleFlag": "earL"
+  },
+  "earR": {
+   "file": "acc/earR.webp",
+   "label_de": "Stern-Ohrring rechts",
+   "w": 38,
+   "h": 68,
+   "anchor": [
+    22.0,
+    2.4
+   ],
+   "refEyeDistance": 42.4,
+   "anchorFrame": "earR",
+   "rotate": "angleDeg",
+   "note": "scale = frame.anchors.ed / refEyeDistance; sprite anchor point sits on the frame anchor",
+   "visibleFlag": "earR"
+  },
+  "sunglasses": {
+   "file": "acc/sunglasses.webp",
+   "label_de": "Herz-Sonnenbrille",
+   "w": 94,
+   "h": 44,
+   "anchor": [
+    45.9,
+    20.3
+   ],
+   "refEyeDistance": 42.4,
+   "anchorFrame": "glasses",
+   "rotate": "angleDeg",
+   "note": "scale = frame.anchors.ed / refEyeDistance; sprite anchor point sits on the frame anchor",
+   "visibleFlag": "glasses"
+  },
+  "pendant": {
+   "file": "acc/pendant.webp",
+   "label_de": "Herz-Anhänger",
+   "w": 73,
+   "h": 86,
+   "anchor": [
+    26.7,
+    -90.1
+   ],
+   "refEyeDistance": 42.4,
+   "anchorFrame": "pendant",
+   "rotate": "angleDeg",
+   "note": "scale = frame.anchors.ed / refEyeDistance; sprite anchor point sits on the frame anchor",
+   "visibleFlag": "pendant"
+  },
+  "bow": {
+   "file": "acc/bow.webp",
+   "label_de": "Haarschleife",
+   "w": 122,
+   "h": 157,
+   "anchor": [
+    47.9,
+    53.9
+   ],
+   "refEyeDistance": 42.4,
+   "anchorFrame": "bow",
+   "rotate": "angleDeg",
+   "note": "scale = frame.anchors.ed / refEyeDistance; sprite anchor point sits on the frame anchor",
+   "visibleFlag": "bow"
+  }
+ },
+ "accessoryDrawOrder": [
+  "bow",
+  "pendant",
+  "sunglasses",
+  "earL",
+  "earR",
+  "crown"
+ ],
+ "anchorsDoc": {
+  "units": "pixels in the 512x768 frame canvas",
+  "eyeMid": "midpoint between the two eye centres (green iris detection; manual for hairflip-2, spin-2, spin-3)",
+  "ed": "eye distance in px",
+  "angleDeg": "head roll (eye line angle), clockwise positive in screen coords",
+  "crown": "eyeMid + up*2.0*ed (centre of the tiara)",
+  "earL": "lobe attach point image-left, earR image-right (formula from face frame; verified visually)",
+  "neck": "eyeMid + down*2.15*ed (collar)",
+  "facing": "front | side (turned head, approximate) | back (no face; anchors estimated from silhouette top)"
+ }
+}
