@@ -4,7 +4,7 @@
 (function () {
   const BASE = new URL("girl-a/", document.currentScript.src);
   const W = 512, H = 768, FEET_Y = 753, BODY_PX = 740, BODY_UNITS = 215;
-  const CACHE_MAX = 36;
+  const CACHE_MAX = 64;
 
   const HAIR = [
     { name: "Honigblond", hex: "#CBA187" },
@@ -54,6 +54,16 @@
   let upcoming = null;
   let wantHit = false;
   let wantSpecific = false;
+  let bag = [];
+  let history = [];
+  let idleSince = 0;
+  let sparseMin = 5000;
+  let lastBeatFloor = -1;
+  let justLabel = "";
+  let forceReady = false;
+  let simNow = null;
+  const BIG = { jump: 1, spin: 1, splits: 1, kick: 1, robot: 1 };
+  const CYCLE_MS = 8 * 120;
   let nextAt = 0;
   let lastBpm = 0;
   let freeze = null;
@@ -283,16 +293,22 @@
     for (let i = 0; i < arr.length; i++) if (arr[i] && !s.has(arr[i])) { s.add(arr[i]); o.push(arr[i]); }
     return o;
   }
+  function keepNames() {
+    const names = [];
+    function add(n) { if (n && names.indexOf(n) < 0) names.push(n); }
+    add(playing);
+    add(upcoming);
+    for (let i = 0; i < bag.length && i < 3; i++) add(bag[i]);
+    return names;
+  }
   function pinned(id) {
     if (!manifest) return false;
     if (manifest.idle.loop.indexOf(id) >= 0) return true;
     if (freeze === id) return true;
-    if (mode === "move") {
-      for (let i = 0; i < seq.length; i++) if (seq[i][0] === id) return true;
-    }
-    if (upcoming) {
-      const f = moveFrames(upcoming);
-      for (let i = 0; i < f.length; i++) if (f[i] === id) return true;
+    const names = keepNames();
+    for (let n = 0; n < names.length; n++) {
+      const frames = moveFrames(names[n]);
+      for (let i = 0; i < frames.length; i++) if (frames[i] === id) return true;
     }
     return false;
   }
@@ -414,33 +430,80 @@
     });
   }
   function moveReady(name) {
+    if (!manifest || !manifest.moves[name]) return false;
+    if (forceReady) return true;
     const frames = unique(moveFrames(name));
     for (let i = 0; i < frames.length; i++) if (!isFresh(frames[i])) return false;
     return frames.length > 0;
   }
-  function pickName(except) {
-    const keys = Object.keys(manifest.moves);
-    const pool = keys.filter(function (k) { return k !== except; });
-    const ready = pool.filter(moveReady);
-    const src = ready.length ? ready : pool;
-    return src[Math.floor(Math.random() * src.length)];
+  function shuffle(list) {
+    const a = list.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function buildBag() {
+    const all = Object.keys(manifest.moves);
+    const recent = history.slice(-4);
+    function defer(arr) {
+      const early = [], late = [];
+      arr.forEach(function (n) { (recent.indexOf(n) >= 0 ? late : early).push(n); });
+      return early.concat(late);
+    }
+    const big = defer(shuffle(all.filter(function (k) { return BIG[k]; })));
+    const small = defer(shuffle(all.filter(function (k) { return !BIG[k]; })));
+    const out = [];
+    let bi = 0, si = 0;
+    while (si < small.length || bi < big.length) {
+      if (si < small.length) out.push(small[si++]);
+      if (bi < big.length) out.push(big[bi++]);
+    }
+    bag = out;
+  }
+  function takeNext() {
+    if (!bag.length) buildBag();
+    const last = history.length ? history[history.length - 1] : null;
+    let name = bag.shift();
+    let guard = 0;
+    while (name === last && guard++ < 16) {
+      bag.push(name);
+      if (!bag.length) buildBag();
+      name = bag.shift();
+    }
+    return name;
+  }
+  function keepMove(name) {
+    if (!name) return false;
+    if (name === upcoming || name === playing) return true;
+    for (let i = 0; i < bag.length && i < 3; i++) if (bag[i] === name) return true;
+    return false;
   }
   function prepareMove(name) {
-    if (!name) return;
+    if (!name || !manifest || !manifest.moves[name]) return;
     const ids = unique(moveFrames(name));
     ids.forEach(function (id) { enqueueBlob(id, true); });
     Promise.all(ids.map(function (id) { return blobP[id]; })).then(function () {
-      if (upcoming === name || playing === name) queueRecolor(ids);
+      if (keepMove(name)) queueRecolor(ids);
     }).catch(function () {});
   }
-  function scheduleAmbient(bpm) {
-    let delay = 2000 + Math.random() * 2000;
-    if (bpm > 40 && bpm < 240) {
-      const beat = 60000 / bpm;
-      const snapped = Math.round(delay / beat) * beat;
-      if (snapped >= 1800 && snapped <= 4400) delay = snapped;
-    }
-    nextAt = performance.now() + delay;
+  function preloadAhead() {
+    const names = [];
+    function add(n) { if (n && names.indexOf(n) < 0) names.push(n); }
+    add(upcoming);
+    for (let i = 0; i < bag.length && names.length < 4; i++) add(bag[i]);
+    names.forEach(prepareMove);
+  }
+  function now() { return simNow == null ? performance.now() : simNow; }
+  function enterIdle() {
+    mode = "idle";
+    playing = null;
+    idleI = 0;
+    accMs = 0;
+    idleSince = now();
+    sparseMin = 4000 + Math.random() * 1600;
+    lastBeatFloor = -1;
   }
   function buildSeq(name) {
     const m = manifest.moves[name];
@@ -452,25 +515,41 @@
   }
   function tryStart() {
     if (!ready || !upcoming) return false;
-    let name = upcoming;
-    if (!moveReady(name)) {
-      if (wantSpecific) return false;
-      const alt = pickName(lastMove);
-      if (!alt || !moveReady(alt)) return false;
-      name = alt;
+    if (!moveReady(upcoming)) {
+      prepareMove(upcoming);
+      preloadAhead();
+      return false;
     }
+    const name = upcoming;
     mode = "move";
     playing = name;
     seq = buildSeq(name);
     pos = 0;
     accMs = 0;
     lastMove = name;
+    history.push(name);
+    if (history.length > 16) history.shift();
     wantHit = false;
     wantSpecific = false;
-    upcoming = pickName(name);
-    prepareMove(upcoming);
-    scheduleAmbient(lastBpm);
+    justLabel = manifest.moves[name].label_de || name;
+    upcoming = takeNext();
+    preloadAhead();
     return true;
+  }
+  function canStart(info) {
+    const near = !!(info && info.notesNear);
+    const need = near ? 2.5 * CYCLE_MS : sparseMin;
+    if (now() - idleSince < need) return false;
+    if (!near) return true;
+    if (wantHit) return true;
+    if (info && typeof info.beat === "number" && isFinite(info.beat)) {
+      const fl = Math.floor(info.beat + 1e-4);
+      if (fl !== lastBeatFloor) {
+        lastBeatFloor = fl;
+        return true;
+      }
+    }
+    return false;
   }
   function currentId() {
     if (freeze) return freeze;
@@ -479,13 +558,12 @@
     return manifest.idle.loop[idleI] || manifest.neutral;
   }
   function tick(dt, info) {
-    if (!ready || !manifest || freeze) return;
+    justLabel = "";
+    if (!ready || !manifest || freeze) return "";
     dt = Math.max(0, Math.min(0.05, dt || 0));
-    if (info) {
-      if (info.bpm) lastBpm = info.bpm;
-      const id = currentId();
-      if (id && !isFresh(id)) prioritize(id);
-    }
+    if (info && info.bpm) lastBpm = info.bpm;
+    const id = currentId();
+    if (id && !isFresh(id) && !forceReady) prioritize(id);
     const ms = dt * 1000;
     if (mode === "move") {
       accMs += ms;
@@ -494,25 +572,91 @@
         accMs -= seq[pos][1];
         pos++;
       }
-      if (pos >= seq.length) {
-        mode = "idle";
-        playing = null;
-        idleI = 0;
-        accMs = 0;
-      } else return;
+      if (pos >= seq.length) enterIdle();
+      else return "";
     }
+    if (!idleSince) idleSince = now();
     const frameDur = manifest.idle.ms || 120;
+    const loopLen = manifest.idle.loop.length;
     accMs += ms;
     let guard2 = 0;
-    while (accMs >= frameDur && guard2++ < 6) {
-      if (idleI === 0 && (wantHit || performance.now() >= nextAt)) {
-        if (tryStart()) return;
+    while (accMs >= frameDur && guard2++ < 8) {
+      const endOfCycle = idleI === loopLen - 1;
+      if (endOfCycle && canStart(info)) {
+        if (tryStart()) return justLabel;
       }
       accMs -= frameDur;
-      idleI = (idleI + 1) % manifest.idle.loop.length;
+      idleI = (idleI + 1) % loopLen;
     }
+    return "";
   }
   function hit() { wantHit = true; }
+  function simulate(totalMs) {
+    forceReady = true;
+    simNow = 0;
+    freeze = null;
+    history = [];
+    bag = [];
+    lastMove = null;
+    wantHit = false;
+    wantSpecific = false;
+    playing = null;
+    mode = "idle";
+    idleI = 0;
+    accMs = 0;
+    sparseMin = 4800;
+    lastBeatFloor = -1;
+    buildBag();
+    upcoming = takeNext();
+    enterIdle();
+    const played = [];
+    const gaps = [];
+    const kinds = [];
+    let lastEnd = 0;
+    const step = 40;
+    for (let t = 0; t < totalMs; t += step) {
+      simNow = t;
+      const phase = t % 90000;
+      const near = phase >= 25000 && phase < 70000;
+      if (near && Math.floor(t / 350) !== Math.floor((t - step) / 350)) wantHit = true;
+      const before = playing;
+      const label = tick(step / 1000, { notesNear: near, beat: near ? t / 480 : null, mode: near ? "play" : "menu" });
+      if (label) {
+        played.push(playing);
+        kinds.push(BIG[playing] ? "big" : "small");
+        gaps.push(Math.round(t - lastEnd));
+      }
+      if (before && !playing) lastEnd = t;
+    }
+    const counts = {};
+    played.forEach(function (n) { counts[n] = (counts[n] || 0) + 1; });
+    let repeats = 0, bigPairs = 0, recentHits = 0;
+    for (let i = 1; i < played.length; i++) {
+      if (played[i] === played[i - 1]) repeats++;
+      if (BIG[played[i]] && BIG[played[i - 1]]) bigPairs++;
+      const window = played.slice(Math.max(0, i - 4), i);
+      if (window.indexOf(played[i]) >= 0) recentHits++;
+    }
+    const result = {
+      n: played.length,
+      unique: Object.keys(counts).sort(),
+      missing: Object.keys(manifest.moves).filter(function (k) { return !counts[k]; }),
+      counts: counts,
+      repeats: repeats,
+      bigPairs: bigPairs,
+      recentHits: recentHits,
+      gaps: gaps.slice(0, 12),
+      minGap: gaps.length ? Math.min.apply(null, gaps) : 0,
+      sample: played.slice(0, 24)
+    };
+    simNow = null;
+    forceReady = false;
+    enterIdle();
+    if (!bag.length) buildBag();
+    upcoming = takeNext();
+    preloadAhead();
+    return result;
+  }
   function requestMove(name) {
     if (!manifest || !manifest.moves[name]) return;
     upcoming = name;
@@ -687,7 +831,10 @@
       busy: busy,
       look: { hair: look.hair, top: look.top, skirt: look.skirt, skin: look.skin, acc: Object.assign({}, look.acc) },
       perf: { worst: perfWorst, over32: perfOver, n: perfN },
-      warm: !!(upcoming && moveReady(upcoming))
+      warm: !!(upcoming && moveReady(upcoming)),
+      history: history.slice(),
+      bag: bag.slice(0, 6),
+      label: justLabel
     };
   }
   function resetPerf() { perfWorst = 0; perfOver = 0; perfN = 0; perfPrev = 0; }
@@ -721,9 +868,10 @@
       })
       .then(function () {
         ready = true;
-        scheduleAmbient(0);
-        upcoming = pickName(null);
-        prepareMove(upcoming);
+        enterIdle();
+        buildBag();
+        upcoming = takeNext();
+        preloadAhead();
         setStatus("Los geht's!", 1);
         hideLoad();
         const all = Object.keys(manifest.frames);
@@ -764,7 +912,8 @@
     stats: stats,
     resetPerf: resetPerf,
     frameCanvas: frameCanvas,
-    currentFrame: currentId
+    currentFrame: currentId,
+    simulate: simulate
   };
   boot();
 })();
