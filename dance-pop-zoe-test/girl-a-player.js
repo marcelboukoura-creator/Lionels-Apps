@@ -3,7 +3,7 @@
    and runs in a worker. Only idle + the next move are decoded. */
 (function () {
   const BASE = new URL("girl-a/", document.currentScript.src);
-  const ASSET_V = "3";
+  const ASSET_V = "4";
   function assetUrl(rel) {
     const u = new URL(rel, BASE);
     u.searchParams.set("v", ASSET_V);
