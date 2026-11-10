@@ -3,7 +3,7 @@
    and runs in a worker. Only idle + the next move are decoded. */
 (function () {
   const BASE = new URL("girl-a/", document.currentScript.src);
-  const ASSET_V = "2";
+  const ASSET_V = "3";
   function assetUrl(rel) {
     const u = new URL(rel, BASE);
     u.searchParams.set("v", ASSET_V);
@@ -382,13 +382,21 @@
     queued.add(id);
     pumpRecolor();
   }
+  let busySince = 0;
   function pumpRecolor() {
-    if (busy || !recolorQ.length || !refLabs) return;
+    if (busy) {
+      if (busySince && performance.now() - busySince > 800) {
+        busy = false;
+        worker = null;
+      } else return;
+    }
+    if (!recolorQ.length || !refLabs) return;
     const id = recolorQ.shift();
     queued.delete(id);
     if (isFresh(id)) { pumpRecolor(); return; }
     if (!blobP[id]) { enqueueBlob(id, true); blobP[id].then(function () { prioritize(id); }); return; }
     busy = true;
+    busySince = performance.now();
     const myGen = gen;
     blobP[id].then(function (b) {
       return Promise.all([createImageBitmap(b.a), createImageBitmap(b.m), createImageBitmap(b.s)]);
@@ -470,7 +478,7 @@
       if (si < small.length) out.push(small[si++]);
       if (bi < big.length) out.push(big[bi++]);
     }
-    bag = out;
+    for (let i = 0; i < out.length; i++) bag.push(out[i]);
   }
   function takeNext() {
     if (!bag.length) buildBag();
@@ -498,11 +506,14 @@
       if (keepMove(name)) queueRecolor(ids);
     }).catch(function () {});
   }
-  function preloadAhead() {
+  let songPlan = null;
+  let lastMoveSongT = -99;
+  let lastComboMark = 0;
+  const moveLog = [];
+  function preloadFront() {
     const names = [];
-    function add(n) { if (n && names.indexOf(n) < 0) names.push(n); }
-    add(upcoming);
-    for (let i = 0; i < bag.length && names.length < 4; i++) add(bag[i]);
+    bag.forEach(function (n) { if (BIG[n]) names.push(n); });
+    for (let i = 0; i < bag.length && names.length < 8; i++) if (names.indexOf(bag[i]) < 0) names.push(bag[i]);
     names.forEach(prepareMove);
   }
   function now() { return simNow == null ? performance.now() : simNow; }
@@ -512,8 +523,7 @@
     idleI = 0;
     accMs = 0;
     idleSince = now();
-    sparseMin = 4000 + Math.random() * 1600;
-    lastBeatFloor = -1;
+    sparseMin = 5600 + Math.random() * 1400;
   }
   function buildSeq(name) {
     const m = manifest.moves[name];
@@ -523,14 +533,93 @@
     m.out.forEach(function (f, i) { s.push([f, m.out_ms[i] || 100]); });
     return s;
   }
-  function tryStart() {
-    if (!ready || !upcoming) return false;
-    if (!moveReady(upcoming)) {
-      prepareMove(upcoming);
-      preloadAhead();
-      return false;
+  function sectionTime(sec, spec) {
+    const beatSec = (60 / (spec.bpm || 120)) * (spec.pulse || 1);
+    return (spec.beat0 || 0) + sec.bar * 4 * beatSec;
+  }
+  function planHighlights(spec) {
+    const notes = (spec.notes || []).slice().sort(function (a, b) { return a.t - b.t; });
+    const bpm = spec.bpm || 120;
+    const beat = (60 / bpm) * (spec.pulse || 1);
+    const events = [];
+    (spec.sections || []).forEach(function (s) {
+      const type = String(s.type || "").replace(/Ch$/, "");
+      if (type === "intro" || type === "outro" || type === "end" || type === "loop") return;
+      const t = sectionTime(s, spec);
+      if (t < 0 || t > (spec.dur || 1e9) - 1.5) return;
+      const strong = type === "chorus" || type === "drop";
+      events.push({ t: t, s: strong ? 3 : 2, why: type });
+    });
+    notes.forEach(function (n, i) {
+      if (n.hold >= 0.7) events.push({ t: n.t, s: n.hold >= 1.15 ? 3 : 2, why: "lang" });
+      const pos = (n.t - (spec.beat0 || 0)) / beat;
+      const inBar = ((pos % 4) + 4) % 4;
+      if (inBar < 0.2) events.push({ t: n.t, s: 1, why: "takt" });
+      let cluster = 0;
+      for (let j = i; j < notes.length && notes[j].t < n.t + 0.4; j++) cluster++;
+      if (cluster >= 4) events.push({ t: n.t, s: 2, why: "dichte" });
+    });
+    events.sort(function (a, b) { return a.t - b.t || b.s - a.s; });
+    const merged = [];
+    events.forEach(function (e) {
+      const prev = merged[merged.length - 1];
+      if (prev && e.t - prev.t < 0.45) {
+        if (e.s > prev.s) { prev.s = e.s; prev.why = e.why; prev.t = e.t; }
+      } else merged.push({ t: e.t, s: e.s, why: e.why });
+    });
+    const minGap = 5.5;
+    const picked = [];
+    merged.forEach(function (e) {
+      if (e.s < 2) return;
+      const prev = picked[picked.length - 1];
+      if (prev && e.t - prev.t < minGap) {
+        if (e.s > prev.s) picked[picked.length - 1] = e;
+        return;
+      }
+      picked.push(e);
+    });
+    const span = notes.length ? notes[notes.length - 1].t - notes[0].t : (spec.dur || 120);
+    const target = Math.max(8, Math.min(28, Math.round(span / 6.2)));
+    const weak = merged.filter(function (e) { return e.s < 2; });
+    weak.forEach(function (e) {
+      if (picked.length >= target) return;
+      if (picked.some(function (p) { return Math.abs(p.t - e.t) < 4.8; })) return;
+      picked.push(e);
+    });
+    picked.sort(function (a, b) { return a.t - b.t; });
+    return picked;
+  }
+  function beginSong(spec) {
+    if (!spec) return;
+    history = [];
+    bag = [];
+    buildBag();
+    songPlan = { highlights: planHighlights(spec), hi: 0, id: spec.id || "" };
+    lastMoveSongT = -99;
+    lastComboMark = 0;
+    moveLog.length = 0;
+    preloadFront();
+    enterIdle();
+  }
+  function pullReady(strong) {
+    if (bag.length < 4) buildBag();
+    const recent = history.slice(-4);
+    function find(pred) {
+      for (let i = 0; i < bag.length; i++) {
+        const n = bag[i];
+        if (recent.indexOf(n) >= 0) continue;
+        if (!moveReady(n)) continue;
+        if (pred && !pred(n)) continue;
+        return i;
+      }
+      return -1;
     }
-    const name = upcoming;
+    let idx = strong ? find(function (n) { return !!BIG[n]; }) : find(null);
+    if (idx < 0) idx = find(null);
+    if (idx < 0) return null;
+    return bag.splice(idx, 1)[0];
+  }
+  function startNamed(name, why, songT, strong) {
     mode = "move";
     playing = name;
     seq = buildSeq(name);
@@ -542,30 +631,37 @@
     wantHit = false;
     wantSpecific = false;
     justLabel = manifest.moves[name].label_de || name;
-    upcoming = takeNext();
-    preloadAhead();
-    return true;
-  }
-  function canStart(info) {
-    const near = !!(info && info.notesNear);
-    const need = near ? 2.5 * CYCLE_MS : sparseMin;
-    if (now() - idleSince < need) return false;
-    if (!near) return true;
-    if (wantHit) return true;
-    if (info && typeof info.beat === "number" && isFinite(info.beat)) {
-      const fl = Math.floor(info.beat + 1e-4);
-      if (fl !== lastBeatFloor) {
-        lastBeatFloor = fl;
-        return true;
-      }
-    }
-    return false;
+    lastMoveSongT = songT;
+    moveLog.push({
+      t: Math.round(songT * 10) / 10,
+      name: name,
+      label: justLabel,
+      why: why || "",
+      strong: !!strong
+    });
+    preloadFront();
   }
   function currentId() {
     if (freeze) return freeze;
     if (mode === "move" && seq[pos]) return seq[pos][0];
     if (!manifest) return null;
     return manifest.idle.loop[idleI] || manifest.neutral;
+  }
+  function songDue(info) {
+    if (!songPlan || !info || info.songT == null || !isFinite(info.songT)) return null;
+    const t = info.songT;
+    while (songPlan.hi < songPlan.highlights.length && songPlan.highlights[songPlan.hi].t < t - 2.2) songPlan.hi++;
+    const h = songPlan.highlights[songPlan.hi];
+    if (now() - idleSince < 2 * CYCLE_MS) return null;
+    const due = h && t >= h.t - 0.05;
+    const combo = info.combo || 0;
+    let comboKick = false;
+    if (combo >= 6 && combo % 6 === 0 && combo !== lastComboMark && t - lastMoveSongT >= 4.8) {
+      const wait = h ? h.t - t : 99;
+      if (wait > 2.8) comboKick = true;
+    }
+    if (!due && !comboKick) return null;
+    return { due: !!due, comboKick: comboKick, highlight: h, combo: combo };
   }
   function tick(dt, info) {
     justLabel = "";
@@ -588,12 +684,33 @@
     if (!idleSince) idleSince = now();
     const frameDur = manifest.idle.ms || 120;
     const loopLen = manifest.idle.loop.length;
+    const playingSong = info && (info.mode === "play" || info.mode === "replay");
     accMs += ms;
     let guard2 = 0;
     while (accMs >= frameDur && guard2++ < 8) {
       const endOfCycle = idleI === loopLen - 1;
-      if (endOfCycle && canStart(info)) {
-        if (tryStart()) return justLabel;
+      if (endOfCycle) {
+        if (playingSong) {
+          const due = songDue(info);
+          if (due) {
+            const strong = (due.due && due.highlight && due.highlight.s >= 2) || (due.comboKick && due.combo >= 12);
+            const name = pullReady(strong);
+            if (name) {
+              if (due.comboKick) lastComboMark = due.combo;
+              startNamed(name, due.due && due.highlight ? due.highlight.why : "serie", info.songT, strong);
+              if (due.due) songPlan.hi++;
+              return justLabel;
+            }
+            preloadFront();
+          }
+        } else if (now() - idleSince >= sparseMin) {
+          const name = pullReady(false);
+          if (name) {
+            startNamed(name, "menu", 0, false);
+            return justLabel;
+          }
+          preloadFront();
+        }
       }
       accMs -= frameDur;
       idleI = (idleI + 1) % loopLen;
@@ -616,8 +733,8 @@
     accMs = 0;
     sparseMin = 4800;
     lastBeatFloor = -1;
+    bag = [];
     buildBag();
-    upcoming = takeNext();
     enterIdle();
     const played = [];
     const gaps = [];
@@ -662,14 +779,16 @@
     simNow = null;
     forceReady = false;
     enterIdle();
-    if (!bag.length) buildBag();
-    upcoming = takeNext();
-    preloadAhead();
+    bag = [];
+    buildBag();
+    preloadFront();
     return result;
   }
   function requestMove(name) {
     if (!manifest || !manifest.moves[name]) return;
-    upcoming = name;
+    const at = bag.indexOf(name);
+    if (at >= 0) bag.splice(at, 1);
+    bag.unshift(name);
     wantSpecific = true;
     wantHit = true;
     prepareMove(name);
@@ -697,7 +816,7 @@
       if (manifest) {
         if (mode === "move") seq.forEach(function (s) { ids.push(s[0]); });
         manifest.idle.loop.forEach(function (id) { ids.push(id); });
-        if (upcoming) moveFrames(upcoming).forEach(function (id) { ids.push(id); });
+        for (let bi = 0; bi < bag.length && bi < 4; bi++) moveFrames(bag[bi]).forEach(function (id) { ids.push(id); });
       }
       queueRecolor(ids);
     }
@@ -758,7 +877,8 @@
       if (a.visibleFlag && !V[a.visibleFlag]) continue;
       const p = A[a.anchorFrame];
       if (!p || !A.ed) continue;
-      const scA = (k === "crown" ? (2.7 * A.ed / a.w) : (A.ed / a.refEyeDistance)) * sc;
+      let scA = (k === "crown" ? (2.7 * A.ed / a.w) : (A.ed / a.refEyeDistance)) * sc;
+      if (k === "pendant") scA *= 0.62;
       ctx.save();
       ctx.translate(ox + p[0] * sc, oy + p[1] * sc);
       ctx.rotate((A.angleDeg || 0) * Math.PI / 180);
@@ -832,7 +952,7 @@
       frame: currentId(),
       idleI: idleI,
       playing: playing,
-      upcoming: upcoming,
+      upcoming: bag[0] || null,
       lastMove: lastMove,
       gen: gen,
       cache: cache.size,
@@ -842,7 +962,8 @@
       busy: busy,
       look: { hair: look.hair, top: look.top, skirt: look.skirt, skin: look.skin, acc: Object.assign({}, look.acc) },
       perf: { worst: perfWorst, over32: perfOver, n: perfN },
-      warm: !!(upcoming && moveReady(upcoming)),
+      warm: !!(bag[0] && moveReady(bag[0])),
+      highlights: songPlan ? songPlan.highlights.length : 0,
       history: history.slice(),
       bag: bag.slice(0, 6),
       label: justLabel
@@ -880,9 +1001,9 @@
       .then(function () {
         ready = true;
         enterIdle();
+        bag = [];
         buildBag();
-        upcoming = takeNext();
-        preloadAhead();
+        preloadFront();
         setStatus("Los geht's!", 1);
         hideLoad();
         const all = Object.keys(manifest.frames);
@@ -925,6 +1046,8 @@
     frameCanvas: frameCanvas,
     currentFrame: currentId,
     fresh: function (id) { return isFresh(id || currentId()); },
+    beginSong: beginSong,
+    moveLog: function () { return moveLog.slice(); },
     simulate: simulate
   };
   boot();
