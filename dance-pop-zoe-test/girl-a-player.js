@@ -541,52 +541,68 @@
     const notes = (spec.notes || []).slice().sort(function (a, b) { return a.t - b.t; });
     const bpm = spec.bpm || 120;
     const beat = (60 / bpm) * (spec.pulse || 1);
+    const reel = !!spec.reel;
+    const win0 = spec.from != null ? spec.from : 0;
+    const win1 = spec.to != null ? spec.to : (spec.dur || 1e9);
     const events = [];
+    function push(t, s, why) {
+      if (t < win0 - 0.05 || t > win1 + 0.05) return;
+      events.push({ t: t, s: s, why: why });
+    }
     (spec.sections || []).forEach(function (s) {
       const type = String(s.type || "").replace(/Ch$/, "");
       if (type === "intro" || type === "outro" || type === "end" || type === "loop") return;
       const t = sectionTime(s, spec);
-      if (t < 0 || t > (spec.dur || 1e9) - 1.5) return;
+      if (t < 0 || t > (spec.dur || 1e9) - 1.2) return;
       const strong = type === "chorus" || type === "drop";
-      events.push({ t: t, s: strong ? 3 : 2, why: type });
+      push(t, strong ? 3 : 2, type);
     });
     notes.forEach(function (n, i) {
-      if (n.hold >= 0.7) events.push({ t: n.t, s: n.hold >= 1.15 ? 3 : 2, why: "lang" });
+      if (n.hold >= 0.55) push(n.t, n.hold >= 1.05 ? 3 : 2, "lang");
       const pos = (n.t - (spec.beat0 || 0)) / beat;
       const inBar = ((pos % 4) + 4) % 4;
-      if (inBar < 0.2) events.push({ t: n.t, s: 1, why: "takt" });
+      if (inBar < 0.22) push(n.t, 1, "takt");
+      else if (Math.abs(inBar - 2) < 0.22) push(n.t, 1, "akzent");
       let cluster = 0;
-      for (let j = i; j < notes.length && notes[j].t < n.t + 0.4; j++) cluster++;
-      if (cluster >= 4) events.push({ t: n.t, s: 2, why: "dichte" });
+      for (let j = i; j < notes.length && notes[j].t < n.t + 0.45; j++) cluster++;
+      if (cluster >= 3) push(n.t, cluster >= 5 ? 3 : 2, "serie");
     });
+    if (reel) {
+      const step = 2.4;
+      for (let t = win0 + 0.4; t < win1 - 0.3; t += step) push(t, 1, "reel");
+    }
     events.sort(function (a, b) { return a.t - b.t || b.s - a.s; });
     const merged = [];
     events.forEach(function (e) {
       const prev = merged[merged.length - 1];
-      if (prev && e.t - prev.t < 0.45) {
+      if (prev && e.t - prev.t < 0.35) {
         if (e.s > prev.s) { prev.s = e.s; prev.why = e.why; prev.t = e.t; }
       } else merged.push({ t: e.t, s: e.s, why: e.why });
     });
-    const minGap = 5.5;
+    const gap = reel ? 2.25 : 3.3;
+    const t0 = Math.max(win0, notes.length ? notes[0].t : win0);
+    const t1 = Math.min(win1, notes.length ? notes[notes.length - 1].t : win1);
     const picked = [];
-    merged.forEach(function (e) {
-      if (e.s < 2) return;
-      const prev = picked[picked.length - 1];
-      if (prev && e.t - prev.t < minGap) {
-        if (e.s > prev.s) picked[picked.length - 1] = e;
-        return;
+    let cursor = t0 + (reel ? 0.35 : 0.2);
+    const end = t1 - 0.3;
+    while (cursor < end && picked.length < (reel ? 28 : 46)) {
+      let best = null;
+      let bestD = 1e9;
+      for (let i = 0; i < merged.length; i++) {
+        const e = merged[i];
+        if (e.t < cursor - 0.45 || e.t > cursor + 1.35) continue;
+        if (picked.length && e.t - picked[picked.length - 1].t < gap * 0.75) continue;
+        const d = Math.abs(e.t - cursor) - e.s * 0.22;
+        if (d < bestD) { best = e; bestD = d; }
       }
-      picked.push(e);
-    });
-    const span = notes.length ? notes[notes.length - 1].t - notes[0].t : (spec.dur || 120);
-    const target = Math.max(8, Math.min(28, Math.round(span / 6.2)));
-    const weak = merged.filter(function (e) { return e.s < 2; });
-    weak.forEach(function (e) {
-      if (picked.length >= target) return;
-      if (picked.some(function (p) { return Math.abs(p.t - e.t) < 4.8; })) return;
-      picked.push(e);
-    });
-    picked.sort(function (a, b) { return a.t - b.t; });
+      if (best) {
+        picked.push({ t: best.t, s: best.s, why: best.why });
+        cursor = best.t + gap;
+      } else {
+        picked.push({ t: cursor, s: 1, why: reel ? "reel" : "takt" });
+        cursor += gap;
+      }
+    }
     return picked;
   }
   function beginSong(spec) {
@@ -594,7 +610,7 @@
     history = [];
     bag = [];
     buildBag();
-    songPlan = { highlights: planHighlights(spec), hi: 0, id: spec.id || "" };
+    songPlan = { highlights: planHighlights(spec), hi: 0, id: spec.id || "", reel: !!spec.reel };
     lastMoveSongT = -99;
     lastComboMark = 0;
     moveLog.length = 0;
@@ -650,9 +666,11 @@
   function songDue(info) {
     if (!songPlan || !info || info.songT == null || !isFinite(info.songT)) return null;
     const t = info.songT;
-    while (songPlan.hi < songPlan.highlights.length && songPlan.highlights[songPlan.hi].t < t - 2.2) songPlan.hi++;
+    const late = songPlan.reel ? 1.6 : 2.6;
+    while (songPlan.hi < songPlan.highlights.length && songPlan.highlights[songPlan.hi].t < t - late) songPlan.hi++;
     const h = songPlan.highlights[songPlan.hi];
-    if (now() - idleSince < 2 * CYCLE_MS) return null;
+    const needIdle = songPlan.reel ? 0.38 * CYCLE_MS : CYCLE_MS;
+    if (now() - idleSince < needIdle) return null;
     const due = h && t >= h.t - 0.05;
     const combo = info.combo || 0;
     let comboKick = false;
@@ -685,32 +703,31 @@
     const frameDur = manifest.idle.ms || 120;
     const loopLen = manifest.idle.loop.length;
     const playingSong = info && (info.mode === "play" || info.mode === "replay");
+    if (playingSong) {
+      const due = songDue(info);
+      if (due) {
+        const strong = (due.due && due.highlight && due.highlight.s >= 2) || (due.comboKick && due.combo >= 12);
+        const name = pullReady(strong);
+        if (name) {
+          if (due.comboKick) lastComboMark = due.combo;
+          startNamed(name, due.due && due.highlight ? due.highlight.why : "serie", info.songT, strong);
+          if (due.due) songPlan.hi++;
+          return justLabel;
+        }
+        preloadFront();
+      }
+    }
     accMs += ms;
     let guard2 = 0;
     while (accMs >= frameDur && guard2++ < 8) {
       const endOfCycle = idleI === loopLen - 1;
-      if (endOfCycle) {
-        if (playingSong) {
-          const due = songDue(info);
-          if (due) {
-            const strong = (due.due && due.highlight && due.highlight.s >= 2) || (due.comboKick && due.combo >= 12);
-            const name = pullReady(strong);
-            if (name) {
-              if (due.comboKick) lastComboMark = due.combo;
-              startNamed(name, due.due && due.highlight ? due.highlight.why : "serie", info.songT, strong);
-              if (due.due) songPlan.hi++;
-              return justLabel;
-            }
-            preloadFront();
-          }
-        } else if (now() - idleSince >= sparseMin) {
-          const name = pullReady(false);
-          if (name) {
-            startNamed(name, "menu", 0, false);
-            return justLabel;
-          }
-          preloadFront();
+      if (endOfCycle && !playingSong && now() - idleSince >= sparseMin) {
+        const name = pullReady(false);
+        if (name) {
+          startNamed(name, "menu", 0, false);
+          return justLabel;
         }
+        preloadFront();
       }
       accMs -= frameDur;
       idleI = (idleI + 1) % loopLen;
@@ -1047,6 +1064,7 @@
     currentFrame: currentId,
     fresh: function (id) { return isFresh(id || currentId()); },
     beginSong: beginSong,
+    planCount: function () { return songPlan && songPlan.highlights ? songPlan.highlights.length : 0; },
     moveLog: function () { return moveLog.slice(); },
     simulate: simulate
   };
