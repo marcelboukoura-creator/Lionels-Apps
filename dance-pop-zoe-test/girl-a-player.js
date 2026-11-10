@@ -3,11 +3,17 @@
    and runs in a worker. Only idle + the next move are decoded. */
 (function () {
   const BASE = new URL("girl-a/", document.currentScript.src);
+  const ASSET_V = "2";
+  function assetUrl(rel) {
+    const u = new URL(rel, BASE);
+    u.searchParams.set("v", ASSET_V);
+    return u;
+  }
   const W = 512, H = 768, FEET_Y = 753, BODY_PX = 740, BODY_UNITS = 215;
   const CACHE_MAX = 64;
 
   const HAIR = [
-    { name: "Honigblond", hex: "#CBA187" },
+    { name: "Honigblond", hex: "#C99F85" },
     { name: "Platin", hex: "#F3E6D4" },
     { name: "Schwarz", hex: "#1B1B1F" },
     { name: "Schokobraun", hex: "#5A3318" },
@@ -29,11 +35,11 @@
   ];
   HAIR.forEach(function (c) { c.swatch = c.hex; });
   const SKIN = [
-    { name: "Ganz hell", swatch: "#FFD9C6", k: 1.16 },
-    { name: "Normal", swatch: "#ECB597", k: 1 },
-    { name: "Leicht braun", swatch: "#D7A27A", k: 0.9 },
-    { name: "Mittel", swatch: "#C4845A", k: 0.75 },
-    { name: "Dunkel", swatch: "#8A5340", k: 0.58 }
+    { name: "Ganz hell", swatch: "#F6D3C2", hex: "#F6D3C2" },
+    { name: "Normal", swatch: "#EFB89A", hex: "#EFB89A", base: true },
+    { name: "Leicht braun", swatch: "#C4926E", hex: "#C4926E" },
+    { name: "Mittel", swatch: "#8D5E45", hex: "#8D5E45" },
+    { name: "Dunkel", swatch: "#5C3B32", hex: "#5C3B32" }
   ];
 
   const look = {
@@ -166,27 +172,29 @@
     "  var kL=Math.max(0.35,Math.min(1,(t[0]+25*100/255)/Math.max(ref[0],1)));",
     "  return {t:t,ref:ref,kL:kL,kc:kc};",
     "}",
-    "function blend(L,A,B,lab,tg,c,lk){",
-    "  var wv=c/255*lk;",
+    "function blend(L,A,B,lab,tg,c,lk,lkC){",
+    "  var wv=c/255*lk, wvC=c/255*(lkC==null?lk:lkC);",
     "  var nL=tg.t[0]+(lab[0]-tg.ref[0])*tg.kL;",
     "  var nA=tg.t[1]+(lab[1]-tg.ref[1])*tg.kc;",
     "  var nB=tg.t[2]+(lab[2]-tg.ref[2])*tg.kc;",
-    "  return [L*(1-wv)+nL*wv,A*(1-wv)+nA*wv,B*(1-wv)+nB*wv];",
+    "  return [L*(1-wv)+nL*wv, A*(1-wvC)+nA*wvC, B*(1-wvC)+nB*wvC];",
     "}",
     "function recolorInPlace(px,mk,p){",
-    "  var H=target(p.hair,p.refHair,0.45),T=target(p.top,p.refTop,0.5),S=target(p.skirt,p.refSkirt,0.5),sk=p.skinK;",
-    "  var n=px.length,o;",
+    "  var H=target(p.hair,p.refHair,0.32),T=target(p.top,p.refTop,0.5),S=target(p.skirt,p.refSkirt,0.5);",
+    "  var K=p.skinOff?null:target(p.skin,p.refSkin,0.55);",
+    "  var n=px.length,o,shade;",
     "  for(var i=0;i<n;i+=4){",
     "    if(px[i+3]<8)continue;",
     "    var mh=mk[i],mt=mk[i+1],ms=mk[i+2],mskin=mk[i+3];",
-    "    if(!(mh|mt|ms)&&(sk===1||!mskin))continue;",
+    "    if(!(mh|mt|ms)&&(!K||!mskin))continue;",
     "    var lab=rgb2lab(px[i],px[i+1],px[i+2]);",
-    "    var lk=0.35+0.65*sstep(0,1,(lab[0]*2.55-55)/45);",
+    "    shade=sstep(0,1,(lab[0]*2.55-55)/45);",
+    "    var lk=0.35+0.65*shade, lkHair=0.62+0.38*shade, lkSkin=0.78+0.22*shade;",
     "    var L=lab[0],A=lab[1],B=lab[2];",
-    "    if(mh){o=blend(L,A,B,lab,H,mh,lk);L=o[0];A=o[1];B=o[2];}",
+    "    if(mh){o=blend(L,A,B,lab,H,mh,lkHair,0.94);L=o[0];A=o[1];B=o[2];}",
     "    if(mt){o=blend(L,A,B,lab,T,mt,lk);L=o[0];A=o[1];B=o[2];}",
     "    if(ms){o=blend(L,A,B,lab,S,ms,lk);L=o[0];A=o[1];B=o[2];}",
-    "    if(mskin&&sk!==1){var wv=mskin/255;var nL=lab[0]*sk+(sk<1?4:-2);L=L*(1-wv)+nL*wv;}",
+    "    if(K&&mskin){o=blend(L,A,B,lab,K,mskin,lkSkin,0.92);L=o[0];A=o[1];B=o[2];}",
     "    o=lab2rgb(L,A,B);px[i]=o[0];px[i+1]=o[1];px[i+2]=o[2];",
     "  }",
     "  return px;",
@@ -265,10 +273,12 @@
       hair: HAIR[look.hair].hex,
       top: CLOTH[look.top].hex,
       skirt: CLOTH[look.skirt].hex,
-      skinK: SKIN[look.skin].k,
+      skin: SKIN[look.skin].hex,
+      skinOff: !!SKIN[look.skin].base,
       refHair: refLabs.hair,
       refTop: refLabs.top,
-      refSkirt: refLabs.skirt
+      refSkirt: refLabs.skirt,
+      refSkin: refLabs.skin
     };
   }
   function isFresh(id) {
@@ -344,9 +354,9 @@
       fetchActive++;
       const f = manifest.frames[job.id];
       Promise.all([
-        fetch(new URL(f.file, BASE)).then(function (r) { if (!r.ok) throw new Error(f.file); return r.blob(); }),
-        fetch(new URL(f.mask, BASE)).then(function (r) { if (!r.ok) throw new Error(f.mask); return r.blob(); }),
-        fetch(new URL(f.skin, BASE)).then(function (r) { if (!r.ok) throw new Error(f.skin); return r.blob(); })
+        fetch(assetUrl(f.file)).then(function (r) { if (!r.ok) throw new Error(f.file); return r.blob(); }),
+        fetch(assetUrl(f.mask)).then(function (r) { if (!r.ok) throw new Error(f.mask); return r.blob(); }),
+        fetch(assetUrl(f.skin)).then(function (r) { if (!r.ok) throw new Error(f.skin); return r.blob(); })
       ]).then(function (ab) {
         job.resolve({ a: ab[0], m: ab[1], s: ab[2] });
       }, function (err) { job.reject(err); }).then(function () {
@@ -801,7 +811,8 @@
     refLabs = {
       hair: rgb2labBoot(b.hair[0], b.hair[1], b.hair[2]),
       top: rgb2labBoot(b.top[0], b.top[1], b.top[2]),
-      skirt: rgb2labBoot(b.skirt[0], b.skirt[1], b.skirt[2])
+      skirt: rgb2labBoot(b.skirt[0], b.skirt[1], b.skirt[2]),
+      skin: rgb2labBoot(b.skin[0], b.skin[1], b.skin[2])
     };
   }
   function loadAcc(k) {
@@ -809,7 +820,7 @@
       const im = new Image();
       im.onload = function () { accImg[k] = im; res(); };
       im.onerror = function () { res(); };
-      im.src = new URL(manifest.accessories[k].file, BASE).href;
+      im.src = assetUrl(manifest.accessories[k].file).href;
     });
   }
   function stats() {
@@ -842,7 +853,7 @@
 
   function boot() {
     setStatus("Zoe zieht ihre Tanzschuhe an \u2026", 0.04);
-    fetch(new URL("girl-a.json", BASE))
+    fetch(assetUrl("girl-a.json"))
       .then(function (r) { if (!r.ok) throw new Error("json"); return r.json(); })
       .then(function (m) {
         manifest = m;
@@ -913,6 +924,7 @@
     resetPerf: resetPerf,
     frameCanvas: frameCanvas,
     currentFrame: currentId,
+    fresh: function (id) { return isFresh(id || currentId()); },
     simulate: simulate
   };
   boot();
