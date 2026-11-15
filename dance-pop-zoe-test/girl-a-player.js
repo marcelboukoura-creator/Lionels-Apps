@@ -3,7 +3,7 @@
    and runs in a worker. Only idle + the next move are decoded. */
 (function () {
   const BASE = new URL("girl-a/", document.currentScript.src);
-  const ASSET_V = "4";
+  const ASSET_V = "5";
   function assetUrl(rel) {
     const u = new URL(rel, BASE);
     u.searchParams.set("v", ASSET_V);
@@ -34,6 +34,23 @@
     { name: "Himmelblau", hex: "#7EC8FF", swatch: "#7EC8FF" }
   ];
   HAIR.forEach(function (c) { c.swatch = c.hex; });
+  const DRESS = [
+    { name: "Rosa", hex: "#f4b3c3", swatch: "#f4b3c3" },
+    { name: "Navy", hex: "#233468", swatch: "#233468" },
+    { name: "Mint", hex: "#a8e6c1", swatch: "#a8e6c1" },
+    { name: "Gelb", hex: "#ffd966", swatch: "#ffd966" },
+    { name: "Wei\u00df", hex: "#fbf5ec", swatch: "#fbf5ec" },
+    { name: "Schwarz", hex: "#222226", swatch: "#222226" },
+    { name: "Koralle", hex: "#ff8f73", swatch: "#ff8f73" },
+    { name: "Himmelblau", hex: "#b8d8fb", swatch: "#b8d8fb" }
+  ];
+  const LOOKS = [
+    { id: "cardigan", label: "Cardigan", recolorOutfit: true, kind: "separates", json: "girl-a.json", root: "" },
+    { id: "hunter", label: "D\u00e4monenj\u00e4gerin", recolorOutfit: false, kind: "fixed", json: "looks/girl-a-hunter/girl-a-hunter.json", root: "looks/girl-a-hunter/" },
+    { id: "dress", label: "Alltagskleid", recolorOutfit: true, kind: "dress", json: "looks/girl-a-dress/girl-a-dress.json", root: "looks/girl-a-dress/" }
+  ];
+  const LOOK_BY = {};
+  LOOKS.forEach(function (o) { LOOK_BY[o.id] = o; });
   const SKIN = [
     { name: "Ganz hell", swatch: "#F6D3C2", hex: "#F6D3C2" },
     { name: "Normal", swatch: "#EFB89A", hex: "#EFB89A", base: true },
@@ -43,9 +60,13 @@
   ];
 
   const look = {
+    outfit: "cardigan", dress: 0,
     hair: 0, top: 2, skirt: 0, skin: 1,
     acc: { crown: false, sunglasses: false, pendant: false, bow: false, earrings: false }
   };
+  let lookRoot = "";
+  let fetchGen = 1;
+  const manifestCache = Object.create(null);
 
   let manifest = null;
   let gen = 1;
@@ -100,6 +121,8 @@
       if (!s) return;
       const o = JSON.parse(s);
       if (o && typeof o === "object") {
+        if (o.outfit && LOOK_BY[o.outfit]) look.outfit = o.outfit;
+        if (o.dress != null) look.dress = clamp(o.dress, DRESS.length);
         if (o.hair != null) look.hair = clamp(o.hair, HAIR.length);
         if (o.top != null) look.top = clamp(o.top, CLOTH.length);
         if (o.skirt != null) look.skirt = clamp(o.skirt, CLOTH.length);
@@ -269,9 +292,10 @@
     return out;
   }
   function params() {
+    const meta = LOOK_BY[look.outfit] || LOOKS[0];
     return {
       hair: HAIR[look.hair].hex,
-      top: CLOTH[look.top].hex,
+      top: meta.kind === "dress" ? DRESS[look.dress].hex : CLOTH[look.top].hex,
       skirt: CLOTH[look.skirt].hex,
       skin: SKIN[look.skin].hex,
       skinOff: !!SKIN[look.skin].base,
@@ -343,7 +367,7 @@
     let resolve, reject;
     const p = new Promise(function (res, rej) { resolve = res; reject = rej; });
     blobP[id] = p;
-    const job = { id: id, resolve: resolve, reject: reject };
+    const job = { id: id, resolve: resolve, reject: reject, root: lookRoot, ticket: fetchGen };
     if (pri) fetchQ.unshift(job); else fetchQ.push(job);
     pumpFetch();
     return p;
@@ -353,13 +377,17 @@
       const job = fetchQ.shift();
       fetchActive++;
       const f = manifest.frames[job.id];
+      const root = job.root || "";
       Promise.all([
-        fetch(assetUrl(f.file)).then(function (r) { if (!r.ok) throw new Error(f.file); return r.blob(); }),
-        fetch(assetUrl(f.mask)).then(function (r) { if (!r.ok) throw new Error(f.mask); return r.blob(); }),
-        fetch(assetUrl(f.skin)).then(function (r) { if (!r.ok) throw new Error(f.skin); return r.blob(); })
+        fetch(assetUrl(root + f.file)).then(function (r) { if (!r.ok) throw new Error(f.file); return r.blob(); }),
+        fetch(assetUrl(root + f.mask)).then(function (r) { if (!r.ok) throw new Error(f.mask); return r.blob(); }),
+        fetch(assetUrl(root + f.skin)).then(function (r) { if (!r.ok) throw new Error(f.skin); return r.blob(); })
       ]).then(function (ab) {
+        if (job.ticket !== fetchGen) { job.resolve(null); return; }
         job.resolve({ a: ab[0], m: ab[1], s: ab[2] });
-      }, function (err) { job.reject(err); }).then(function () {
+      }, function (err) {
+        if (job.ticket === fetchGen) job.reject(err);
+      }).then(function () {
         fetchActive--;
         pumpFetch();
       });
@@ -399,8 +427,10 @@
     busySince = performance.now();
     const myGen = gen;
     blobP[id].then(function (b) {
+      if (!b) { busy = false; pumpRecolor(); return null; }
       return Promise.all([createImageBitmap(b.a), createImageBitmap(b.m), createImageBitmap(b.s)]);
     }).then(function (bmps) {
+      if (!bmps) return;
       if (myGen !== gen) {
         bmps.forEach(function (b) { if (b.close) b.close(); });
         busy = false; pumpRecolor(); return;
@@ -810,9 +840,60 @@
     wantHit = true;
     prepareMove(name);
   }
+  function dropLoadedFrames() {
+    fetchGen++;
+    fetchQ.length = 0;
+    Object.keys(blobP).forEach(function (k) { delete blobP[k]; });
+    recolorQ.length = 0;
+    queued.clear();
+    cache.forEach(function (e) {
+      if (e && e.canvas) { e.canvas.width = 0; e.canvas.height = 0; }
+    });
+    cache.clear();
+    gen++;
+  }
+  function armLook(m) {
+    const meta = LOOK_BY[look.outfit] || LOOKS[0];
+    manifest = m;
+    lookRoot = meta.root;
+    prepRef();
+    const ids = idleIds();
+    const cur = currentId();
+    if (cur) enqueueBlob(cur, true);
+    ids.forEach(function (fid) { enqueueBlob(fid, true); });
+    queueRecolor(cur ? [cur].concat(ids) : ids);
+    Object.keys(manifest.frames).forEach(function (fid) {
+      if (!blobP[fid]) enqueueBlob(fid, false);
+    });
+    preloadFront();
+  }
+  function switchOutfit(id) {
+    const meta = LOOK_BY[id];
+    if (!meta) return;
+    const run = function (m) {
+      if (look.outfit !== id) return;
+      dropLoadedFrames();
+      armLook(m);
+    };
+    if (manifestCache[id]) { run(manifestCache[id]); return; }
+    fetch(assetUrl(meta.json)).then(function (r) {
+      if (!r.ok) throw new Error(meta.json);
+      return r.json();
+    }).then(function (m) {
+      manifestCache[id] = m;
+      run(m);
+    }).catch(function () {});
+  }
   function setLook(p) {
     if (!p) return;
+    if (p.outfit && LOOK_BY[p.outfit] && p.outfit !== look.outfit) {
+      look.outfit = p.outfit;
+      saveLook();
+      switchOutfit(p.outfit);
+      return;
+    }
     let color = false;
+    if (p.dress != null && clamp(p.dress, DRESS.length) !== look.dress) { look.dress = clamp(p.dress, DRESS.length); color = true; }
     if (p.hair != null && clamp(p.hair, HAIR.length) !== look.hair) { look.hair = clamp(p.hair, HAIR.length); color = true; }
     if (p.top != null && clamp(p.top, CLOTH.length) !== look.top) { look.top = clamp(p.top, CLOTH.length); color = true; }
     if (p.skirt != null && clamp(p.skirt, CLOTH.length) !== look.skirt) { look.skirt = clamp(p.skirt, CLOTH.length); color = true; }
@@ -841,6 +922,7 @@
   function randomize() {
     setLook({
       hair: Math.floor(Math.random() * HAIR.length),
+      dress: Math.floor(Math.random() * DRESS.length),
       top: Math.floor(Math.random() * CLOTH.length),
       skirt: Math.floor(Math.random() * CLOTH.length),
       skin: Math.floor(Math.random() * SKIN.length),
@@ -977,7 +1059,7 @@
       blobs: Object.keys(blobP).length,
       queue: recolorQ.length,
       busy: busy,
-      look: { hair: look.hair, top: look.top, skirt: look.skirt, skin: look.skin, acc: Object.assign({}, look.acc) },
+      look: { outfit: look.outfit, dress: look.dress, hair: look.hair, top: look.top, skirt: look.skirt, skin: look.skin, acc: Object.assign({}, look.acc) },
       perf: { worst: perfWorst, over32: perfOver, n: perfN },
       warm: !!(bag[0] && moveReady(bag[0])),
       highlights: songPlan ? songPlan.highlights.length : 0,
@@ -991,10 +1073,14 @@
 
   function boot() {
     setStatus("Zoe zieht ihre Tanzschuhe an \u2026", 0.04);
-    fetch(assetUrl("girl-a.json"))
+    const meta = LOOK_BY[look.outfit] || LOOKS[0];
+    look.outfit = meta.id;
+    fetch(assetUrl(meta.json))
       .then(function (r) { if (!r.ok) throw new Error("json"); return r.json(); })
       .then(function (m) {
+        manifestCache[meta.id] = m;
         manifest = m;
+        lookRoot = meta.root;
         prepRef();
         const accKeys = Object.keys(m.accessories);
         return Promise.all(accKeys.map(loadAcc));
@@ -1046,7 +1132,9 @@
   window.GirlA = {
     HAIR: HAIR,
     CLOTH: CLOTH,
+    DRESS: DRESS,
     SKIN: SKIN,
+    LOOKS: LOOKS.map(function (o) { return { id: o.id, label: o.label, recolorOutfit: o.recolorOutfit, kind: o.kind }; }),
     get look() { return look; },
     get ready() { return ready; },
     tick: tick,
