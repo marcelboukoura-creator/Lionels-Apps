@@ -1,0 +1,7 @@
+Girl A – look "sport" (Sport-Outfit): cobalt-blue zip track jacket (Trainingsjacke) with white sleeve stripes + mint-green joggers (Jogginghose) with white side stripe and ankle cuffs + white sneakers. Same structure as girl-a-pack-v3: frames/ masks/ skin/ (118 frames, 512x768 WebP, same ids/canvas/anchors/moves as base).
+masks/: R=hair, G=Trainingsjacke (recolourable), B=Jogginghose (recolourable); lossless. skin/: grayscale skin coverage, lossless. Stripes (white), zipper, sneakers, earrings and the ground shadow are fixed (not recoloured).
+8 colour presets (Jacke/Hose): Kobalt & Mint, Rot & Schwarz, Schwarz & Grau, Rosa & Weiß, Navy & Navy, Gelb & Schwarz, Lila & Flieder, Grün & Weiß (see girl-a-sport.json look.colorPresets). Hair style unchanged (long waves).
+Back views (spin-4/5/6) generated with a dedicated back-view prompt.
+Cutout/mask rules on top of the shared pipeline: sneaker-only lace/tongue hole fill (targeted repairs in robot-5, point-3, spin-3, robot-1, jump-2); unlabelled jacket patches (heart-hand gap, collar) -> Trainingsjacke; jacket pixels between hair strands -> Trainingsjacke; blonde hair tips over the jacket -> hair; back-view hair wisps -> hair.
+Known minor: very dark presets (Schwarz, Navy) keep a faint cobalt tint in the deepest folds; a small white inner shirt shows at the neck in some frames (fixed colour); a few hair-tip pixels over the jacket can still take the jacket colour at extreme contrasts.
+qa/ = review sheets (not part of the runtime pack).
