@@ -3,7 +3,7 @@
    and runs in a worker. Only idle + the next move are decoded. */
 (function () {
   const BASE = new URL("girl-a/", document.currentScript.src);
-  const ASSET_V = "8";
+  const ASSET_V = "9";
   function assetUrl(rel) {
     const u = new URL(rel, BASE);
     u.searchParams.set("v", ASSET_V);
@@ -64,12 +64,23 @@
     { name: "Lila & Grau", top: "#8a5cc8", skirt: "#8d929c", swatch: "#8a5cc8", swatch2: "#8d929c" },
     { name: "Rot & Schwarz", top: "#d8142a", skirt: "#222226", swatch: "#d8142a", swatch2: "#222226" }
   ];
+  const SPORT = [
+    { name: "Kobalt & Mint", top: "#2f55b8", skirt: "#cfe9d6", swatch: "#2f55b8", swatch2: "#cfe9d6" },
+    { name: "Rot & Schwarz", top: "#d8142a", skirt: "#222226", swatch: "#d8142a", swatch2: "#222226" },
+    { name: "Schwarz & Grau", top: "#222226", skirt: "#8d929c", swatch: "#222226", swatch2: "#8d929c" },
+    { name: "Rosa & Wei\u00df", top: "#f4b3c3", skirt: "#fbf5ec", swatch: "#f4b3c3", swatch2: "#fbf5ec" },
+    { name: "Navy & Navy", top: "#233468", skirt: "#233468", swatch: "#233468", swatch2: "#233468" },
+    { name: "Gelb & Schwarz", top: "#ffd966", skirt: "#222226", swatch: "#ffd966", swatch2: "#222226" },
+    { name: "Lila & Flieder", top: "#8a5cc8", skirt: "#c9b3e6", swatch: "#8a5cc8", swatch2: "#c9b3e6" },
+    { name: "Gr\u00fcn & Wei\u00df", top: "#2e8b57", skirt: "#fbf5ec", swatch: "#2e8b57", swatch2: "#fbf5ec" }
+  ];
   const LOOKS = [
     { id: "cardigan", label: "Cardigan", recolorOutfit: true, kind: "separates", json: "girl-a.json", root: "" },
     { id: "hunter", label: "D\u00e4monenj\u00e4gerin", recolorOutfit: false, kind: "fixed", json: "looks/girl-a-hunter/girl-a-hunter.json", root: "looks/girl-a-hunter/" },
     { id: "dress", label: "Alltagskleid", recolorOutfit: true, kind: "dress", json: "looks/girl-a-dress/girl-a-dress.json", root: "looks/girl-a-dress/" },
     { id: "stage", label: "B\u00fchnen-Outfit", recolorOutfit: true, kind: "stage", json: "looks/girl-a-stage/girl-a-stage.json", root: "looks/girl-a-stage/" },
-    { id: "casual", label: "Freizeit-Outfit", recolorOutfit: true, kind: "casual", json: "looks/girl-a-casual/girl-a-casual.json", root: "looks/girl-a-casual/" }
+    { id: "casual", label: "Freizeit-Outfit", recolorOutfit: true, kind: "casual", json: "looks/girl-a-casual/girl-a-casual.json", root: "looks/girl-a-casual/" },
+    { id: "sport", label: "Sport-Outfit", recolorOutfit: true, kind: "sport", json: "looks/girl-a-sport/girl-a-sport.json", root: "looks/girl-a-sport/" }
   ];
   const LOOK_BY = {};
   LOOKS.forEach(function (o) { LOOK_BY[o.id] = o; });
@@ -82,7 +93,7 @@
   ];
 
   const look = {
-    outfit: "cardigan", dress: 0, stage: 0, casual: 0,
+    outfit: "cardigan", dress: 0, stage: 0, casual: 0, sport: 0,
     hair: 0, top: 2, skirt: 0, skin: 1,
     acc: { crown: false, sunglasses: false, pendant: false, bow: false, earrings: false }
   };
@@ -147,6 +158,7 @@
         if (o.dress != null) look.dress = clamp(o.dress, DRESS.length);
         if (o.stage != null) look.stage = clamp(o.stage, STAGE.length);
         if (o.casual != null) look.casual = clamp(o.casual, CASUAL.length);
+        if (o.sport != null) look.sport = clamp(o.sport, SPORT.length);
         if (o.hair != null) look.hair = clamp(o.hair, HAIR.length);
         if (o.top != null) look.top = clamp(o.top, CLOTH.length);
         if (o.skirt != null) look.skirt = clamp(o.skirt, CLOTH.length);
@@ -319,8 +331,8 @@
     const meta = LOOK_BY[look.outfit] || LOOKS[0];
     return {
       hair: HAIR[look.hair].hex,
-      top: meta.kind === "dress" ? DRESS[look.dress].hex : meta.kind === "stage" ? STAGE[look.stage].top : meta.kind === "casual" ? CASUAL[look.casual].top : CLOTH[look.top].hex,
-      skirt: meta.kind === "stage" ? STAGE[look.stage].skirt : meta.kind === "casual" ? CASUAL[look.casual].skirt : CLOTH[look.skirt].hex,
+      top: meta.kind === "dress" ? DRESS[look.dress].hex : meta.kind === "stage" ? STAGE[look.stage].top : meta.kind === "casual" ? CASUAL[look.casual].top : meta.kind === "sport" ? SPORT[look.sport].top : CLOTH[look.top].hex,
+      skirt: meta.kind === "stage" ? STAGE[look.stage].skirt : meta.kind === "casual" ? CASUAL[look.casual].skirt : meta.kind === "sport" ? SPORT[look.sport].skirt : CLOTH[look.skirt].hex,
       skin: SKIN[look.skin].hex,
       skinOff: !!SKIN[look.skin].base,
       refHair: refLabs.hair,
@@ -920,6 +932,7 @@
     if (p.dress != null && clamp(p.dress, DRESS.length) !== look.dress) { look.dress = clamp(p.dress, DRESS.length); color = true; }
     if (p.stage != null && clamp(p.stage, STAGE.length) !== look.stage) { look.stage = clamp(p.stage, STAGE.length); color = true; }
     if (p.casual != null && clamp(p.casual, CASUAL.length) !== look.casual) { look.casual = clamp(p.casual, CASUAL.length); color = true; }
+    if (p.sport != null && clamp(p.sport, SPORT.length) !== look.sport) { look.sport = clamp(p.sport, SPORT.length); color = true; }
     if (p.hair != null && clamp(p.hair, HAIR.length) !== look.hair) { look.hair = clamp(p.hair, HAIR.length); color = true; }
     if (p.top != null && clamp(p.top, CLOTH.length) !== look.top) { look.top = clamp(p.top, CLOTH.length); color = true; }
     if (p.skirt != null && clamp(p.skirt, CLOTH.length) !== look.skirt) { look.skirt = clamp(p.skirt, CLOTH.length); color = true; }
@@ -951,6 +964,7 @@
       dress: Math.floor(Math.random() * DRESS.length),
       stage: Math.floor(Math.random() * STAGE.length),
       casual: Math.floor(Math.random() * CASUAL.length),
+      sport: Math.floor(Math.random() * SPORT.length),
       top: Math.floor(Math.random() * CLOTH.length),
       skirt: Math.floor(Math.random() * CLOTH.length),
       skin: Math.floor(Math.random() * SKIN.length),
@@ -1087,7 +1101,7 @@
       blobs: Object.keys(blobP).length,
       queue: recolorQ.length,
       busy: busy,
-      look: { outfit: look.outfit, dress: look.dress, stage: look.stage, casual: look.casual, hair: look.hair, top: look.top, skirt: look.skirt, skin: look.skin, acc: Object.assign({}, look.acc) },
+      look: { outfit: look.outfit, dress: look.dress, stage: look.stage, casual: look.casual, sport: look.sport, hair: look.hair, top: look.top, skirt: look.skirt, skin: look.skin, acc: Object.assign({}, look.acc) },
       perf: { worst: perfWorst, over32: perfOver, n: perfN },
       warm: !!(bag[0] && moveReady(bag[0])),
       highlights: songPlan ? songPlan.highlights.length : 0,
@@ -1163,6 +1177,7 @@
     DRESS: DRESS,
     STAGE: STAGE,
     CASUAL: CASUAL,
+    SPORT: SPORT,
     SKIN: SKIN,
     LOOKS: LOOKS.map(function (o) { return { id: o.id, label: o.label, recolorOutfit: o.recolorOutfit, kind: o.kind }; }),
     get look() { return look; },
